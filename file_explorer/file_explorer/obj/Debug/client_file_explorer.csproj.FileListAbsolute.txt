@@ -8,3 +8,6 @@ Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.Proper
 Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\client_file_explorer.csproj.GenerateResource.Cache
 Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.exe
 Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.pdb
+Z:\study\file_explorer\file_explorer\file_explorer\bin\Debug\file_explorer.exe.config
+Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.exe
+Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.pdb
