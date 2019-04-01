@@ -1,0 +1,10 @@
+Z:\study\etc_study\c#\file_explorer\file_explorer\bin\Debug\file_explorer.exe.config
+Z:\study\etc_study\c#\file_explorer\file_explorer\bin\Debug\file_explorer.exe
+Z:\study\etc_study\c#\file_explorer\file_explorer\bin\Debug\file_explorer.pdb
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\client_file_explorer.csprojResolveAssemblyReference.cache
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.Main_form.resources
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.Login_form.resources
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.Properties.Resources.resources
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\client_file_explorer.csproj.GenerateResource.Cache
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.exe
+Z:\study\etc_study\c#\file_explorer\file_explorer\obj\Debug\file_explorer.pdb

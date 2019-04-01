@@ -1,0 +1,8 @@
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\bin\Debug\socket_server.exe.config
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\bin\Debug\socket_server.exe
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\bin\Debug\socket_server.pdb
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\obj\Debug\socket_server.csprojResolveAssemblyReference.cache
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\obj\Debug\socket_server.Server_form.resources
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\obj\Debug\socket_server.csproj.GenerateResource.Cache
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\obj\Debug\socket_server.exe
+Z:\study\etc_study\c#\socket_server\socket_server\socket_server\obj\Debug\socket_server.pdb
