@@ -12,10 +12,14 @@ namespace file_explorer
 {
     public partial class Login_form : Form
     {
+
+        bool loginstate = false;
+        string userId;
         clientsocketHandler client_socket = new clientsocketHandler();
         private readonly System.Threading.EventWaitHandle waitHandle = new System.Threading.AutoResetEvent(false);
         public Login_form()
         {
+            client_socket.set_socket_evnet(LoginCheck);
             InitializeComponent();
         }
 
@@ -23,22 +27,12 @@ namespace file_explorer
         {
             if (IdPwcheck()) // id , pw  모두 입력 됐으면
             {
-                string user_id = user_id_textbox.Text;
-                string user_pw = user_pw_textbox.Text;
+                userId = user_id_textbox.Text;
+                string userpw = user_pw_textbox.Text;
                 string[] client_info = new string[2];
-                client_info[0] = user_id;
-                client_info[1] = user_pw;
-                client_socket.set_socket_evnet(login_success);
+                client_info[0] = userId;
+                client_info[1] = userpw;
                 client_socket.OnSendData("login"+";"+client_info[0] + ";" + client_info[1],null);
-                waitHandle.WaitOne();
-                MessageBox.Show("로그인 성공!","확인", MessageBoxButtons.OK, MessageBoxIcon.None);
-                Main_form main_form = new Main_form();
-                this.Hide();
-                main_form.ShowDialog();
-                if (main_form.DialogResult != DialogResult.OK)
-                {
-                    this.Dispose();
-                }
             }
         }
 
@@ -63,9 +57,31 @@ namespace file_explorer
             System.Environment.Exit(1);
         }
 
-        private void login_success(string name)
+        private void LoginCheck(string result)
         {
-            waitHandle.Set();
+            if (result.Equals("success"))
+            {
+                loginstate = true;
+            }
+            else
+            {
+                loginstate = false;
+            }
+            if (loginstate)
+            {
+                MessageBox.Show("로그인 성공!", "확인", MessageBoxButtons.OK, MessageBoxIcon.None);
+                Main_form main_form = new Main_form(userId);
+                this.Invoke(new MethodInvoker(this.Hide)); // 크로스 스레드 해결
+                main_form.ShowDialog();
+                if (main_form.DialogResult != DialogResult.OK)
+                {
+                    this.Invoke(new MethodInvoker(this.Dispose));  // 크로스 스레드 해결
+                }
+            }
+            else
+            {
+                MessageBox.Show("로그인 실패!", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

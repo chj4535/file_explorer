@@ -10,18 +10,14 @@ namespace socket_server
 {
     class AsyncObject
     {
-        public byte[] Buffer;
-        public Socket WorkingSocket;
-        public readonly int BufferSize;
-        public AsyncObject(int bufferSize)
-        {
-            BufferSize = bufferSize;
-            Buffer = new byte[BufferSize];
-        }
 
+        public Socket workingSocket = null;
+        public const int bufferSize = 2048;
+        public byte[] buffer = new byte[bufferSize];
+        public StringBuilder sb = new StringBuilder();
         public void ClearBuffer()
         {
-            Array.Clear(Buffer, 0, BufferSize);
+            Array.Clear(buffer, 0, bufferSize);
         }
     }
 }

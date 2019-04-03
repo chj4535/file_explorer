@@ -22,9 +22,9 @@ namespace win_api_test
             Getfiles getFiles = new Getfiles();
             string[] dirSublist = getFiles.Getfiles_directory(dirPath);
             */
-            /*
-            string sourceDirectory = @"Z:\study\test\test";
-            string destinationDirectory = @"Z:\study\test\test2";
+            
+            string sourceDirectory = @"Z:\study\test";
+            string destinationDirectory = @"C:\";
             Movefiledir moveFileDir = new Movefiledir();
             if(moveFileDir.Movedir(sourceDirectory, destinationDirectory))
             {
@@ -34,11 +34,11 @@ namespace win_api_test
             {
                 Console.WriteLine("이동 실패");
             }
-            */
+            
 
             /*
-            string sourceFile = @"Z:\study\test\test2\hi.txt";
-            string destinationFile = @"Z:\study\test\hi.txt";
+            string sourceFile = @"Z:\study\test";
+            string destinationFile = @"C:\";
             Movefiledir moveFileDir = new Movefiledir();
             if (moveFileDir.Movefile(sourceFile, destinationFile))
             {

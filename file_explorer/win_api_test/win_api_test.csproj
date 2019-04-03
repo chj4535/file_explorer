@@ -46,7 +46,6 @@
     <Compile Include="Driveinfo.cs" />
     <Compile Include="Getfiles.cs" />
     <Compile Include="Movedir.cs" />
-    <Compile Include="Movefile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

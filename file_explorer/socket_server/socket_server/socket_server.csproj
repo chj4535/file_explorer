@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncObject.cs" />
+    <Compile Include="CommandClassification.cs" />
+    <Compile Include="Logincheck.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server_form.cs">

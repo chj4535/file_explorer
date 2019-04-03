@@ -30,47 +30,73 @@ namespace file_explorer
                 MessageBox.Show("서버가 실행되지 않고 있습니다!", "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Environment.Exit(1);
             }
-            AsyncObject ao = new AsyncObject(4096);
-            ao.WorkingSocket = mainSock;
-            mainSock.BeginReceive(ao.Buffer, 0, ao.BufferSize, 0, DataReceived, ao);
+            Console.WriteLine("소켓연결 성공");
+            AsyncObject ao = new AsyncObject();
+            ao.workingSocket = mainSock;
+            mainSock.BeginReceive(ao.buffer, 0, 2048, 0, DataReceived, ao);
         }
 
         static void DataReceived(IAsyncResult ar)
         {
             // BeginReceive에서 추가적으로 넘어온 데이터를 AsyncObject 형식으로 변환한다.
             AsyncObject obj = (AsyncObject)ar.AsyncState;
-
+            Socket server = obj.workingSocket;
             // 데이터 수신을 끝낸다.
-            int received = obj.WorkingSocket.EndReceive(ar);
-
-            // 받은 데이터가 없으면(연결끊어짐) 끝낸다.
+            int received;
+            
+            try
+            {
+                // 데이터 수신을 끝낸다.
+                received = server.EndReceive(ar);
+                Console.WriteLine("received : "+received);
+            }
+            catch
+            {
+                server.Close();
+                return;
+            }
+            // 받을 데이터가 있다.
             if (received <= 0)
             {
-                obj.WorkingSocket.Close();
+                obj.workingSocket.Close();
                 return;
             }
 
-            // UTF8 인코더를 사용하여 바이트 배열을 문자열로 변환한다.
-            string text = Encoding.UTF8.GetString(obj.Buffer);
-
-            // 0x01 기준으로 짜른다.
-            // tokens[0] - 보낸 사람 IP
-            // tokens[1] - 보낸 메세지
-            string[] tokens = text.Split('\x01');
-            string ip = tokens[0];
-            string msg = tokens[1];
-            // 클라이언트에선 데이터를 전달해줄 필요가 없으므로 바로 수신 대기한다.
-            // 데이터를 받은 후엔 다시 버퍼를 비워주고 같은 방법으로 수신을 대기한다.
-            string[] msgs = msg.Split(';');
-            
-            if (msgs[0].Equals("success"))
+            if (received > 0)
             {
-                socket_event("success");
+                string text = Encoding.UTF8.GetString(obj.buffer);
+                obj.sb.Append(text);
+                //Console.WriteLine("sb 내용" + obj.sb.ToString());
+                if (server.Available == 0)//네트워크상에 받을 데이터가 없다.
+                {
+                    Console.WriteLine("수신 종료");
+                    // All data received, process it as you wish
+                    string msg = obj.sb.ToString();
+                    obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
+                    Console.WriteLine("메시지",msg);//총 받은 메시지
+                    //임시
+                    string[] msgs = msg.Split(';');
+                    if (msgs[0].Equals("login"))
+                    {
+                        if (msgs[1].Equals("success"))
+                        {
+                            Console.WriteLine("소켓 수신 : 로그인 성공");
+                            socket_event("success");
+                        }
+                        else if (msgs[1].Equals("fail"))
+                        {
+                            Console.WriteLine("소켓 수신 : 로그인 실패");
+                            socket_event("fail");
+                        }
+                    }
+                }
+                obj.ClearBuffer();//버퍼 비우기
             }
-            obj.ClearBuffer();
+            // 받은 데이터가 없으면(연결끊어짐) 끝낸다.
 
-            // 수신 대기
-            obj.WorkingSocket.BeginReceive(obj.Buffer, 0, 4096, 0, DataReceived, obj);
+            server.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
+
+
         }
         public void set_socket_evnet(socket_eventHandler add_event)
         {
@@ -95,10 +121,9 @@ namespace file_explorer
             // 서버 ip 주소와 메세지를 담도록 만든다.
             IPEndPoint ip = (IPEndPoint)mainSock.LocalEndPoint;
             string addr = ip.Address.ToString();
-
+            Console.WriteLine("송신 메시지 : "+addr+message);
             // 문자열을 utf8 형식의 바이트로 변환한다.
             byte[] bDts = Encoding.UTF8.GetBytes(addr + '\x01' + message);
-
             // 서버에 전송한다.
             mainSock.Send(bDts);
         }
