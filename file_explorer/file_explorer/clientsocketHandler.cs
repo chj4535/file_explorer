@@ -81,7 +81,7 @@ namespace file_explorer
                     
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     
-                    //cmdHandler.CmdClassification(msgCount,msg); // 동기 메서드라 대기하게 된다.
+                    cmdHandler.CmdClassification(msgCount,msg); // 동기 메서드라 대기하게 된다.
                 }
                 obj.ClearBuffer();//버퍼 비우기
             }

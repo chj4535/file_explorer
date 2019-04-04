@@ -14,3 +14,12 @@ Z:\study\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socke
 Z:\study\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.csproj.GenerateResource.Cache
 Z:\study\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.exe
 Z:\study\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.pdb
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\bin\Debug\socket_server.exe.config
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\bin\Debug\socket_server.exe
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\bin\Debug\socket_server.pdb
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.csprojAssemblyReference.cache
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.Server_form.resources
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.csproj.GenerateResource.cache
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.csproj.CoreCompileInputs.cache
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.exe
+D:\study\git\file_explorer\file_explorer\socket_server\socket_server\obj\Debug\socket_server.pdb

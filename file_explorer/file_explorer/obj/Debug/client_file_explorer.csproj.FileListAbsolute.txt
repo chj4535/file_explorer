@@ -18,3 +18,14 @@ Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Main_
 Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Login_form.resources
 Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Properties.Resources.resources
 Z:\study\file_explorer\file_explorer\file_explorer\obj\Debug\client_file_explorer.csproj.GenerateResource.Cache
+D:\study\git\file_explorer\file_explorer\file_explorer\bin\Debug\file_explorer.exe.config
+D:\study\git\file_explorer\file_explorer\file_explorer\bin\Debug\file_explorer.exe
+D:\study\git\file_explorer\file_explorer\file_explorer\bin\Debug\file_explorer.pdb
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\client_file_explorer.csprojAssemblyReference.cache
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Main_form.resources
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Login_form.resources
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.Properties.Resources.resources
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\client_file_explorer.csproj.GenerateResource.cache
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\client_file_explorer.csproj.CoreCompileInputs.cache
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.exe
+D:\study\git\file_explorer\file_explorer\file_explorer\obj\Debug\file_explorer.pdb

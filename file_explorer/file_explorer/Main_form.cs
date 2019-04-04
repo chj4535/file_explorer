@@ -36,24 +36,43 @@ namespace file_explorer
             Console.WriteLine(listViewcount.ToString()+" vs "+msgCount.ToString());
             if (listViewcount < msgCount) // 현재보다 나중의 요청결과인지 확인
             {
-                listViewcount = msgCount;
-                mainFormlistview.Columns.Clear();//칼럼 초기화
-                mainFormlistview.Columns.Add("이름");
-                mainFormlistview.Columns.Add("종류");
-                mainFormlistview.Columns.Add("전체 크기");
-                mainFormlistview.Columns.Add("사용 가능 공간");
-                foreach(DriveInfo data in datas)
+                if (mainFormlistview.InvokeRequired)
                 {
-                    Console.WriteLine(data);
-                    ListViewItem item = new ListViewItem(new[] {data.driveName, data.driveType, data.driveTotalsize, data.driveFreesize});
-                    mainFormlistview.Items.Add(item);
+                    mainFormlistview.Invoke((MethodInvoker)delegate ()
+                    {
+                        listViewcount = msgCount;
+                        mainFormlistview.View = View.Details;
+                        mainFormlistview.Columns.Clear();//칼럼 초기화
+                        int columWidth = (mainFormlistview.Width - 2) / 4;
+                        Console.WriteLine(mainFormlistview.Width);
+                        mainFormlistview.Columns.Add("이름");
+                        mainFormlistview.Columns.Add("종류");
+                        mainFormlistview.Columns.Add("전체 크기");
+                        mainFormlistview.Columns.Add("사용 가능 공간");
+                        foreach (ColumnHeader header in mainFormlistview.Columns)
+                        {
+                            header.Width = columWidth;
+                        }
+                        foreach (DriveInfo data in datas)
+                        {
+                            Console.WriteLine(data);
+                            ListViewItem item = new ListViewItem(new[] { data.driveName, data.driveType, data.driveTotalsize, data.driveFreesize });
+                            mainFormlistview.Items.Add(item);
+                        }
+                    });
                 }
+                
             }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             clientSocket.OnSendData("rootload" + ";", null);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
