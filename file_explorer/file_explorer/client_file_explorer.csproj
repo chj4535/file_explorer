@@ -48,7 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncObject.cs" />
-    <Compile Include="clientsocketHandler.cs" />
+    <Compile Include="ClientSocketHandler.cs" />
+    <Compile Include="CommandClassification.cs" />
+    <Compile Include="LoadDriveInfo.cs" />
+    <Compile Include="LoginCheck.cs" />
     <Compile Include="Main_form.cs">
       <SubType>Form</SubType>
     </Compile>

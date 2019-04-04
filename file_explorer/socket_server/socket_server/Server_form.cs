@@ -20,6 +20,7 @@ namespace socket_server
         Socket mainSock;
         IPAddress thisAddress;
         CommandClassification cmdHandler = new CommandClassification();
+        int sendMsgcount = 0;
         public Server_form()
         {
             InitializeComponent();
@@ -100,7 +101,7 @@ namespace socket_server
             {
                 // 데이터 수신을 끝낸다.
                 received = client.EndReceive(ar);
-                Console.WriteLine(received);
+                Console.WriteLine("receive : ", received);
             }
             catch
             {
@@ -124,8 +125,11 @@ namespace socket_server
                     string clientData = tokens[1];
 
                     bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
-                    byte[] sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
-                    Console.WriteLine(sendData.ToString());
+                    string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
+                    sendMsgcount += 1;
+                    byte[] sendDatatobtye = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01' + sendData);
+                    //byte[] sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
+                    Console.WriteLine(sendDatatobtye.ToString());
                     if (sendAll)//전체전송
                     {
                         // for을 통해 "역순"으로 클라이언트에게 데이터를 보낸다.
@@ -134,7 +138,7 @@ namespace socket_server
                             Socket socket = connectedClients[i].clientSocket;
                             try
                             {
-                                socket.Send(sendData);
+                                socket.Send(sendDatatobtye);
                             }
                             catch
                             {
@@ -146,21 +150,22 @@ namespace socket_server
                     }
                     else // 1:1전송
                     {
-                        AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(sendData)));
-                        client.Send(sendData);
+                        AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(sendDatatobtye)));
+                        client.Send(sendDatatobtye);
                     }
                     AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
                 }
             }
-            /*
+            
             // 받은 데이터가 없으면(연결끊어짐) 끝낸다.
             if (received <= 0)
             {
+                AppendText(server_log_richtextbox, string.Format("연결 종료"));
                 obj.workingSocket.Close();
                 return;
             }
-            */
             
+
             client.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
         }
     }

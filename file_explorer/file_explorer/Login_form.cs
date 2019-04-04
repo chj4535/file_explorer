@@ -15,11 +15,12 @@ namespace file_explorer
 
         bool loginstate = false;
         string userId;
-        clientsocketHandler client_socket = new clientsocketHandler();
+        LoginCheck loginCheck = new LoginCheck();
+        ClientSocketHandler clientSocket = new ClientSocketHandler();
         private readonly System.Threading.EventWaitHandle waitHandle = new System.Threading.AutoResetEvent(false);
         public Login_form()
         {
-            client_socket.set_socket_evnet(LoginCheck);
+            loginCheck.SetLoginEvnet(LoginCheck);
             InitializeComponent();
         }
 
@@ -32,7 +33,7 @@ namespace file_explorer
                 string[] client_info = new string[2];
                 client_info[0] = userId;
                 client_info[1] = userpw;
-                client_socket.OnSendData("login"+";"+client_info[0] + ";" + client_info[1],null);
+                clientSocket.OnSendData("login"+";"+client_info[0] + ";" + client_info[1],null);
             }
         }
 

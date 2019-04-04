@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AsyncObject.cs" />
     <Compile Include="CommandClassification.cs" />
+    <Compile Include="Driveinfo.cs" />
     <Compile Include="Logincheck.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

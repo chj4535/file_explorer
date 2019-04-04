@@ -39,10 +39,11 @@ namespace file_explorer
             this.user_name_label = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.mainFormlistview = new System.Windows.Forms.ListView();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -126,7 +127,7 @@ namespace file_explorer
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.listView1);
+            this.splitContainer1.Panel2.Controls.Add(this.mainFormlistview);
             this.splitContainer1.Size = new System.Drawing.Size(776, 368);
             this.splitContainer1.SplitterDistance = 131;
             this.splitContainer1.SplitterWidth = 1;
@@ -141,14 +142,14 @@ namespace file_explorer
             this.treeView1.Size = new System.Drawing.Size(131, 368);
             this.treeView1.TabIndex = 0;
             // 
-            // listView1
+            // mainFormlistview
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(644, 368);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.mainFormlistview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainFormlistview.Location = new System.Drawing.Point(0, 0);
+            this.mainFormlistview.Name = "mainFormlistview";
+            this.mainFormlistview.Size = new System.Drawing.Size(644, 368);
+            this.mainFormlistview.TabIndex = 0;
+            this.mainFormlistview.UseCompatibleStateImageBehavior = false;
             // 
             // textBox3
             // 
@@ -178,12 +179,23 @@ namespace file_explorer
             this.comboBox2.Size = new System.Drawing.Size(66, 23);
             this.comboBox2.TabIndex = 13;
             // 
-            // Form1
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(431, 2);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 14;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // Main_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(785, 463);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.textBox3);
@@ -194,7 +206,7 @@ namespace file_explorer
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBox2);
-            this.Name = "Form1";
+            this.Name = "Main_form";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -215,10 +227,11 @@ namespace file_explorer
         private System.Windows.Forms.Label user_name_label;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView mainFormlistview;
         private System.Windows.Forms.TextBox textBox3;
         private ComboBox comboBox1;
         private ComboBox comboBox2;
+        private Button button3;
     }
 }
 

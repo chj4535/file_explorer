@@ -8,15 +8,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 
+using System.Threading;
+
 namespace file_explorer
 {
-    public delegate void socket_eventHandler(string data);
     
-    class clientsocketHandler
+    class ClientSocketHandler
     {
-        static event socket_eventHandler socket_event;
         static Socket mainSock;
-        static clientsocketHandler()
+        static CommandClassification cmdHandler = new CommandClassification();
+        static ClientSocketHandler()
         {
             try
             {
@@ -71,24 +72,16 @@ namespace file_explorer
                 {
                     Console.WriteLine("수신 종료");
                     // All data received, process it as you wish
-                    string msg = obj.sb.ToString();
+
+                    string receiveData = obj.sb.ToString();
+                    string[] tokens = receiveData.Split('\x01');
+                    int msgCount = Int32.Parse(tokens[0]); // 비동기 메세지이므로 늦게 온게 먼저 적용된 상태에서 먼저 온게 적용되려는 현상 방지
+
+                    string msg = tokens[1];
+                    
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
-                    Console.WriteLine("메시지",msg);//총 받은 메시지
-                    //임시
-                    string[] msgs = msg.Split(';');
-                    if (msgs[0].Equals("login"))
-                    {
-                        if (msgs[1].Equals("success"))
-                        {
-                            Console.WriteLine("소켓 수신 : 로그인 성공");
-                            socket_event("success");
-                        }
-                        else if (msgs[1].Equals("fail"))
-                        {
-                            Console.WriteLine("소켓 수신 : 로그인 실패");
-                            socket_event("fail");
-                        }
-                    }
+                    
+                    //cmdHandler.CmdClassification(msgCount,msg); // 동기 메서드라 대기하게 된다.
                 }
                 obj.ClearBuffer();//버퍼 비우기
             }
@@ -97,10 +90,6 @@ namespace file_explorer
             server.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
 
 
-        }
-        public void set_socket_evnet(socket_eventHandler add_event)
-        {
-            socket_event+= new socket_eventHandler(add_event);
         }
         public void OnSendData(string message, EventArgs e)
         {
@@ -125,7 +114,27 @@ namespace file_explorer
             // 문자열을 utf8 형식의 바이트로 변환한다.
             byte[] bDts = Encoding.UTF8.GetBytes(addr + '\x01' + message);
             // 서버에 전송한다.
-            mainSock.Send(bDts);
+            //mainSock.Send(bDts);
+            mainSock.BeginSend(bDts, 0, bDts.Length, 0,
+                new AsyncCallback(SendCallback), mainSock);
+        }
+
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.  
+                Socket client = (Socket)ar.AsyncState;
+
+                // Complete sending the data to the remote device.  
+                int bytesSent = client.EndSend(ar);
+                Console.WriteLine("Sent {0} bytes to server.", bytesSent);
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
     }
 }
