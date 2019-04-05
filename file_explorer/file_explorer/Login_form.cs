@@ -33,7 +33,7 @@ namespace file_explorer
                 string[] client_info = new string[2];
                 client_info[0] = userId;
                 client_info[1] = userpw;
-                clientSocket.OnSendData("login"+";"+client_info[0] + ";" + client_info[1],null);
+                clientSocket.OnSendData("login"+"|"+client_info[0] + "/" + client_info[1]+"|",null);
                 waitHandle.WaitOne(); //로그인 결과가 올때까지 대기 상태가 되어야 한다.
                 if (loginstate)
                 {

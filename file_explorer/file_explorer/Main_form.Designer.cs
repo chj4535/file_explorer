@@ -31,6 +31,7 @@ namespace file_explorer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -43,7 +44,7 @@ namespace file_explorer
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.listViewimagelist = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -98,7 +99,6 @@ namespace file_explorer
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(528, 23);
             this.textBox1.TabIndex = 5;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
@@ -146,11 +146,13 @@ namespace file_explorer
             // mainFormlistview
             // 
             this.mainFormlistview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainFormlistview.FullRowSelect = true;
             this.mainFormlistview.Location = new System.Drawing.Point(0, 0);
             this.mainFormlistview.Name = "mainFormlistview";
             this.mainFormlistview.Size = new System.Drawing.Size(644, 368);
             this.mainFormlistview.TabIndex = 0;
             this.mainFormlistview.UseCompatibleStateImageBehavior = false;
+            this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
             // 
             // textBox3
             // 
@@ -180,15 +182,11 @@ namespace file_explorer
             this.comboBox2.Size = new System.Drawing.Size(66, 23);
             this.comboBox2.TabIndex = 13;
             // 
-            // button3
+            // listViewimagelist
             // 
-            this.button3.Location = new System.Drawing.Point(431, 2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 14;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.listViewimagelist.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.listViewimagelist.ImageSize = new System.Drawing.Size(16, 16);
+            this.listViewimagelist.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // Main_form
             // 
@@ -196,7 +194,6 @@ namespace file_explorer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(785, 463);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.textBox3);
@@ -232,7 +229,7 @@ namespace file_explorer
         private System.Windows.Forms.TextBox textBox3;
         private ComboBox comboBox1;
         private ComboBox comboBox2;
-        private Button button3;
+        private ImageList listViewimagelist;
     }
 }
 

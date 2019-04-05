@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace socket_server
 {
     class Driveinfo
     {
-        public string GetDriveInfo()
+        public byte[] GetDriveInfo()
         {
             //논리 드라이브 정보를 가져옵니다.
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -18,12 +20,13 @@ namespace socket_server
             foreach (DriveInfo d in allDrives)
             {
                 allDriveInfotoString += d.Name+"/"; //드라이브 이름
+                allDriveInfotoString += d.VolumeLabel + "/"; //드라이브 라벨
                 allDriveInfotoString += d.DriveType + "/"; //드라이브 타입
                 allDriveInfotoString += d.TotalSize.ToString() + "/";//드라이브 전체 크기
                 allDriveInfotoString += d.TotalFreeSpace.ToString() + "/";//드라이브 여분 크기
             }
             Console.WriteLine(allDriveInfotoString);
-            return allDriveInfotoString;
+            return Encoding.UTF8.GetBytes(allDriveInfotoString+'|');
             /*
             foreach (DriveInfo d in allDrives)
             {

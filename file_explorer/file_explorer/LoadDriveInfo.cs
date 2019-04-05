@@ -4,14 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Drawing;
+
 namespace file_explorer
 {
     public struct DriveInfo
     {
         public string driveName;
+        public string driveLabel;
         public string driveType;
         public string driveTotalsize;
         public string driveFreesize;
+        public Icon driveicon;
     }
     public delegate void DriveEventHandler(int msgCount, DriveInfo[] data);
     class LoadDriveInfo
@@ -32,6 +36,7 @@ namespace file_explorer
             for (int driveNum = 0; driveNum < Int32.Parse(driveInfo[0]); driveNum++)
             {
                 driveInfos[driveNum].driveName = driveInfo[++count];
+                driveInfos[driveNum].driveLabel = driveInfo[++count];
                 driveInfos[driveNum].driveType = driveInfo[++count];
                 driveInfos[driveNum].driveTotalsize = driveInfo[++count];
                 driveInfos[driveNum].driveFreesize = driveInfo[++count];

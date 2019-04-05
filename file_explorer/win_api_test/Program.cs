@@ -17,12 +17,13 @@ namespace win_api_test
             DriveInfo[] allDrives = driveInfo.get_drive_info();
             */
 
-            /*
-            string dirPath = @"Z:\study\Encryption_study";
+            
+            string dirPath = @"Z:\";
             Getfiles getFiles = new Getfiles();
             string[] dirSublist = getFiles.Getfiles_directory(dirPath);
-            */
             
+            
+            /*
             string sourceDirectory = @"Z:\study\test";
             string destinationDirectory = @"C:\";
             Movefiledir moveFileDir = new Movefiledir();
@@ -34,7 +35,7 @@ namespace win_api_test
             {
                 Console.WriteLine("이동 실패");
             }
-            
+            */
 
             /*
             string sourceFile = @"Z:\study\test";

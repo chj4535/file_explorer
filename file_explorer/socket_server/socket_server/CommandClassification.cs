@@ -10,37 +10,34 @@ namespace socket_server
     {
         Logincheck loginCheck = new Logincheck();
         Driveinfo drinInfo = new Driveinfo();
-        public string CmdClassification(string msg)
+        GetDirSubItems getDrisubitems = new GetDirSubItems();
+        public byte[] CmdClassification(string msg)
         {
-            string[] msgs = msg.Split(';');
-            string[] returnMessages = new string[2];
+            string[] msgs = msg.Split('|');
+            byte[] cmd = new byte[0];
+            byte[] cmdResult = new byte[0];
             //Console.WriteLine("msgs[0] : " + msgs[0]);
             //Console.WriteLine("msgs[1] : " + msgs[1]);
             //Console.WriteLine("msgs[2] : " + msgs[2]);
             switch (msgs[0]) {
                 case "login":
-                    returnMessages[0] = "login";
-                    returnMessages[1] = loginCheck.GetloginInfo(msgs[1], msgs[2]);
+                    cmd = Encoding.UTF8.GetBytes("login"+'|');
+                    cmdResult = loginCheck.GetloginInfo(msgs[1]);
                     break;
                 case "rootload":
-                    returnMessages[0] = "rootload";
-                    returnMessages[1] = drinInfo.GetDriveInfo();
+                    cmd = Encoding.UTF8.GetBytes("rootload" + '|');
+                    cmdResult = drinInfo.GetDriveInfo();
+                    break;
+                case "dirload":
+                    cmd = Encoding.UTF8.GetBytes("dirload" + '|');
+                    cmdResult = getDrisubitems.GetFilesDirs(msgs[1]);
                     break;
             }
 
-
-            string mesasage = "";
-            //Console.WriteLine("returnMessages[0] : " + returnMessages[0]);
-            //Console.WriteLine("returnMessages[1] : " + returnMessages[1]);
-            foreach (string returnMessage in returnMessages)
-            {
-                Console.WriteLine("returnMessage : " + returnMessage);
-                mesasage += returnMessage;
-                mesasage += "|";
-            }
-            Console.WriteLine("mesasage : " + mesasage);
-            //byte[] data = Encoding.UTF8.GetBytes(mesasage);
-            return mesasage;
+            byte[] data = new byte[cmd.Length + cmdResult.Length];
+            cmd.CopyTo(data, 0);
+            cmdResult.CopyTo(data, cmd.Length);
+            return data;
         }
 
         public bool IdentifySendAll(string msg)
@@ -53,6 +50,9 @@ namespace socket_server
                     sendAll = false;
                     break;
                 case "rootload":
+                    sendAll = false;
+                    break;
+                case "dirload":
                     sendAll = false;
                     break;
             }

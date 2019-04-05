@@ -28,6 +28,7 @@ namespace win_api_test
 
         public static void Writefile(string path)
         {
+            string allFilesinfotoString="";
             FileInfo fileInfo = new FileInfo(path);
             //Console.WriteLine("Processed file '{0}'.", path);
             Console.WriteLine("파일명 : {0} / 타입 :  {1} / 수정한 날짜 :  {2} / 크기 : {3}", fileInfo.Name, fileInfo.Extension,fileInfo.LastWriteTime, fileInfo.Length);
@@ -37,7 +38,7 @@ namespace win_api_test
         {
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             //Console.WriteLine("Processed directory '{0}'.", path);
-            Console.WriteLine("폴더명 : {0} / 타입 :  {1} / 수정한 날짜 :  {2}", dirInfo.Name, dirInfo.Extension, dirInfo.LastWriteTime);
+            Console.WriteLine("폴더명 : {0} / 속성 :  {1} / 수정한 날짜 :  {2}", dirInfo.Name, dirInfo.Attributes, dirInfo.LastWriteTime);
         }
     }
 }

@@ -5,11 +5,14 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace socket_server
 {
     public partial class Server_form : Form
     {
+
+
+
+
         struct ClientSocket // 각 client의 소켓과 client가 보고있는 경로를 저장 (폴더삭제, 이동 등의 상황에서 그 경로안을 보고 있는 사용자가 있다면 못하게 막아야하니까?)
         {
             public Socket clientSocket;
@@ -125,11 +128,73 @@ namespace socket_server
                     string clientData = tokens[1];
 
                     bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
-                    string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
+                    //string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
+                    byte[] sendDatacontent = cmdHandler.CmdClassification(clientData); //요청사항 결과
+
+                    /*
+                    string[] data1 = sendData.Split('|');
+                    if (data1[0] == "rootload")
+                    {
+
+                        string[] data2 = data1[1].Split('/');
+                        int listViewcount = 2;
+                        if (testListview.InvokeRequired)
+                        {
+                            testListview.Invoke((MethodInvoker)delegate ()
+                            {
+                                testListview.View = View.Details;
+                                testListview.Columns.Clear();//칼럼 초기화
+                                int columWidth = (testListview.Width - 2) / 4;
+                                Console.WriteLine(testListview.Width);
+                                testListview.Columns.Add("이름");
+                                testListview.Columns.Add("종류");
+                                testListview.Columns.Add("전체 크기");
+                                testListview.Columns.Add("사용 가능 공간");
+
+                                foreach (ColumnHeader header in testListview.Columns)
+                                {
+                                    header.Width = columWidth;
+                                }
+                             
+                                ImageList imageList1 = new ImageList();
+                                imageList1.ColorDepth = ColorDepth.Depth32Bit;
+                                imageList1.TransparentColor = System.Drawing.Color.Transparent;
+                                imageList1.ImageSize = new Size(16,16);
+                                testListview.SmallImageList = imageList1;
+                                Console.WriteLine(Convert.ToDouble(data2[4]));
+                                Console.WriteLine(Convert.ToDouble(data2[4])/1024);
+                                Console.WriteLine(Convert.ToDouble(data2[4]) / 1024/1024);
+                                Console.WriteLine(Convert.ToDouble(data2[4]) / 1024 / 1024/1024);
+                                ListViewItem item = new ListViewItem(new[] { data2[1], data2[3],data2[4], data2[5] }, 1);
+                                Icon iconForFile = GetIcon(30);
+                                imageList1.Images.Add(data2[1], iconForFile);
+                                item.ImageKey = data2[1];
+                                testListview.Items.Add(item);
+
+                                ListViewItem item2 = new ListViewItem(new[] { data2[6], data2[8], data2[9], data2[10] }, 1);
+                                testListview.SmallImageList = imageList1;
+
+                                iconForFile = GetIcon(32);
+                                imageList1.Images.Add(data2[6], iconForFile);
+
+                                item2.ImageKey = data2[6];
+                                testListview.Items.Add(item2);
+
+                                testListview.EndUpdate();
+                            });
+                        }
+                        
+                    }
+                    */
                     sendMsgcount += 1;
-                    byte[] sendDatatobtye = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01' + sendData);
+                    byte[] sendDataHeader = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01');
+                    byte[] sendData = new byte[sendDataHeader.Length + sendDatacontent.Length];
+                    sendDataHeader.CopyTo(sendData, 0);
+                    sendDatacontent.CopyTo(sendData, sendDataHeader.Length);
                     //byte[] sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
-                    Console.WriteLine(sendDatatobtye.ToString());
+                    Console.WriteLine(sendData.ToString());
+                    
+
                     if (sendAll)//전체전송
                     {
                         // for을 통해 "역순"으로 클라이언트에게 데이터를 보낸다.
@@ -138,7 +203,7 @@ namespace socket_server
                             Socket socket = connectedClients[i].clientSocket;
                             try
                             {
-                                socket.Send(sendDatatobtye);
+                                socket.Send(sendData);
                             }
                             catch
                             {
@@ -150,8 +215,8 @@ namespace socket_server
                     }
                     else // 1:1전송
                     {
-                        AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(sendDatatobtye)));
-                        client.Send(sendDatatobtye);
+                        AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(sendData,0,sendData.Length)));
+                        client.Send(sendData);
                     }
                     AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
                 }
