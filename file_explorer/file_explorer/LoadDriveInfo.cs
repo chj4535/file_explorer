@@ -15,7 +15,6 @@ namespace file_explorer
         public string driveType;
         public string driveTotalsize;
         public string driveFreesize;
-        public Icon driveicon;
     }
     public delegate void DriveEventHandler(int msgCount, DriveInfo[] data);
     class LoadDriveInfo

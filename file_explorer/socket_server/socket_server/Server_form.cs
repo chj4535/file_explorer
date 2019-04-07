@@ -50,6 +50,7 @@ namespace socket_server
 
         private void Start_server_Click(object sender, EventArgs e)
         {
+            Start_server.Enabled = false;
             int port;
             if (!int.TryParse(port_textbox.Text, out port))
             {
@@ -131,61 +132,6 @@ namespace socket_server
                     //string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
                     byte[] sendDatacontent = cmdHandler.CmdClassification(clientData); //요청사항 결과
 
-                    /*
-                    string[] data1 = sendData.Split('|');
-                    if (data1[0] == "rootload")
-                    {
-
-                        string[] data2 = data1[1].Split('/');
-                        int listViewcount = 2;
-                        if (testListview.InvokeRequired)
-                        {
-                            testListview.Invoke((MethodInvoker)delegate ()
-                            {
-                                testListview.View = View.Details;
-                                testListview.Columns.Clear();//칼럼 초기화
-                                int columWidth = (testListview.Width - 2) / 4;
-                                Console.WriteLine(testListview.Width);
-                                testListview.Columns.Add("이름");
-                                testListview.Columns.Add("종류");
-                                testListview.Columns.Add("전체 크기");
-                                testListview.Columns.Add("사용 가능 공간");
-
-                                foreach (ColumnHeader header in testListview.Columns)
-                                {
-                                    header.Width = columWidth;
-                                }
-                             
-                                ImageList imageList1 = new ImageList();
-                                imageList1.ColorDepth = ColorDepth.Depth32Bit;
-                                imageList1.TransparentColor = System.Drawing.Color.Transparent;
-                                imageList1.ImageSize = new Size(16,16);
-                                testListview.SmallImageList = imageList1;
-                                Console.WriteLine(Convert.ToDouble(data2[4]));
-                                Console.WriteLine(Convert.ToDouble(data2[4])/1024);
-                                Console.WriteLine(Convert.ToDouble(data2[4]) / 1024/1024);
-                                Console.WriteLine(Convert.ToDouble(data2[4]) / 1024 / 1024/1024);
-                                ListViewItem item = new ListViewItem(new[] { data2[1], data2[3],data2[4], data2[5] }, 1);
-                                Icon iconForFile = GetIcon(30);
-                                imageList1.Images.Add(data2[1], iconForFile);
-                                item.ImageKey = data2[1];
-                                testListview.Items.Add(item);
-
-                                ListViewItem item2 = new ListViewItem(new[] { data2[6], data2[8], data2[9], data2[10] }, 1);
-                                testListview.SmallImageList = imageList1;
-
-                                iconForFile = GetIcon(32);
-                                imageList1.Images.Add(data2[6], iconForFile);
-
-                                item2.ImageKey = data2[6];
-                                testListview.Items.Add(item2);
-
-                                testListview.EndUpdate();
-                            });
-                        }
-                        
-                    }
-                    */
                     sendMsgcount += 1;
                     byte[] sendDataHeader = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01');
                     byte[] sendData = new byte[sendDataHeader.Length + sendDatacontent.Length];
