@@ -40,6 +40,7 @@ namespace file_explorer
         static void DataReceived(IAsyncResult ar)
         {
             // BeginReceive에서 추가적으로 넘어온 데이터를 AsyncObject 형식으로 변환한다.
+
             AsyncObject obj = (AsyncObject)ar.AsyncState;
             Socket server = obj.workingSocket;
             // 데이터 수신을 끝낸다.

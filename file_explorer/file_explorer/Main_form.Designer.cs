@@ -41,9 +41,11 @@ namespace file_explorer
             this.mainFormlistview = new System.Windows.Forms.ListView();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.mainFormcombobox = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.listViewimagelist = new System.Windows.Forms.ImageList(this.components);
+            this.mainFormrecentcombobox = new System.Windows.Forms.ComboBox();
+            this.mainFormimagelist = new System.Windows.Forms.ImageList(this.components);
             this.backButton = new System.Windows.Forms.Button();
+            this.mainFormpathbutton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -86,9 +88,9 @@ namespace file_explorer
             // textBox2
             // 
             this.textBox2.Font = new System.Drawing.Font("굴림", 10F);
-            this.textBox2.Location = new System.Drawing.Point(646, 45);
+            this.textBox2.Location = new System.Drawing.Point(678, 45);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(126, 23);
+            this.textBox2.Size = new System.Drawing.Size(190, 23);
             this.textBox2.TabIndex = 6;
             // 
             // user_name_label
@@ -112,19 +114,23 @@ namespace file_explorer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.mainFormlistview);
-            this.splitContainer1.Size = new System.Drawing.Size(776, 368);
-            this.splitContainer1.SplitterDistance = 131;
-            this.splitContainer1.SplitterWidth = 1;
+            this.splitContainer1.Size = new System.Drawing.Size(864, 368);
+            this.splitContainer1.SplitterDistance = 145;
+            this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 9;
             // 
             // mainFormtreeview
             // 
+            this.mainFormtreeview.BackColor = System.Drawing.SystemColors.Window;
             this.mainFormtreeview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainFormtreeview.ForeColor = System.Drawing.SystemColors.WindowText;
             this.mainFormtreeview.Location = new System.Drawing.Point(0, 0);
             this.mainFormtreeview.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.mainFormtreeview.Name = "mainFormtreeview";
-            this.mainFormtreeview.Size = new System.Drawing.Size(131, 368);
+            this.mainFormtreeview.Size = new System.Drawing.Size(145, 368);
             this.mainFormtreeview.TabIndex = 0;
+            this.mainFormtreeview.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterCollapse);
+            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
             this.mainFormtreeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterSelect);
             // 
             // mainFormlistview
@@ -133,7 +139,7 @@ namespace file_explorer
             this.mainFormlistview.FullRowSelect = true;
             this.mainFormlistview.Location = new System.Drawing.Point(0, 0);
             this.mainFormlistview.Name = "mainFormlistview";
-            this.mainFormlistview.Size = new System.Drawing.Size(644, 368);
+            this.mainFormlistview.Size = new System.Drawing.Size(716, 368);
             this.mainFormlistview.TabIndex = 0;
             this.mainFormlistview.UseCompatibleStateImageBehavior = false;
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
@@ -142,14 +148,14 @@ namespace file_explorer
             // 
             this.textBox3.Location = new System.Drawing.Point(4, 439);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(776, 21);
+            this.textBox3.Size = new System.Drawing.Size(864, 21);
             this.textBox3.TabIndex = 10;
             // 
             // mainFormcombobox
             // 
-            this.mainFormcombobox.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.mainFormcombobox.BackColor = System.Drawing.SystemColors.Window;
             this.mainFormcombobox.CausesValidation = false;
-            this.mainFormcombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mainFormcombobox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.mainFormcombobox.Font = new System.Drawing.Font("굴림", 11F);
             this.mainFormcombobox.Location = new System.Drawing.Point(95, 45);
             this.mainFormcombobox.Margin = new System.Windows.Forms.Padding(0);
@@ -157,24 +163,29 @@ namespace file_explorer
             this.mainFormcombobox.Size = new System.Drawing.Size(546, 23);
             this.mainFormcombobox.TabIndex = 12;
             this.mainFormcombobox.TabStop = false;
+            this.mainFormcombobox.DropDown += new System.EventHandler(this.mainFormcombobox_DropDown);
+            this.mainFormcombobox.SelectedIndexChanged += new System.EventHandler(this.mainFormcombobox_SelectedIndexChanged);
+            this.mainFormcombobox.Click += new System.EventHandler(this.mainFormcombobox_Click);
+            this.mainFormcombobox.Leave += new System.EventHandler(this.mainFormcombobox_Leave);
             // 
-            // comboBox2
+            // mainFormrecentcombobox
             // 
-            this.comboBox2.BackColor = System.Drawing.SystemColors.Window;
-            this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox2.Font = new System.Drawing.Font("굴림", 11F);
-            this.comboBox2.ForeColor = System.Drawing.Color.Yellow;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(4, 44);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(66, 23);
-            this.comboBox2.TabIndex = 13;
+            this.mainFormrecentcombobox.BackColor = System.Drawing.SystemColors.Window;
+            this.mainFormrecentcombobox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mainFormrecentcombobox.Font = new System.Drawing.Font("굴림", 11F);
+            this.mainFormrecentcombobox.ForeColor = System.Drawing.Color.Black;
+            this.mainFormrecentcombobox.FormattingEnabled = true;
+            this.mainFormrecentcombobox.Location = new System.Drawing.Point(4, 44);
+            this.mainFormrecentcombobox.Name = "mainFormrecentcombobox";
+            this.mainFormrecentcombobox.Size = new System.Drawing.Size(66, 23);
+            this.mainFormrecentcombobox.TabIndex = 13;
+            this.mainFormrecentcombobox.SelectedIndexChanged += new System.EventHandler(this.mainFormrecentcombobox_SelectedIndexChanged);
             // 
-            // listViewimagelist
+            // mainFormimagelist
             // 
-            this.listViewimagelist.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.listViewimagelist.ImageSize = new System.Drawing.Size(16, 16);
-            this.listViewimagelist.TransparentColor = System.Drawing.Color.Transparent;
+            this.mainFormimagelist.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.mainFormimagelist.ImageSize = new System.Drawing.Size(16, 16);
+            this.mainFormimagelist.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // backButton
             // 
@@ -193,12 +204,36 @@ namespace file_explorer
             this.backButton.UseVisualStyleBackColor = false;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
+            // mainFormpathbutton
+            // 
+            this.mainFormpathbutton.BackColor = System.Drawing.SystemColors.Window;
+            this.mainFormpathbutton.FlatAppearance.BorderSize = 0;
+            this.mainFormpathbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mainFormpathbutton.Location = new System.Drawing.Point(95, 45);
+            this.mainFormpathbutton.Margin = new System.Windows.Forms.Padding(0);
+            this.mainFormpathbutton.Name = "mainFormpathbutton";
+            this.mainFormpathbutton.Size = new System.Drawing.Size(530, 23);
+            this.mainFormpathbutton.TabIndex = 16;
+            this.mainFormpathbutton.UseVisualStyleBackColor = false;
+            this.mainFormpathbutton.Click += new System.EventHandler(this.mainFormpathbutton_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(640, 45);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(20, 23);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Main_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(785, 463);
+            this.ClientSize = new System.Drawing.Size(872, 463);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.mainFormpathbutton);
             this.Controls.Add(this.backButton);
             this.Controls.Add(this.mainFormcombobox);
             this.Controls.Add(this.textBox3);
@@ -207,7 +242,7 @@ namespace file_explorer
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.upperButton);
             this.Controls.Add(this.nextButton);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.mainFormrecentcombobox);
             this.Name = "Main_form";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -230,9 +265,11 @@ namespace file_explorer
         private System.Windows.Forms.ListView mainFormlistview;
         private System.Windows.Forms.TextBox textBox3;
         private ComboBox mainFormcombobox;
-        private ComboBox comboBox2;
-        private ImageList listViewimagelist;
+        private ComboBox mainFormrecentcombobox;
+        private ImageList mainFormimagelist;
         private Button backButton;
+        private Button mainFormpathbutton;
+        private Button button1;
     }
 }
 

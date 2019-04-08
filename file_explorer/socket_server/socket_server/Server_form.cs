@@ -115,7 +115,7 @@ namespace socket_server
             // 받을 데이터가 있다.
             if (received > 0)
             {
-                obj.sb.Append(Encoding.ASCII.GetString(obj.buffer, 0, received));
+                obj.sb.Append(Encoding.UTF8.GetString(obj.buffer, 0, received));
                 obj.ClearBuffer();//버퍼 비우기
                 if (client.Available == 0)//네트워크상에 받을 데이터가 없다.
                 {

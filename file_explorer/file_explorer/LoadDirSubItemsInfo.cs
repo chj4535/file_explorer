@@ -15,17 +15,23 @@ namespace file_explorer
         public string subItemlastwritetime;
         public string subItemlength;
     }
-    public delegate void SubItemEventHandler(int msgCount, SubItemInfo[] data);
+    public delegate void SubItemToListviewEventHandler(int msgCount, SubItemInfo[] data);
+    public delegate void SubItemToTreeviewEventHandler(int msgCount, string staticPath, string[] dirPaths);
     class LoadDirSubItemsInfo
     {
-        static event SubItemEventHandler SubItemEvent;
-        public void SetSubItemEvnet(SubItemEventHandler add_event)
+        static event SubItemToListviewEventHandler subItemtolistviewevent;
+        static event SubItemToTreeviewEventHandler subItemtotreeviewevent;
+        public void SetSubItemToListviewEvnet(SubItemToListviewEventHandler add_event)
         {
-            SubItemEvent += new SubItemEventHandler(add_event);
+            subItemtolistviewevent += new SubItemToListviewEventHandler(add_event);
+        }
+        public void SetSubItemToTreeviewEvnet(SubItemToTreeviewEventHandler add_event)
+        {
+            subItemtotreeviewevent += new SubItemToTreeviewEventHandler(add_event);
         }
         public void LoadDirSubItemsInfoResult(int msgCount, string filesInfo,string dirsInfo)
         {
-            //3dirload|13/2019-03-19_17_23_53.txt/.txt/2019-03-19 오후 5:23:56/370338/2019-03-19_17_39_54.txt/.txt/2019-03-19 오후 5:45:45/1982366/3DP_Chip_Lite_v1811.exe/.exe/2019-01-03 오전 9:24:31/3025560/3DP_Net_v1812.exe/.exe/2019-01-03 오후 3:02:45/121367488/asm.txt/.txt/2019-01-16 오전 10:56:25/88/bootmgr//2019-03-06 오후 3:20:18/407706/BOOTNXT//2017-03-19 오전 5:57:38/1/BOOTSECT.BAK/.BAK/2019-03-14 오후 2:01:01/8192/pagefile.sys/.sys/2019-04-03 오전 9:26:00/9126805504/TestTool - 바로 가기.lnk/.lnk/2019-04-02 오후 3:47:38/742/TestTool.exe/.exe/2019-03-07 오후 1:14:52/310718464/TestToolUpdate - 복사본.exe/.exe/2019-03-06 오후 3:09:57/3295744/TestToolUpdate.exe/.exe/2019-03-06 오후 3:09:57/3295744/|12/$RECYCLE.BIN/Hidden, System, Directory/2019-03-04 오전 9:45:55/ASMServer/Directory/2019-03-15 오전 9:15:45/backup/Directory/2019-02-19 오전 9:38:26/Boot/Hidden, System, Directory/2019-03-18 오후 2:27:12/driver/Directory/2019-02-21 오후 2:10:59/Program Files/Directory/2019-04-02 오전 10:16:07/Recovery/Hidden, System, Directory, NotContentIndexed/2019-03-14 오후 2:30:13/study/Directory/2019-04-02 오후 5:07:49/System Volume Information/Hidden, System, Directory/2019-02-01 오전 6:11:10/Tool/Directory/2019-03-28 오후 2:53:27/새 폴더/Directory/2019-04-04 오후 1:49:41/유틸/Directory/2019-03-18 오후 5:54:51/|
+            //3dirload | 13 / Z:\2019 - 03 - 19_17_23_53.txt / 2019 - 03 - 19_17_23_53.txt /.txt / 2019 - 03 - 19 오후 5:23:56 / 370338 / Z:\2019 - 03 - 19_17_39_54.txt / 2019 - 03 - 19_17_39_54.txt /.txt / 2019 - 03 - 19 오후 5:45:45 / 1982366 / Z:\3DP_Chip_Lite_v1811.exe / 3DP_Chip_Lite_v1811.exe /.exe / 2019 - 01 - 03 오전 9:24:31 / 3025560 / Z:\
             string[] filesInfos = filesInfo.Split('/');
             string[] dirsInfos = dirsInfo.Split('/');
             int count = 0;
@@ -46,11 +52,13 @@ namespace file_explorer
                 Console.WriteLine(subIteminfos[fileNum].subItemlength);
             }
             count = 0;
+            string[] nodes = new string[Int32.Parse(dirsInfos[0])];
             for (int dirNum = Int32.Parse(filesInfos[0]); dirNum < Int32.Parse(filesInfos[0])+Int32.Parse(dirsInfos[0]); dirNum++)
             {
                 subIteminfos[dirNum].isFile = false;
                 subIteminfos[dirNum].subItempath = dirsInfos[++count];
                 subIteminfos[dirNum].subItemname = dirsInfos[++count];
+                nodes[dirNum- Int32.Parse(filesInfos[0])] = subIteminfos[dirNum].subItemname;
                 subIteminfos[dirNum].subItemtype = dirsInfos[++count];
                 subIteminfos[dirNum].subItemlastwritetime = dirsInfos[++count];
                 subIteminfos[dirNum].subItemlength = null;
@@ -60,7 +68,12 @@ namespace file_explorer
                 Console.WriteLine(subIteminfos[dirNum].subItemlastwritetime);
                 Console.WriteLine(subIteminfos[dirNum].subItemlength);
             }
-            SubItemEvent(msgCount, subIteminfos);
+            subItemtolistviewevent(msgCount, subIteminfos);
+            if (Int32.Parse(dirsInfos[0]) > 0)
+            {
+                string staticPath = dirsInfos[1].Substring(0, dirsInfos[1].LastIndexOf("\\"));
+                subItemtotreeviewevent(msgCount, staticPath, nodes);
+            }
         }
     }
 }
