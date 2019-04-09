@@ -107,5 +107,19 @@ namespace file_explorer
                 }
             }
         }
+
+        public void MoveItemsToDir(string targetPath,string dragStaticpath,string[] dragItems,string sendType)
+        {
+            string sendData = "MoveItemToDir" + "|";
+            sendData += targetPath + "|";
+            sendData += dragStaticpath + "|";
+            sendData += dragItems.Length + "|";
+            foreach (string dragitem in dragItems)
+            {
+                sendData += dragitem + "/";
+            }
+            sendData += "|";
+            clientSocket.OnSendData(sendData, null);
+        }
     }
 }

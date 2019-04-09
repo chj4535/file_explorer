@@ -128,6 +128,8 @@ namespace socket_server
                     string ip = tokens[0];
                     string clientData = tokens[1];
 
+
+                    AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
                     bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
                     //string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
                     byte[] sendDatacontent = cmdHandler.CmdClassification(clientData); //요청사항 결과

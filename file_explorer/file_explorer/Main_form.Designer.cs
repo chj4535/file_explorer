@@ -135,6 +135,7 @@ namespace file_explorer
             // 
             // mainFormlistview
             // 
+            this.mainFormlistview.AllowDrop = true;
             this.mainFormlistview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainFormlistview.FullRowSelect = true;
             this.mainFormlistview.Location = new System.Drawing.Point(0, 0);
@@ -144,6 +145,9 @@ namespace file_explorer
             this.mainFormlistview.UseCompatibleStateImageBehavior = false;
             this.mainFormlistview.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.mainFormlistview_ColumnClick);
             this.mainFormlistview.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.mainFormlistview_ItemDrag);
+            this.mainFormlistview.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragDrop);
+            this.mainFormlistview.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragEnter);
+            this.mainFormlistview.DragOver += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragOver);
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
             // 
             // textBox3

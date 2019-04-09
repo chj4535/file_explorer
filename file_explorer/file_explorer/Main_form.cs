@@ -268,10 +268,11 @@ namespace file_explorer
             mainFormlistview.Sort();
         }
 
+        
         private void mainFormlistview_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            // create array or collection for all selected items
             var items = new List<ListViewItem>();
+            // create array or collection for all selected items
             // add dragged one first
             items.Add((ListViewItem)e.Item);
             // optionally add the other selected ones
@@ -283,7 +284,57 @@ namespace file_explorer
                 }
             }
             // pass the items to move...
+            //privateDrag = true;
             mainFormlistview.DoDragDrop(items, DragDropEffects.Move);
+            //privateDrag = false;
+        }
+
+
+        private void mainFormlistview_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.AllowedEffect;
+        }
+
+        private void mainFormlistview_DragOver(object sender, DragEventArgs e)
+        {
+            var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
+            var pos = mainFormlistview.PointToClient(new Point(e.X, e.Y));
+            var hit = mainFormlistview.HitTest(pos);
+            //Console.WriteLine(hit.)
+            //string[] itemNames = itemName.Split('|');
+            //if (itemNames[0].Equals("dir"))
+            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void mainFormlistview_DragDrop(object sender, DragEventArgs e)
+        {
+            var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
+            var pos = mainFormlistview.PointToClient(new Point(e.X, e.Y));
+            var hit = mainFormlistview.HitTest(pos);
+            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))
+            {
+                string targetPath = hit.Item.Name.Split('|').Last();
+                string firstItempath = items[0].Name.Split('|').Last();
+                string dragStaticpath = firstItempath.Substring(0, firstItempath.LastIndexOf('\\'));
+                //string dragStaticpath = dirsInfos[1].Substring(0, dirsInfos[1].LastIndexOf("\\"));
+                string[] itemNames = new string[items.Count()];
+                int count = 0;
+                foreach(ListViewItem item in items)
+                {
+                    string itemType = item.Name.Split('|').First();
+                    string itemPath = item.Name.Split('|').Last();
+                    string itemName = itemPath.Split('\\').Last();
+                    itemNames[count++] = itemType+"/"+itemName;
+                }
+                sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
+            }
         }
     }
 

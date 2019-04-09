@@ -11,6 +11,7 @@ namespace socket_server
         Logincheck loginCheck = new Logincheck();
         Driveinfo drinInfo = new Driveinfo();
         GetDirSubItems getDrisubitems = new GetDirSubItems();
+        MoveFilesAndDirs moveFilesAndDirs = new MoveFilesAndDirs();
         public byte[] CmdClassification(string msg)
         {
             string[] msgs = msg.Split('|');
@@ -31,6 +32,10 @@ namespace socket_server
                 case "dirload":
                     cmd = Encoding.UTF8.GetBytes("dirload" + '|');
                     cmdResult = getDrisubitems.GetFilesDirs(msgs[1]);
+                    break;
+                case "MoveItemToDir":
+                    cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');
+                    cmdResult = moveFilesAndDirs.MvoeItems(msgs[1],msgs[2],msgs[3],msgs[4]);
                     break;
             }
 
@@ -54,6 +59,9 @@ namespace socket_server
                     break;
                 case "dirload":
                     sendAll = false;
+                    break;
+                case "MoveItemToDir":
+                    sendAll = true;
                     break;
             }
             return sendAll;
