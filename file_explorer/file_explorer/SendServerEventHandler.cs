@@ -17,6 +17,7 @@ namespace file_explorer
         static Stack<string> nextPathsave = new Stack<string>();
         static Button backButton;
         static Button nextButton;
+        static Button upperButton;
         static string mainFormpath="";
 
         public Stack<string> attributePrepathsave
@@ -47,16 +48,17 @@ namespace file_explorer
         {
         }
 
-        public void SendServerEventHandlerSetting(Button mainFormbackbutton, Button mainFormnextbutton)
+        public void SendServerEventHandlerSetting(Button mainFormbackbutton, Button mainFormnextbutton,Button mainFormupperbutton)
         {
             backButton = mainFormbackbutton;
             nextButton = mainFormnextbutton;
+            upperButton = mainFormupperbutton;
         }
         public string GetMainFormPath()
         {
             return mainFormpath;
         }
-        public void MoveDir(string path, bool isClick) // 폴더 이동 부분 
+        public void MoveDir(string path, bool isClick,string sendType) // 폴더 이동 부분 
         {
             pathHandler.SetComboxPath(path);
             if (isClick) //클릭형태로 이동이면, 다음 경로 저장해놓은거 날려야됨
@@ -68,6 +70,9 @@ namespace file_explorer
             }
             if (path.Equals("root"))
             {
+                upperButton.Enabled = false;
+                upperButton.BackColor = SystemColors.ScrollBar;
+                upperButton.ForeColor = Color.Gray;
                 mainFormpath = "";
                 clientSocket.OnSendData("rootload" + "|", null);
                 pathHandler.MakePathButton("root");
@@ -84,6 +89,9 @@ namespace file_explorer
             }
             else
             {
+                upperButton.Enabled = true;
+                upperButton.BackColor = System.Drawing.SystemColors.Window;
+                upperButton.ForeColor = Color.Black;
                 mainFormpath = path;
                 clientSocket.OnSendData("dirload" + "|" + path, null);
                 pathHandler.MakePathButton(path);

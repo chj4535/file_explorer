@@ -13,11 +13,19 @@ namespace socket_server
     {
         public byte[] GetFilesDirs(string targetDirectory)
         {
-            string[] files = Directory.GetFiles(targetDirectory);
-            string[] dirs = Directory.GetDirectories(targetDirectory);
-            string filesInfo = GetFeilsInfo(files);
-            string dirsInfo = GetDirsInfo(dirs);
-            return Encoding.UTF8.GetBytes(filesInfo+ dirsInfo);
+            try
+            {
+                string[] files = Directory.GetFiles(targetDirectory);
+                string[] dirs = Directory.GetDirectories(targetDirectory);
+                string filesInfo = GetFeilsInfo(files);
+                string dirsInfo = GetDirsInfo(dirs);
+                return Encoding.UTF8.GetBytes(filesInfo + dirsInfo);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Encoding.UTF8.GetBytes("error|"+e.Message+"|");
+            }
         }
         public static string GetFeilsInfo(string[] files)
         {

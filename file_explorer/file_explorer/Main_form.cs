@@ -26,12 +26,13 @@ namespace file_explorer
         }
 
         string userId;
-
         TreeViewHandler treeViewhandler = new TreeViewHandler();
         ListViewHandler listViewhandler = new ListViewHandler();
         PathHandler comboBoxhandler = new PathHandler();
         SendServerEventHandler sendServerEventHandler = new SendServerEventHandler();
+        ErrorHandler errorHandler = new ErrorHandler();
         Graphics mainFormgraphic;
+        ListViewSorter Sorter = new ListViewSorter();
         int listViewcount;
         public Main_form(string loginformUserId)
         {
@@ -41,11 +42,12 @@ namespace file_explorer
             this.mainFormrecentcombobox.DisplayMember = "Text";
             this.mainFormrecentcombobox.ValueMember = "Value";
             this.mainFormcombobox.DroppedDown = false;
+            errorHandler.SetSendtoMainFormErrorEvent(MainFormErrorEvent);
             treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
             listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist);
             mainFormgraphic = this.CreateGraphics();
             comboBoxhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox,mainFormrecentcombobox, mainFormgraphic);
-            sendServerEventHandler.SendServerEventHandlerSetting(backButton, nextButton);
+            sendServerEventHandler.SendServerEventHandlerSetting(backButton, nextButton,upperButton);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -54,14 +56,14 @@ namespace file_explorer
             mainFormlistview.SmallImageList = mainFormimagelist;
             backButton.Enabled = false;
             nextButton.Enabled = false;
+            upperButton.Enabled = false;
             backButton.BackColor = System.Drawing.SystemColors.ScrollBar;
             backButton.ForeColor = System.Drawing.Color.Gray;
             nextButton.BackColor = System.Drawing.SystemColors.ScrollBar;
             nextButton.ForeColor = System.Drawing.Color.Gray;
-            sendServerEventHandler.MoveDir("root", true);
+            sendServerEventHandler.MoveDir("root", true,"form_load");
 
         }
-
         private void ListViewDoubleClick(object sender, MouseEventArgs e) // 리스트뷰 더블클릭 시(폴더만) 해당 폴더로 이동
         {
             //ListViewItem item = sender as ListViewItem;
@@ -70,12 +72,9 @@ namespace file_explorer
             string[] itemNames = itemName.Split('|');
             if (itemNames[0].Equals("dir"))
             {
-                sendServerEventHandler.MoveDir(itemNames[1], true);
+                sendServerEventHandler.MoveDir(itemNames[1], true,"listviewdoubleclick");
             }
         }
-
-
-
         private void backButton_Click(object sender, EventArgs e) //뒤로가기
         {
             Stack<string> nextPathsave = sendServerEventHandler.attributeNextpathsave;
@@ -92,7 +91,7 @@ namespace file_explorer
             nextButton.ForeColor = System.Drawing.Color.Black;
             sendServerEventHandler.attributePrepathsave = prePathsave;
             sendServerEventHandler.attributeNextpathsave = nextPathsave;
-            sendServerEventHandler.MoveDir(prePathsave.Peek(), false);
+            sendServerEventHandler.MoveDir(prePathsave.Peek(), false,"backbutton");
         }
 
         private void nextButton_Click(object sender, EventArgs e) //앞으로? 가기
@@ -111,21 +110,29 @@ namespace file_explorer
             backButton.ForeColor = System.Drawing.Color.Black;
             sendServerEventHandler.attributePrepathsave = prePathsave;
             sendServerEventHandler.attributeNextpathsave = nextPathsave;
-            sendServerEventHandler.MoveDir(prePathsave.Peek(), false);
+            sendServerEventHandler.MoveDir(prePathsave.Peek(), false,"nextbutton");
         }
 
         private void upperButton_Click(object sender, EventArgs e) // 상위폴더로 이동
         {
-            Stack<string> nextPathsave = sendServerEventHandler.attributeNextpathsave;
-            Stack<string> prePathsave = sendServerEventHandler.attributePrepathsave;
-            if (prePathsave.Count < 2)//바탕화면으로 이동해야하는데 미구현
+            string currentPath = sendServerEventHandler.GetMainFormPath();
+            if (currentPath.Split('\\').Last().Equals(""))
             {
-                upperButton.Enabled = false;
+                currentPath = "root";
             }
             else
             {
-                sendServerEventHandler.MoveDir(prePathsave.ElementAt(1), true);
+                if (currentPath.Split('\\').Length == 2)
+                {
+                    currentPath = currentPath.Split('\\').First() + "\\";
+                }
+                else
+                {
+                    currentPath = currentPath.Substring(0, currentPath.LastIndexOf("\\"));
+                }
+                
             }
+            sendServerEventHandler.MoveDir(currentPath, true,"upperbutton");
         }
 
         private void mainFormtreeview_AfterSelect(object sender, TreeViewEventArgs e) //트리상의 폴더 클릭시 이동
@@ -150,34 +157,21 @@ namespace file_explorer
                     break;
                 }
             }
-            sendServerEventHandler.MoveDir(dirpath, true);
+            if (dirpath.Split('\\').Length==2)
+            {
+                sendServerEventHandler.MoveDir(dirpath, true, "treeviewafterselect");
+            }
+            else
+            {
+                
+                sendServerEventHandler.MoveDir(dirpath.Substring(0, dirpath.LastIndexOf("\\")), true, "treeviewafterselect");
+            }
             treeViewhandler.setFocusTreeview();
         }
 
         private void mainFormtreeview_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            TreeNode currentNode = e.Node;
-            string dirpath = "";
-            while (true)
-            {
-                if (currentNode.Text.Equals("내 PC"))
-                {
-                    dirpath = "root";
-                    break;
-                }
-                if (!currentNode.Parent.Text.Equals("내 PC"))
-                {
-                    dirpath = currentNode.Name + "\\" + dirpath;
-                    currentNode = currentNode.Parent;
-                }
-                else
-                {
-                    dirpath = currentNode.Name + "\\" + dirpath;
-                    break;
-                }
-            }
             treeViewhandler.setFocusTreeview();
-            //sendServerEventHandler.MoveDir(dirpath, true);
         }
 
         private void mainFormtreeview_AfterCollapse(object sender, TreeViewEventArgs e)
@@ -196,12 +190,6 @@ namespace file_explorer
             this.mainFormpathbutton.Show();
         }
 
-        private void mainFormcombobox_Click(object sender, EventArgs e)
-        {
-            //this.mainFormpathbutton.Hide();
-            //this.mainFormcombobox.Focus();
-        }
-
         private void mainFormcombobox_DropDown(object sender, EventArgs e)
         {
             this.mainFormpathbutton.Hide();
@@ -210,14 +198,140 @@ namespace file_explorer
 
         private void mainFormcombobox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedPath = mainFormcombobox.SelectedItem.ToString();
-            sendServerEventHandler.MoveDir(selectedPath, true);
+            string currentPath = sendServerEventHandler.GetMainFormPath();
+            if (!currentPath.Equals(mainFormcombobox.SelectedItem.ToString()))
+            {
+                string selectedPath = mainFormcombobox.SelectedItem.ToString();
+                sendServerEventHandler.MoveDir(selectedPath, true, "comboindexchange");
+            }
         }
 
         private void mainFormrecentcombobox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedPath = (mainFormrecentcombobox.SelectedItem as dynamic).Value;
-            sendServerEventHandler.MoveDir(selectedPath, true);
+            sendServerEventHandler.MoveDir(selectedPath, true,"recentcomboindexchange");
         }
+
+        private void mainFormcombobox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                string writePath = mainFormcombobox.Text;
+                sendServerEventHandler.MoveDir(writePath, true,"comboenter");
+                this.mainFormpathbutton.Show();
+            }
+        }
+
+        public void MainFormErrorEvent(int msgCount,string errorMessage)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate {
+                    MainFormErrorEvent(msgCount, errorMessage);
+                });
+                return;
+            }
+            Stack<string> prePathsave = sendServerEventHandler.attributePrepathsave;
+            string errPath = prePathsave.Pop();
+            comboBoxhandler.SetErrorPath(errPath);
+            if (prePathsave.Count == 1)
+            {
+                backButton.Enabled = false;
+                backButton.BackColor = System.Drawing.SystemColors.ScrollBar;
+                backButton.ForeColor = System.Drawing.Color.Gray;
+            }
+            sendServerEventHandler.attributePrepathsave = prePathsave;
+            sendServerEventHandler.MoveDir(prePathsave.Peek(), false,"error");
+            MessageBox.Show(Form.ActiveForm,errorMessage, "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void mainFormlistview_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            mainFormlistview.ListViewItemSorter = Sorter;
+            if (!(mainFormlistview.ListViewItemSorter is ListViewSorter))
+                return;
+            Sorter = (ListViewSorter)mainFormlistview.ListViewItemSorter;
+
+            if (Sorter.LastSort == e.Column)
+            {
+                if (mainFormlistview.Sorting == SortOrder.Ascending)
+                    mainFormlistview.Sorting = SortOrder.Descending;
+                else
+                    mainFormlistview.Sorting = SortOrder.Ascending;
+            }
+            else
+            {
+                mainFormlistview.Sorting = SortOrder.Descending;
+            }
+            Sorter.ByColumn = e.Column;
+
+            mainFormlistview.Sort();
+        }
+
+        private void mainFormlistview_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            // create array or collection for all selected items
+            var items = new List<ListViewItem>();
+            // add dragged one first
+            items.Add((ListViewItem)e.Item);
+            // optionally add the other selected ones
+            foreach (ListViewItem mainFormitem in mainFormlistview.SelectedItems)
+            {
+                if (!items.Contains(mainFormitem))
+                {
+                    items.Add(mainFormitem);
+                }
+            }
+            // pass the items to move...
+            mainFormlistview.DoDragDrop(items, DragDropEffects.Move);
+        }
+    }
+
+    public class ListViewSorter : System.Collections.IComparer
+    {
+        public int Compare(object o1, object o2)
+        {
+            if (!(o1 is ListViewItem))
+                return (0);
+            if (!(o2 is ListViewItem))
+                return (0);
+
+            ListViewItem lvi1 = (ListViewItem)o2;
+            ListViewItem lvi2 = (ListViewItem)o1;
+            string str1;
+            string str2;
+            if (ByColumn == 0)
+            {
+                str1 = lvi1.Name;
+                str2 = lvi2.Name;
+            }
+            else
+            {
+                str1 = lvi1.SubItems[ByColumn].Text;
+                str2 = lvi2.SubItems[ByColumn].Text;
+            }
+            int result;
+            if (lvi1.ListView.Sorting == SortOrder.Ascending)
+                result = String.Compare(str1, str2);
+            else
+                result = String.Compare(str2, str1);
+
+            LastSort = ByColumn;
+            return (result);
+        }
+        
+        public int ByColumn
+        {
+            get { return Column; }
+            set { Column = value; }
+        }
+        int Column = 0;
+
+        public int LastSort
+        {
+            get { return LastColumn; }
+            set { LastColumn = value; }
+        }
+        int LastColumn = 0;
     }
 }

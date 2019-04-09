@@ -50,6 +50,7 @@
     <Compile Include="AsyncObject.cs" />
     <Compile Include="ClientSocketHandler.cs" />
     <Compile Include="CommandClassification.cs" />
+    <Compile Include="ErrorHandler.cs" />
     <Compile Include="ListViewHandler.cs" />
     <Compile Include="LoadDirSubItemsInfo.cs" />
     <Compile Include="LoadDriveInfo.cs" />

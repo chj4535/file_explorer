@@ -38,7 +38,7 @@ namespace file_explorer
         {
             mainImagelist = mainFormimagelist;
             mainTreeview = mainFormtreeview;
-            mainTreeview.Nodes.Add(new TreeNode("내 PC") { Name = "내 PC",ImageKey="root",SelectedImageKey="root" });
+            mainTreeview.Nodes.Add(new TreeNode("내 PC") { Name = "내 PC", ImageKey = "root", SelectedImageKey = "root" });
             mainFormcurrentpath = "내 PC";
             Icon iconComputer = GetIcon(104);
             if (!mainImagelist.Images.ContainsKey("root"))
@@ -59,47 +59,55 @@ namespace file_explorer
         }
         public void SetTreeView(int msgCount, string staticPath, string[] dirPaths)
         {
+            if (mainTreeview.InvokeRequired)
+            {
+                mainTreeview.Invoke((MethodInvoker)delegate {
+                    SetTreeView(msgCount, staticPath, dirPaths);
+                });
+                return;
+            }
             TreeNode currentNode = new TreeNode();
             currentNode = mainTreeview.Nodes[0];
             string[] staticPaths = staticPath.Split('\\');
             string currentdirpath = "";
-            if (mainTreeview.InvokeRequired)
+            foreach (string dirName in staticPaths)//현재 온 폴더들의 공통 경로
             {
-                mainTreeview.Invoke((MethodInvoker)delegate ()
+                if (dirName.Equals("")) break;
+
+                if (!currentNode.Nodes.ContainsKey(dirName))
                 {
-                    foreach (string dirName in staticPaths)//현재 온 폴더들의 공통 경로
-                    {
-                        if (dirName.Equals("")) break;
-                        
-                        if (!currentNode.Nodes.ContainsKey(dirName))
-                        {
-                            currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName,ImageKey= currentdirpath+dirName, SelectedImageKey = currentdirpath + dirName });
-                        }
-                        currentNode = currentNode.Nodes[dirName];
-                        currentdirpath += dirName + "\\";
-                    }
-                    foreach (TreeNode dirNode in currentNode.Nodes)//새로 불러왔을때 삭제된 폴더가 있으면 트리에서 삭제
-                    {
-                        int pos = Array.IndexOf(dirPaths, dirNode.Name);
-                        if (pos < 0)
-                        {
-                            dirNode.Remove();
-                        }
-                    }
-                    foreach (string dirName in dirPaths)//새로 불러왔을때 없는 폴더가 있으면 추가
-                    {
-                        if (!currentNode.Nodes.ContainsKey(dirName))
-                        {
-                            currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName,ImageKey = currentdirpath + dirName, SelectedImageKey = currentdirpath + dirName });
-                        }
-                    }
-                });
+                    currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentdirpath + dirName, SelectedImageKey = currentdirpath + dirName });
+                }
+                currentNode = currentNode.Nodes[dirName];
+                currentdirpath += dirName + "\\";
+            }
+            foreach (TreeNode dirNode in currentNode.Nodes)//새로 불러왔을때 삭제된 폴더가 있으면 트리에서 삭제
+            {
+                int pos = Array.IndexOf(dirPaths, dirNode.Name);
+                if (pos < 0)
+                {
+                    dirNode.Remove();
+                }
+            }
+            foreach (string dirName in dirPaths)//새로 불러왔을때 없는 폴더가 있으면 추가
+            {
+                if (!currentNode.Nodes.ContainsKey(dirName))
+                {
+                    currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentdirpath + dirName, SelectedImageKey = currentdirpath + dirName });
+                }
             }
             setFocusTreeview();
         }
 
         public void setFocusTreeview()
         {
+            if (mainTreeview.InvokeRequired)
+            {
+                mainTreeview.Invoke((MethodInvoker)delegate {
+                    setFocusTreeview();
+                });
+                return;
+            }
             string dirPath = sendServerEventHandler.GetMainFormPath();
             string[] dirPaths = dirPath.Split('\\');
             TreeNode currentNode = new TreeNode();
@@ -108,45 +116,21 @@ namespace file_explorer
             focusTreenode.ForeColor = System.Drawing.Color.Black;
             if (!dirPath.Equals(""))
             {
-                if (mainTreeview.InvokeRequired)
+                foreach (string dirName in dirPaths)
                 {
-                    mainTreeview.Invoke((MethodInvoker)delegate ()
+                    if (dirName.Equals("")) break;
+                    if (currentNode.Nodes.Count != 0 && currentNode.IsExpanded)
                     {
-                        foreach (string dirName in dirPaths)
-                        {
-                            if (dirName.Equals("")) break;
-                            if (currentNode.Nodes.Count != 0 && currentNode.IsExpanded)
-                            {
-                                currentNode = currentNode.Nodes[dirName];
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        currentNode.BackColor = System.Drawing.SystemColors.Highlight;
-                        currentNode.ForeColor = System.Drawing.Color.White;
-                        focusTreenode = currentNode;
-                    });
-                }
-                else
-                {
-                    foreach (string dirName in dirPaths)
-                    {
-                        if (dirName.Equals("")) break;
-                        if (currentNode.Nodes.Count != 0 && currentNode.IsExpanded)
-                        {
-                            currentNode = currentNode.Nodes[dirName];
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        currentNode = currentNode.Nodes[dirName];
                     }
-                    currentNode.BackColor = System.Drawing.SystemColors.Highlight;
-                    currentNode.ForeColor = System.Drawing.Color.White;
-                    focusTreenode = currentNode;
+                    else
+                    {
+                        break;
+                    }
                 }
+                currentNode.BackColor = System.Drawing.SystemColors.Highlight;
+                currentNode.ForeColor = System.Drawing.Color.White;
+                focusTreenode = currentNode;
             }
             else
             {

@@ -18,7 +18,7 @@ namespace win_api_test
             */
 
             
-            string dirPath = @"Z:\";
+            string dirPath = @"Z:\study\";
             Getfiles getFiles = new Getfiles();
             string[] dirSublist = getFiles.Getfiles_directory(dirPath);
             

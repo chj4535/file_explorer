@@ -142,6 +142,8 @@ namespace file_explorer
             this.mainFormlistview.Size = new System.Drawing.Size(716, 368);
             this.mainFormlistview.TabIndex = 0;
             this.mainFormlistview.UseCompatibleStateImageBehavior = false;
+            this.mainFormlistview.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.mainFormlistview_ColumnClick);
+            this.mainFormlistview.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.mainFormlistview_ItemDrag);
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
             // 
             // textBox3
@@ -165,7 +167,7 @@ namespace file_explorer
             this.mainFormcombobox.TabStop = false;
             this.mainFormcombobox.DropDown += new System.EventHandler(this.mainFormcombobox_DropDown);
             this.mainFormcombobox.SelectedIndexChanged += new System.EventHandler(this.mainFormcombobox_SelectedIndexChanged);
-            this.mainFormcombobox.Click += new System.EventHandler(this.mainFormcombobox_Click);
+            this.mainFormcombobox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mainFormcombobox_KeyPress);
             this.mainFormcombobox.Leave += new System.EventHandler(this.mainFormcombobox_Leave);
             // 
             // mainFormrecentcombobox
@@ -176,6 +178,7 @@ namespace file_explorer
             this.mainFormrecentcombobox.ForeColor = System.Drawing.Color.Black;
             this.mainFormrecentcombobox.FormattingEnabled = true;
             this.mainFormrecentcombobox.Location = new System.Drawing.Point(4, 44);
+            this.mainFormrecentcombobox.MaxDropDownItems = 10;
             this.mainFormrecentcombobox.Name = "mainFormrecentcombobox";
             this.mainFormrecentcombobox.Size = new System.Drawing.Size(66, 23);
             this.mainFormrecentcombobox.TabIndex = 13;
