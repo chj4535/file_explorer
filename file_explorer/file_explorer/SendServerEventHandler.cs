@@ -73,7 +73,7 @@ namespace file_explorer
                 upperButton.Enabled = false;
                 upperButton.BackColor = SystemColors.ScrollBar;
                 upperButton.ForeColor = Color.Gray;
-                mainFormpath = "";
+                mainFormpath = "root";
                 clientSocket.OnSendData("rootload" + "|", null);
                 pathHandler.MakePathButton("root");
                 if (prePathsave.Count == 0 || !prePathsave.Peek().Equals("root"))
@@ -107,7 +107,17 @@ namespace file_explorer
                 }
             }
         }
-
+        public void reload()
+        {
+            if (mainFormpath.Equals("root"))
+            {
+                clientSocket.OnSendData("rootload" + "|", null);
+            }
+            else
+            {
+                clientSocket.OnSendData("dirload" + "|" + mainFormpath, null);
+            }
+        }
         public void MoveItemsToDir(string targetPath,string dragStaticpath,string[] dragItems,string sendType)
         {
             string sendData = "MoveItemToDir" + "|";

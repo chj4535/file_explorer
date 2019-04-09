@@ -148,6 +148,7 @@ namespace file_explorer
             this.mainFormlistview.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragDrop);
             this.mainFormlistview.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragEnter);
             this.mainFormlistview.DragOver += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragOver);
+            this.mainFormlistview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mainFormlistview_KeyDown);
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
             // 
             // textBox3
@@ -232,6 +233,7 @@ namespace file_explorer
             this.button1.TabIndex = 17;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Main_form
             // 

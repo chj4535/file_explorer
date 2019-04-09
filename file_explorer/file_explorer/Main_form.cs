@@ -336,6 +336,49 @@ namespace file_explorer
                 sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            sendServerEventHandler.reload();
+        }
+
+        private void mainFormlistview_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                if (backButton.Enabled.Equals(true))
+                {
+                    this.backButton_Click(this, null);
+                }
+            }
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // 전체 단축키
+        {
+            if (keyData == (Keys.F5))
+            {
+                sendServerEventHandler.reload();
+            }
+
+            if (keyData == (Keys.Alt | Keys.Left))
+            {
+                if (backButton.Enabled.Equals(true))
+                {
+                    this.backButton_Click(this, null);
+                }
+                return true;
+            }
+
+            if (keyData == (Keys.Alt | Keys.Right))
+            {
+                if (nextButton.Enabled.Equals(true))
+                {
+                    this.nextButton_Click(this, null);
+                }
+                return true;
+            }
+
+            return true;
+        }
     }
 
     public class ListViewSorter : System.Collections.IComparer
