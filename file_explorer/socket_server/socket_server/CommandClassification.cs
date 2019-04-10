@@ -47,7 +47,8 @@ namespace socket_server
 
         public bool IdentifySendAll(string msg)
         {
-            string[] msgs = msg.Split(';');
+            string[] msgs = msg.Split('|');
+
             bool sendAll = false;
             switch (msgs[0])
             {

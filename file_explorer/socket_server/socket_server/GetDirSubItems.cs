@@ -19,7 +19,7 @@ namespace socket_server
                 string[] dirs = Directory.GetDirectories(targetDirectory);
                 string filesInfo = GetFeilsInfo(files);
                 string dirsInfo = GetDirsInfo(dirs);
-                return Encoding.UTF8.GetBytes(filesInfo + dirsInfo);
+                return Encoding.UTF8.GetBytes(targetDirectory+'|'+filesInfo + dirsInfo);
             }
             catch (Exception e)
             {
@@ -43,7 +43,7 @@ namespace socket_server
                 //Icon iconForFile = System.Drawing.Icon.ExtractAssociatedIcon(fileInfo.FullName);
 
                 //allFilesinfotoString += "/" + fileInfo.Name + "/";
-                allFilesinfotoString += fileInfo.FullName + "/";
+                //allFilesinfotoString += fileInfo.FullName + "/";
                 allFilesinfotoString += fileInfo.Name + "/";
                 allFilesinfotoString += fileInfo.Extension + "/";
                 allFilesinfotoString += fileInfo.LastWriteTime.ToString() + "/";
@@ -65,7 +65,7 @@ namespace socket_server
             foreach (string dirPath in dirs)
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
-                alldirsinfotoString += dirInfo.FullName + "/";
+                //alldirsinfotoString += dirInfo.FullName + "/";
                 alldirsinfotoString += dirInfo.Name + "/";
                 alldirsinfotoString += dirInfo.Attributes + "/";
                 alldirsinfotoString += dirInfo.LastWriteTime.ToString() + "/";

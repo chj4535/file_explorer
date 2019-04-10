@@ -6,22 +6,48 @@ using System.Threading.Tasks;
 
 namespace file_explorer
 {
-    public delegate void SubItemToCurrentStateEventHandler(int msgCount, string staticPath,string[] currentStateitemsname,SubItemInfo[] data);
-    //public delegate void SubItemToListviewEventHandler(int msgCount, SubItemInfo[] data);
-    //public delegate void SubItemToTreeviewEventHandler(int msgCount, string staticPath, string[] dirPaths);
-    class LoadDirSubItemsInfo
+    public delegate void ChangeStateEventHandler(int msgCount, string commandName, object[] data);
+    class MakeStateData
     {
-        static event SubItemToCurrentStateEventHandler subitemTocurrentstateevent;
-
-        public void SetSubItemToCurrentStateEvent(SubItemToCurrentStateEventHandler addEvent)
+        static event ChangeStateEventHandler changeStateevent;
+        public void SetDriveInfoToCurrentStateEventHandler(ChangeStateEventHandler addEvent)
         {
-            subitemTocurrentstateevent += new SubItemToCurrentStateEventHandler(addEvent);
+            changeStateevent += new ChangeStateEventHandler(addEvent);
         }
-        public void LoadDirSubItemsInfoResult(int msgCount, string staticPath, string filesInfo,string dirsInfo)
+
+        public void LoadDriverInfoResult(int msgCount, string msg)
+        {
+            // 3/C:\/ Fixed / 64599998464 / 11458220032 / D:\/ Fixed / 62913507328 / 48704061440 / Z:\/ Fixed / 128033222656 / 59368087552 /
+            string[] driveInfo = msg.Split('/');
+            int count = 0;
+            DriveInfo[] driveInfos = new DriveInfo[Int32.Parse(driveInfo[0])];
+            string[] nodes = new string[Int32.Parse(driveInfo[0])];
+            for (int driveNum = 0; driveNum < Int32.Parse(driveInfo[0]); driveNum++)
+            {
+                driveInfos[driveNum].driveName = driveInfo[++count];
+                driveInfos[driveNum].driveLabel = driveInfo[++count];
+                driveInfos[driveNum].driveType = driveInfo[++count];
+                driveInfos[driveNum].driveTotalsize = driveInfo[++count];
+                driveInfos[driveNum].driveFreesize = driveInfo[++count];
+                nodes[driveNum] = driveInfos[driveNum].driveName;
+                Console.WriteLine(driveInfos[driveNum].driveName);
+                Console.WriteLine(driveInfos[driveNum].driveType);
+                Console.WriteLine(driveInfos[driveNum].driveTotalsize);
+                Console.WriteLine(driveInfos[driveNum].driveFreesize);
+            }
+            object[] data = new object[2];
+            data[0] = nodes;
+            data[1] = driveInfos;
+            changeStateevent(msgCount, "rootload",data);
+        }
+
+        public void LoadDirSubItemsInfoResult(int msgCount, string staticPath, string filesInfo, string dirsInfo)
         {
             if (filesInfo.Equals("error"))
             {
-                subitemTocurrentstateevent(-1, staticPath, null,null); // -1이면 에러라 판단 현재 staticpath에는 에러 담아있음
+                object[] data = new object[1];
+                data[0] = staticPath;
+                changeStateevent(msgCount, "error", data); // -1이면 에러라 판단 현재 staticpath에는 에러 담아있음
             }
             else
             {
@@ -60,15 +86,11 @@ namespace file_explorer
                     Console.WriteLine(subIteminfos[dirNum].subItemlastwritetime);
                     Console.WriteLine(subIteminfos[dirNum].subItemlength);
                 }
-                subitemTocurrentstateevent(msgCount, staticPath, nodes,subIteminfos);
-                /*
-                subItemtolistviewevent(msgCount, subIteminfos);
-                if (Int32.Parse(dirsInfos[0]) > 0)
-                {
-                    string staticPath = dirsInfos[1].Substring(0, dirsInfos[1].LastIndexOf("\\"));
-                    subItemtotreeviewevent(msgCount, staticPath, nodes);
-                }
-                */
+                object[] data = new object[3];
+                data[0] = staticPath;
+                data[1] = nodes;
+                data[2] = subIteminfos;
+                changeStateevent(msgCount, "dirload", data);
             }
         }
     }

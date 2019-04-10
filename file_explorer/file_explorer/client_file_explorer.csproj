@@ -48,9 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncObject.cs" />
+    <Compile Include="ButtonHandler.cs" />
+    <Compile Include="MakeStateData.cs" />
     <Compile Include="ClientSocketHandler.cs" />
     <Compile Include="CommandClassification.cs" />
-    <Compile Include="ErrorHandler.cs" />
+    <Compile Include="CurrentState.cs" />
     <Compile Include="ListViewHandler.cs" />
     <Compile Include="LoadDirSubItemsInfo.cs" />
     <Compile Include="LoadDriveInfo.cs" />
@@ -67,7 +69,7 @@
     <Compile Include="Login_form.Designer.cs">
       <DependentUpon>Login_form.cs</DependentUpon>
     </Compile>
-    <Compile Include="PathHandler.cs" />
+    <Compile Include="PathListHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendServerEventHandler.cs" />

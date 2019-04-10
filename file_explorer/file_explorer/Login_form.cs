@@ -37,6 +37,8 @@ namespace file_explorer
                 waitHandle.WaitOne(); //로그인 결과가 올때까지 대기 상태가 되어야 한다.
                 if (loginstate)
                 {
+
+
                     MessageBox.Show("로그인 성공!", "확인", MessageBoxButtons.OK, MessageBoxIcon.None);
                     Main_form main_form = new Main_form(userId);
                     this.Invoke(new MethodInvoker(this.Hide)); // 크로스 스레드 해결

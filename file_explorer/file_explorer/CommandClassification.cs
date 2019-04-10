@@ -9,8 +9,7 @@ namespace file_explorer
     class CommandClassification
     {
         LoginCheck loginCheck = new LoginCheck();
-        LoadDriveInfo loadDriveinfo = new LoadDriveInfo();
-        LoadDirSubItemsInfo loadDirsubitemsinfo = new LoadDirSubItemsInfo();
+        MakeStateData makeStatedata = new MakeStateData();
         public void CmdClassification(int msgCount, string msg)
         {
             string[] msgs = msg.Split('|');
@@ -21,10 +20,13 @@ namespace file_explorer
                     loginCheck.LoginResult(msgs[1]);
                     break;
                 case "rootload":
-                    loadDriveinfo.LoadDriverInfoResult(msgCount,msgs[1]);
+                    makeStatedata.LoadDriverInfoResult(msgCount,msgs[1]);
                     break;
                 case "dirload":
-                    loadDirsubitemsinfo.LoadDirSubItemsInfoResult(msgCount, msgs[1], msgs[2]);
+                    makeStatedata.LoadDirSubItemsInfoResult(msgCount, msgs[1], msgs[2],msgs[3]);
+                    break;
+                case "MoveItemToDir":
+                    //loadDirsubitemsinfo.LoadDirSubItemsInfoResult(msgCount, msgs[1], msgs[2], msgs[3]);
                     break;
             }
         }

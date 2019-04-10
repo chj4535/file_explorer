@@ -39,13 +39,14 @@ namespace file_explorer
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.mainFormtreeview = new System.Windows.Forms.TreeView();
             this.mainFormlistview = new System.Windows.Forms.ListView();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.mainFormcombobox = new System.Windows.Forms.ComboBox();
             this.mainFormrecentcombobox = new System.Windows.Forms.ComboBox();
             this.mainFormimagelist = new System.Windows.Forms.ImageList(this.components);
             this.backButton = new System.Windows.Forms.Button();
             this.mainFormpathbutton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.mainFormitemscount = new System.Windows.Forms.Label();
+            this.mainFormselectedinfo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -151,13 +152,6 @@ namespace file_explorer
             this.mainFormlistview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mainFormlistview_KeyDown);
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
             // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(4, 439);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(864, 21);
-            this.textBox3.TabIndex = 10;
-            // 
             // mainFormcombobox
             // 
             this.mainFormcombobox.BackColor = System.Drawing.SystemColors.Window;
@@ -235,17 +229,36 @@ namespace file_explorer
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // mainFormitemscount
+            // 
+            this.mainFormitemscount.AutoSize = true;
+            this.mainFormitemscount.Font = new System.Drawing.Font("굴림", 10F);
+            this.mainFormitemscount.Location = new System.Drawing.Point(21, 445);
+            this.mainFormitemscount.Name = "mainFormitemscount";
+            this.mainFormitemscount.Size = new System.Drawing.Size(0, 14);
+            this.mainFormitemscount.TabIndex = 18;
+            // 
+            // mainFormselectedinfo
+            // 
+            this.mainFormselectedinfo.AutoSize = true;
+            this.mainFormselectedinfo.Font = new System.Drawing.Font("굴림", 10F);
+            this.mainFormselectedinfo.Location = new System.Drawing.Point(112, 445);
+            this.mainFormselectedinfo.Name = "mainFormselectedinfo";
+            this.mainFormselectedinfo.Size = new System.Drawing.Size(0, 14);
+            this.mainFormselectedinfo.TabIndex = 19;
+            // 
             // Main_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(872, 463);
+            this.ClientSize = new System.Drawing.Size(872, 467);
+            this.Controls.Add(this.mainFormselectedinfo);
+            this.Controls.Add(this.mainFormitemscount);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.mainFormpathbutton);
             this.Controls.Add(this.backButton);
             this.Controls.Add(this.mainFormcombobox);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.user_name_label);
             this.Controls.Add(this.textBox2);
@@ -272,13 +285,14 @@ namespace file_explorer
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView mainFormtreeview;
         private System.Windows.Forms.ListView mainFormlistview;
-        private System.Windows.Forms.TextBox textBox3;
         private ComboBox mainFormcombobox;
         private ComboBox mainFormrecentcombobox;
         private ImageList mainFormimagelist;
         private Button backButton;
         private Button mainFormpathbutton;
         private Button button1;
+        private Label mainFormitemscount;
+        private Label mainFormselectedinfo;
     }
 }
 

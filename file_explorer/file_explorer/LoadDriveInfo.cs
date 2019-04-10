@@ -8,30 +8,16 @@ using System.Drawing;
 
 namespace file_explorer
 {
-    public struct DriveInfo
-    {
-        public string driveName;
-        public string driveLabel;
-        public string driveType;
-        public string driveTotalsize;
-        public string driveFreesize;
-    }
-    public delegate void DriveInfoToListviewHandler(int msgCount, DriveInfo[] datas);
-    public delegate void DriveInfoToTreeviewHandler(int msgCount, string staticPath, string[] dirPaths);
+    public delegate void DriveInfoToCurrentStateEventHandler(int msgCount, string[] currentStateitemsname, DriveInfo[] data);
     class LoadDriveInfo
     {
-        static event DriveInfoToListviewHandler driveInfotolistviewevent;
-        static event DriveInfoToTreeviewHandler driveInfototreeviewevent;
+        static event DriveInfoToCurrentStateEventHandler driveinfoTocurrentstateevent;
 
-        public void SetDriveInfotoListviewEvnet(DriveInfoToListviewHandler add_event)
+        public void SetDriveInfoToCurrentStateEventHandler(DriveInfoToCurrentStateEventHandler addEvent)
         {
-            driveInfotolistviewevent += new DriveInfoToListviewHandler(add_event);
+            driveinfoTocurrentstateevent += new DriveInfoToCurrentStateEventHandler(addEvent);
         }
-
-        public void SetDriveInfotoTreeviewEvent(DriveInfoToTreeviewHandler add_event)
-        {
-            driveInfototreeviewevent += new DriveInfoToTreeviewHandler(add_event);
-        }
+        
 
         public void LoadDriverInfoResult(int msgCount, string msg)
         {
@@ -43,18 +29,17 @@ namespace file_explorer
             for (int driveNum = 0; driveNum < Int32.Parse(driveInfo[0]); driveNum++)
             {
                 driveInfos[driveNum].driveName = driveInfo[++count];
-                nodes[driveNum] = driveInfos[driveNum].driveName.Split('\\').First(); // 트리뷰에 보낼 내용
                 driveInfos[driveNum].driveLabel = driveInfo[++count];
                 driveInfos[driveNum].driveType = driveInfo[++count];
                 driveInfos[driveNum].driveTotalsize = driveInfo[++count];
                 driveInfos[driveNum].driveFreesize = driveInfo[++count];
+                nodes[driveNum] = driveInfos[driveNum].driveName;
                 Console.WriteLine(driveInfos[driveNum].driveName);
                 Console.WriteLine(driveInfos[driveNum].driveType);
                 Console.WriteLine(driveInfos[driveNum].driveTotalsize);
                 Console.WriteLine(driveInfos[driveNum].driveFreesize);
             }
-            driveInfotolistviewevent(msgCount, driveInfos);
-            driveInfototreeviewevent(msgCount, "", nodes);
+            driveinfoTocurrentstateevent(msgCount, nodes,driveInfos);
         }
     }
 }

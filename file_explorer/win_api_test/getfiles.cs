@@ -38,7 +38,7 @@ namespace win_api_test
         {
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             //Console.WriteLine("Processed directory '{0}'.", path);
-            Console.WriteLine("폴더명 : {0} / 속성 :  {1} / 수정한 날짜 :  {2}", dirInfo.Name, dirInfo.Attributes, dirInfo.LastWriteTime);
+            Console.WriteLine("폴더명 : {0} / 속성 :  {1} / 수정한 날짜 :  {2}", dirInfo.Name, dirInfo.FullName, dirInfo.LastWriteTime);
         }
     }
 }

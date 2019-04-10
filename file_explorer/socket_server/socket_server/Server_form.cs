@@ -135,6 +135,7 @@ namespace socket_server
                     byte[] sendDatacontent = cmdHandler.CmdClassification(clientData); //요청사항 결과
 
                     sendMsgcount += 1;
+
                     byte[] sendDataHeader = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01');
                     byte[] sendData = new byte[sendDataHeader.Length + sendDatacontent.Length];
                     sendDataHeader.CopyTo(sendData, 0);
