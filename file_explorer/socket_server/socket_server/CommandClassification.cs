@@ -34,7 +34,7 @@ namespace socket_server
                     break;
                 case "dirload":
                     //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
-                    makeData.GetFilesDirs(clientSocket,msgs[1], msgCount);
+                    makeData.GetFilesDirs(clientSocket, msgCount,msgs[1]);
                     break;
                 case "MoveItemToDir":
                     //cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');

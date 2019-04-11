@@ -14,6 +14,7 @@ namespace file_explorer
         {
             string[] msgs = msg.Split('|');
             string msgCount = msgs[0];
+            string itemCount = msgs[1];
             Console.WriteLine(msgs[1]);
             switch (msgs[1])
             {
