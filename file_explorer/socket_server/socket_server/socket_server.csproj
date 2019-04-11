@@ -50,6 +50,7 @@
     <Compile Include="Driveinfo.cs" />
     <Compile Include="GetDirSubItems.cs" />
     <Compile Include="Logincheck.cs" />
+    <Compile Include="MakeData.cs" />
     <Compile Include="MoveFilesAndDirs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

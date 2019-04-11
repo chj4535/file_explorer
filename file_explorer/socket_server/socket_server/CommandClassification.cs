@@ -4,15 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Net.Sockets;
+
 namespace socket_server
 {
     class CommandClassification
     {
+        MakeData makeData = new MakeData();
         Logincheck loginCheck = new Logincheck();
         Driveinfo drinInfo = new Driveinfo();
         GetDirSubItems getDrisubitems = new GetDirSubItems();
         MoveFilesAndDirs moveFilesAndDirs = new MoveFilesAndDirs();
-        public byte[] CmdClassification(string msg)
+        public void CmdClassification(Socket clientSocket,bool isSendall,string msg,int msgCount)
         {
             string[] msgs = msg.Split('|');
             byte[] cmd = new byte[0];
@@ -22,27 +25,22 @@ namespace socket_server
             //Console.WriteLine("msgs[2] : " + msgs[2]);
             switch (msgs[0]) {
                 case "login":
-                    cmd = Encoding.UTF8.GetBytes("login"+'|');
-                    cmdResult = loginCheck.GetloginInfo(msgs[1]);
+                    //cmd = Encoding.UTF8.GetBytes("login"+'|');
+                    makeData.GetloginInfo(clientSocket, msgCount,msgs[1]);
                     break;
                 case "rootload":
-                    cmd = Encoding.UTF8.GetBytes("rootload" + '|');
-                    cmdResult = drinInfo.GetDriveInfo();
+                    //cmd = Encoding.UTF8.GetBytes("rootload" + '|');
+                    makeData.GetDriveInfo(clientSocket, msgCount);
                     break;
                 case "dirload":
-                    cmd = Encoding.UTF8.GetBytes("dirload" + '|');
-                    cmdResult = getDrisubitems.GetFilesDirs(msgs[1]);
+                    //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
+                    makeData.GetFilesDirs(clientSocket,msgs[1], msgCount);
                     break;
                 case "MoveItemToDir":
-                    cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');
-                    cmdResult = moveFilesAndDirs.MvoeItems(msgs[1],msgs[2],msgs[3],msgs[4]);
+                    //cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');
+                    //cmdResult = moveFilesAndDirs.MvoeItems(msgs[1],msgs[2],msgs[3],msgs[4], msgCount);
                     break;
             }
-
-            byte[] data = new byte[cmd.Length + cmdResult.Length];
-            cmd.CopyTo(data, 0);
-            cmdResult.CopyTo(data, cmd.Length);
-            return data;
         }
 
         public bool IdentifySendAll(string msg)

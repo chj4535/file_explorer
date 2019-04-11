@@ -12,7 +12,7 @@ namespace socket_server
 
 
 
-
+        MakeData makeData = new MakeData();
         struct ClientSocket // 각 client의 소켓과 client가 보고있는 경로를 저장 (폴더삭제, 이동 등의 상황에서 그 경로안을 보고 있는 사용자가 있다면 못하게 막아야하니까?)
         {
             public Socket clientSocket;
@@ -20,7 +20,7 @@ namespace socket_server
         }
         delegate void AppendTextDelegate(Control ctrl, string s);
         AppendTextDelegate _textAppender;
-        Socket mainSock;
+        static Socket mainSock;
         IPAddress thisAddress;
         CommandClassification cmdHandler = new CommandClassification();
         int sendMsgcount = 0;
@@ -29,9 +29,10 @@ namespace socket_server
             InitializeComponent();
             mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             _textAppender = new AppendTextDelegate(AppendText);
+            makeData.SetSendDataEventHandler(OnSendData);
         }
 
-        void AppendText(Control ctrl, string s)
+        private void AppendText(Control ctrl, string s)
         {
             if (ctrl.InvokeRequired) ctrl.Invoke(_textAppender, ctrl, s);
             else
@@ -71,7 +72,7 @@ namespace socket_server
         }
 
         List<ClientSocket> connectedClients = new List<ClientSocket>();
-        void AcceptCallback(IAsyncResult ar)
+        private void AcceptCallback(IAsyncResult ar)
         {
             // 클라이언트의 연결 요청을 수락한다.
             Socket client = mainSock.EndAccept(ar);
@@ -95,7 +96,7 @@ namespace socket_server
             client.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
         }
 
-        void DataReceived(IAsyncResult ar)
+        private void DataReceived(IAsyncResult ar)
         {
             // BeginReceive에서 추가적으로 넘어온 데이터를 AsyncObject 형식으로 변환한다.
             AsyncObject obj = (AsyncObject)ar.AsyncState;
@@ -119,14 +120,19 @@ namespace socket_server
                 obj.ClearBuffer();//버퍼 비우기
                 if (client.Available == 0)//네트워크상에 받을 데이터가 없다.
                 {
+                    sendMsgcount++;
                     Console.WriteLine("수신 종료");
-                    // All data received, process it as you wish
-                    string msg = obj.sb.ToString();
+                    string msg = obj.sb.ToString();//전체 내용
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     Console.WriteLine(msg);//총 받은 메시지
                     string[] tokens = msg.Split('\x01');
                     string ip = tokens[0];
                     string clientData = tokens[1];
+                    AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
+                    bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
+                    cmdHandler.CmdClassification(obj.workingSocket, sendAll,clientData, sendMsgcount); //요청사항 결과
+                    AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
+                    /*
 
 
                     AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
@@ -168,6 +174,7 @@ namespace socket_server
                         client.Send(sendData);
                     }
                     AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
+                    */
                 }
             }
             
@@ -181,6 +188,61 @@ namespace socket_server
             
 
             client.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
+        }
+
+        public void OnSendData(bool isSendall,Socket clientSocket,int msgCount,int itemCount,string type,string state,string info)// 전체인가?/보낸사람/보낼내용
+        {
+            AsyncObject ao = new AsyncObject();
+
+            // 문자열을 바이트 배열으로 변환
+            //string message = 
+            ao.buffer = Encoding.UTF8.GetBytes(msgCount.ToString()+'|'+ itemCount.ToString()+'|'+type + '|' + state + '|' + info + '|' + '\x01');
+
+            ao.workingSocket = clientSocket;
+            if (isSendall)//전체전송
+            {
+                // for을 통해 "역순"으로 클라이언트에게 데이터를 보낸다.
+                for (int i = connectedClients.Count - 1; i >= 0; i--)
+                {
+                    Socket socket = connectedClients[i].clientSocket;
+                    try
+                    {
+                        socket.BeginSend(ao.buffer, 0, ao.buffer.Length, 0, new AsyncCallback(SendCallback), socket);
+                    }
+                    catch // 오류 발생하면 전송 취소하고 리스트에서 삭제한다.
+                    {
+                        
+                        try { socket.Dispose(); } catch { }
+                        connectedClients.RemoveAt(i);
+                    }
+                }
+                //AppendText(server_log_richtextbox, string.Format("1:n 전송 내용 : {0}", Encoding.UTF8.GetString(ao.buffer, 0, ao.buffer.Length)));
+            }
+            else // 1:1전송
+            {
+                ao.workingSocket.BeginSend(ao.buffer, 0, ao.buffer.Length, 0, new AsyncCallback(SendCallback), ao.workingSocket);
+                //AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(ao.buffer, 0, ao.buffer.Length)));
+                //client.Send(sendData);
+            }
+            //AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
+        }
+
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.  
+                Socket client = (Socket)ar.AsyncState;
+
+                // Complete sending the data to the remote device.  
+                int bytesSent = client.EndSend(ar);
+                //Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
     }
 }

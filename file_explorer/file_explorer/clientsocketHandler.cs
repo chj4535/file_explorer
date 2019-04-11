@@ -16,7 +16,8 @@ namespace file_explorer
     class ClientSocketHandler
     {
         static Socket mainSock;
-        static CommandClassification cmdHandler = new CommandClassification();
+        //static CommandClassification cmdHandler = new CommandClassification();
+        static MakeStateData makeStatedata = new MakeStateData();
         static ClientSocketHandler()
         {
             try
@@ -74,15 +75,22 @@ namespace file_explorer
                     Console.WriteLine("수신 종료");
                     // All data received, process it as you wish
 
-                    string receiveData = obj.sb.ToString();
-                    string[] tokens = receiveData.Split('\x01');
-                    int msgCount = Int32.Parse(tokens[0]); // 비동기 메세지이므로 늦게 온게 먼저 적용된 상태에서 먼저 온게 적용되려는 현상 방지
 
-                    string msg = tokens[1];
-                    
+
+                    string receiveData = obj.sb.ToString();
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
+
+                    string[] tokens = receiveData.Split('\x01'); // 버퍼 공백부분 삭제
+                    for(int msgNum = 0; msgNum < tokens.Length - 1; msgNum++)
+                    {
+                        makeStatedata.MakeDataSet(tokens[msgNum]);
+                    }
+                    //int msgCount = Int32.Parse(tokens[0]); // 비동기 메세지이므로 늦게 온게 먼저 적용된 상태에서 먼저 온게 적용되려는 현상 방지
+
+                    //string msg = tokens[1];
+
                     
-                    cmdHandler.CmdClassification(msgCount,msg); // 동기 메서드라 대기하게 된다.
+                    
                 }
                 obj.ClearBuffer();//버퍼 비우기
             }

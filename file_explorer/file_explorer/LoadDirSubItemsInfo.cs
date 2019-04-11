@@ -33,7 +33,7 @@ namespace file_explorer
 
                 for (int fileNum = 0; fileNum < Int32.Parse(filesInfos[0]); fileNum++)
                 {
-                    subIteminfos[fileNum].isFile = true;
+                   // subIteminfos[fileNum].isFile = true;
                     subIteminfos[fileNum].subItemname = filesInfos[++count];
                     subIteminfos[fileNum].subItemtype = filesInfos[++count];
                     subIteminfos[fileNum].subItemlastwritetime = filesInfos[++count];
@@ -48,7 +48,7 @@ namespace file_explorer
                 string[] nodes = new string[Int32.Parse(dirsInfos[0])];
                 for (int dirNum = Int32.Parse(filesInfos[0]); dirNum < Int32.Parse(filesInfos[0]) + Int32.Parse(dirsInfos[0]); dirNum++)
                 {
-                    subIteminfos[dirNum].isFile = false;
+                    //subIteminfos[dirNum].isFile = false;
                     subIteminfos[dirNum].subItemname = dirsInfos[++count];
                     nodes[dirNum - Int32.Parse(filesInfos[0])] = subIteminfos[dirNum].subItemname;
                     subIteminfos[dirNum].subItemtype = dirsInfos[++count];

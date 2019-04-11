@@ -10,23 +10,24 @@ namespace file_explorer
     {
         LoginCheck loginCheck = new LoginCheck();
         MakeStateData makeStatedata = new MakeStateData();
-        public void CmdClassification(int msgCount, string msg)
+        public void CmdClassification(string msg)
         {
             string[] msgs = msg.Split('|');
+            string msgCount = msgs[0];
             Console.WriteLine(msgs[1]);
-            switch (msgs[0])
+            switch (msgs[1])
             {
                 case "login":
-                    loginCheck.LoginResult(msgs[1]);
+                    loginCheck.LoginResult(msgs[2]);
                     break;
-                case "rootload":
-                    makeStatedata.LoadDriverInfoResult(msgCount,msgs[1]);
+                case "file":
+                    makeStatedata.SetFile(msgCount,msgs[2], msgs[3]);
                     break;
-                case "dirload":
-                    makeStatedata.LoadDirSubItemsInfoResult(msgCount, msgs[1], msgs[2],msgs[3]);
+                case "dir":
+                    makeStatedata.SetDir(msgCount,msgs[2], msgs[2]);
                     break;
-                case "MoveItemToDir":
-                    //loadDirsubitemsinfo.LoadDirSubItemsInfoResult(msgCount, msgs[1], msgs[2], msgs[3]);
+                case "drive":
+                    makeStatedata.SetDrive(msgCount,msgs[1],msgs[2]);
                     break;
             }
         }

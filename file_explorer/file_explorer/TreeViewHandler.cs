@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace file_explorer
 {
     class TreeViewHandler : CurrentState
-    {
+    {/*
         [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
         extern static IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
         const string ShellIconsLib = @"C:\WINDOWS\System32\imageres.dll";
@@ -64,7 +64,7 @@ namespace file_explorer
             currentNode = mainTreeview.Nodes[0];
             string[] staticPaths = currentStaticpath.Split('\\');
             string currentdirpath = "";
-            if (!isDrive)
+            if (true)//!isDrive)
             {
                 foreach (string dirName in staticPaths)//현재 온 폴더들의 공통 경로
                 {
@@ -78,6 +78,7 @@ namespace file_explorer
                     currentNode = currentNode.Nodes[dirName];
                     currentdirpath += '\\';
                 }
+
                 foreach (TreeNode dirNode in currentNode.Nodes)//새로 불러왔을때 삭제된 폴더가 있으면 트리에서 삭제
                 {
                     int pos = Array.IndexOf(currentStateitemsname, dirNode.Name);
@@ -174,6 +175,6 @@ namespace file_explorer
             isClick = true;
             sendServerEventHandler.MoveDir(dirpath,  "treeviewafterselect");
             setFocusTreeview();
-        }
+        }*/
     }
 }

@@ -30,11 +30,11 @@ namespace file_explorer
             this.mainFormrecentcombobox.DisplayMember = "Text";
             this.mainFormrecentcombobox.ValueMember = "Value";
             //this.mainFormcombobox.DroppedDown = false;
-            treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
+            //treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
             listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist,mainFormitemscount,mainFormselectedinfo);
             mainFormgraphic = this.CreateGraphics();
-            pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox,mainFormrecentcombobox, mainFormgraphic);
-            buttonHandler.ButtonHandlerSetting(backButton, nextButton, upperButton);
+            //pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox,mainFormrecentcombobox, mainFormgraphic);
+            //buttonHandler.ButtonHandlerSetting(backButton, nextButton, upperButton);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -46,16 +46,18 @@ namespace file_explorer
 
         public void UpdateForm()
         {
+            /*
             if (listViewhandler.GetErrorstate()) // 에러상태!
             {
                 MainFormErrorEvent(listViewhandler.GetErrormessage());
             }
             else
+            */
             {
                 listViewhandler.Update();
-                treeViewhandler.Update();
-                pathListhandler.Update();
-                buttonHandler.Update();
+                //treeViewhandler.Update();
+                //pathListhandler.Update();
+                //buttonHandler.Update();
             }
         }
 
@@ -105,17 +107,17 @@ namespace file_explorer
 
         private void mainFormtreeview_AfterSelect(object sender, TreeViewEventArgs e) //트리상의 폴더 클릭시 이동
         {
-            treeViewhandler.SelectNode();
+            //treeViewhandler.SelectNode();
         }
 
         private void mainFormtreeview_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            treeViewhandler.setFocusTreeview();//펼쳤을때 하이라이트 위치 변경
+            //treeViewhandler.setFocusTreeview();//펼쳤을때 하이라이트 위치 변경
         }
 
         private void mainFormtreeview_AfterCollapse(object sender, TreeViewEventArgs e)
         {
-            treeViewhandler.setFocusTreeview();//접을때 하이라이트 위치 변경
+            //treeViewhandler.setFocusTreeview();//접을때 하이라이트 위치 변경
         }
 
         private void mainFormpathbutton_Click(object sender, EventArgs e)
@@ -232,7 +234,7 @@ namespace file_explorer
                     string itemName = itemPath.Split('\\').Last();
                     itemNames[count++] = itemType+"/"+itemName;
                 }
-                listViewhandler.MainListViewDragDrop(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
+                //listViewhandler.MainListViewDragDrop(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
             }
         }
 
