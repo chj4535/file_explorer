@@ -43,6 +43,7 @@ namespace file_explorer
             {
                 AddRecentComboBox();
             }
+            AddPathComboBox();
         }
         
         /*public void SetComboxPath(string path)
@@ -144,6 +145,7 @@ namespace file_explorer
         {
             string writePath = mainPathcombobox.Text;
             isClick = true;
+            currentStaticpath = writePath;
             sendServerEventHandler.MoveDir(writePath,"comboenter");
             mainpathButton.Show();
         }
@@ -166,7 +168,7 @@ namespace file_explorer
             SizeF size = graphic.MeasureString("내 PC", mainButton.Font);
             mainButton.Width = (int)size.Width + 20;
             mainButton.Height = mainpathButton.Height;
-            mainButton.Click += (s, e) => { isClick = true; sendServerEventHandler.MoveDir("root", "rootpathbuttonclick"); };
+            mainButton.Click += (s, e) => { isClick = true; currentStaticpath = "root"; sendServerEventHandler.MoveDir("root", "rootpathbuttonclick"); };
             mainpathButton.Controls.Add(mainButton);
 
             if (!currentStaticpath.Equals("root"))
@@ -188,7 +190,7 @@ namespace file_explorer
                     dirButton.Height = mainpathButton.Height;
                     path += dirName+'\\';
                     dirButton.Name = path;
-                    dirButton.Click += (s, e) => { isClick = true; sendServerEventHandler.MoveDir(dirButton.Name, "dirpathbuttonclick"); };
+                    dirButton.Click += (s, e) => { isClick = true; currentStaticpath = dirButton.Name; sendServerEventHandler.MoveDir(dirButton.Name, "dirpathbuttonclick"); };
                     mainpathButton.Controls.Add(dirButton);
                 }
             }
@@ -231,6 +233,7 @@ namespace file_explorer
             {
                 string selectedPath = mainPathcombobox.SelectedItem.ToString();
                 isClick = true;
+                currentStaticpath = selectedPath;
                 sendServerEventHandler.MoveDir(selectedPath,  "comboindexchange");
             }
         }
@@ -249,6 +252,7 @@ namespace file_explorer
                 recentPathClick = true;
                 selectedRecentpahtitem = selectedItem;
                 isClick = true;
+                currentStaticpath = selectedItem[1];
                 sendServerEventHandler.MoveDir(selectedItem[1],  "recentcomboindexchange");
             }
         }

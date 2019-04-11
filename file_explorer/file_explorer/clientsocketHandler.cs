@@ -79,12 +79,17 @@ namespace file_explorer
 
                     string receiveData = obj.sb.ToString();
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
-
+                    int counting = 0;
                     string[] tokens = receiveData.Split('\x01'); // 버퍼 공백부분 삭제
-                    for(int msgNum = 0; msgNum < tokens.Length - 1; msgNum++)
+                    for(int msgNum = 0; msgNum < tokens.Length; msgNum++)
                     {
-                        makeStatedata.MakeDataSet(tokens[msgNum]);
+                        if (!tokens[msgNum].Equals("") && tokens[msgNum][0] != '\0')
+                        {
+                            counting++;
+                            makeStatedata.MakeDataSet(tokens[msgNum]);
+                        }
                     }
+                    Console.Write(counting);
                     //int msgCount = Int32.Parse(tokens[0]); // 비동기 메세지이므로 늦게 온게 먼저 적용된 상태에서 먼저 온게 적용되려는 현상 방지
 
                     //string msg = tokens[1];

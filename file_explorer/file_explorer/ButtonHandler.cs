@@ -104,6 +104,7 @@ namespace file_explorer
             nextButton.BackColor = System.Drawing.SystemColors.Window;
             nextButton.ForeColor = System.Drawing.Color.Black;
             isClick = false;
+            currentStaticpath = prePathsave.Peek();
             sendServerEventHandler.MoveDir(prePathsave.Peek(), "backbutton");
         }
 
@@ -120,6 +121,7 @@ namespace file_explorer
             backButton.BackColor = System.Drawing.SystemColors.Window;
             backButton.ForeColor = System.Drawing.Color.Black;
             isClick = false;
+            currentStaticpath = prePathsave.Peek();
             sendServerEventHandler.MoveDir(prePathsave.Peek(), "nextbutton");
         }
 
@@ -140,6 +142,7 @@ namespace file_explorer
                 currentPath = currentPath + '\\';
             }
             isClick = true;
+            currentStaticpath = currentPath;
             sendServerEventHandler.MoveDir(currentPath, "upperbutton");
         }
 

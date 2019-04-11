@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace file_explorer
 {
     class TreeViewHandler : CurrentState
-    {/*
+    {
         [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
         extern static IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
         const string ShellIconsLib = @"C:\WINDOWS\System32\imageres.dll";
@@ -25,8 +25,6 @@ namespace file_explorer
         
         static TreeView mainTreeview = new TreeView();
         static TreeNode focusTreenode = new TreeNode();
-        static LoadDriveInfo loadDriveInfo = new LoadDriveInfo();
-        static LoadDirSubItemsInfo loadDirsubitemsinfo = new LoadDirSubItemsInfo();
         static ImageList mainImagelist = new ImageList();
         public TreeViewHandler()
         {
@@ -53,32 +51,73 @@ namespace file_explorer
         }
         public void SetTreeView()
         {
+            int dataLength = (int)currentData[0];
+            for (int dataNum = 2; dataNum < dataLength + 2; dataNum++)
+            {
+                string msg = (string)currentData[dataNum];
+                string[] msgs = msg.Split('|');
+                string[] infos = msgs[2].Split('/');
+                if (currentStaticpath.Equals(infos[0]))
+                {
+                    switch (msgs[0])
+                    {
+                        case "dir":
+                            SetTreeViewItemInfo(false, msgs[0], msgs[1], infos);
+                            break;
+                        case "drive":
+                            SetTreeViewItemInfo(true,msgs[0], msgs[1], infos);
+                            break;
+                    }
+                }
+            }
+            setFocusTreeview();
+        }
+
+        public void SetTreeViewItemInfo(bool isDrive,string type, string state, string[] infos)
+        {
             if (mainTreeview.InvokeRequired)
             {
                 mainTreeview.Invoke((MethodInvoker)delegate {
-                    SetTreeView();
+                    SetTreeViewItemInfo(isDrive,type,state,infos);
                 });
                 return;
             }
             TreeNode currentNode = new TreeNode();
             currentNode = mainTreeview.Nodes[0];
-            string[] staticPaths = currentStaticpath.Split('\\');
+            string[] staticPaths = infos[0].Split('\\'); //경로 분석
             string currentdirpath = "";
-            if (true)//!isDrive)
+            string path = infos[0];
+            string itemName = infos[1];
+            if (!isDrive) //폴더
             {
-                foreach (string dirName in staticPaths)//현재 온 폴더들의 공통 경로
+                foreach (string dirName in staticPaths)///경로 추척
                 {
                     if (dirName.Equals("")) break;
 
-                    currentdirpath += dirName;
-                    if (!currentNode.Nodes.ContainsKey(dirName))
+                    currentdirpath += dirName+'\\';
+                    if (!currentNode.Nodes.ContainsKey(dirName))//경로가 없으면 추가
                     {
-                        currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentdirpath+'\\', SelectedImageKey = currentdirpath + '\\' });
+                        currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentdirpath, SelectedImageKey = currentdirpath});
                     }
                     currentNode = currentNode.Nodes[dirName];
-                    currentdirpath += '\\';
                 }
-
+                switch (state)
+                {
+                    case "delete"://트리에서 삭제
+                        if (currentNode.Nodes.ContainsKey(itemName)) //트리에 있으면
+                        {
+                            currentNode.Nodes.RemoveAt(mainTreeview.Nodes.IndexOfKey(itemName));
+                        }
+                        break;
+                    case "exist"://트리에 추가
+                        if (!currentNode.Nodes.ContainsKey(itemName)) //트리에 있으면
+                        {
+                            currentdirpath += itemName + '\\';
+                            currentNode.Nodes.Add(new TreeNode(itemName) { Name = itemName, ImageKey = currentdirpath, SelectedImageKey = currentdirpath });
+                        }
+                        break;
+                }
+                /*
                 foreach (TreeNode dirNode in currentNode.Nodes)//새로 불러왔을때 삭제된 폴더가 있으면 트리에서 삭제
                 {
                     int pos = Array.IndexOf(currentStateitemsname, dirNode.Name);
@@ -93,20 +132,15 @@ namespace file_explorer
                     {
                         currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentStaticpath + dirName+'\\', SelectedImageKey = currentStaticpath + dirName + '\\' });
                     }
-                }
+                }*/
             }
-            else
+            else //드라이브
             {
-                foreach (string dirName in currentStateitemsname)//새로 불러왔을때 없는 폴더가 있으면 추가
+                if (!currentNode.Nodes.ContainsKey(itemName.Split('\\').First()))
                 {
-                    if (!currentNode.Nodes.ContainsKey(dirName.Split('\\').First()))
-                    {
-                        currentNode.Nodes.Add(new TreeNode(dirName.Split('\\').First()) { Name = dirName.Split('\\').First(), ImageKey = dirName, SelectedImageKey = dirName });
-                    }
+                    currentNode.Nodes.Add(new TreeNode(itemName.Split('\\').First()) { Name = itemName.Split('\\').First(), ImageKey = itemName, SelectedImageKey = itemName });
                 }
             }
-            
-            setFocusTreeview();
         }
 
         public void setFocusTreeview()
@@ -173,8 +207,9 @@ namespace file_explorer
                 }
             }
             isClick = true;
+            currentStaticpath = dirpath;
             sendServerEventHandler.MoveDir(dirpath,  "treeviewafterselect");
             setFocusTreeview();
-        }*/
+        }
     }
 }

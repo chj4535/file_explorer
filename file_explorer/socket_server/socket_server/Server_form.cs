@@ -196,7 +196,7 @@ namespace socket_server
 
             // 문자열을 바이트 배열으로 변환
             //string message = 
-            ao.buffer = Encoding.UTF8.GetBytes(msgCount.ToString()+'|'+ itemCount.ToString()+'|'+type + '|' + state + '|' + info + '|' + '\x01');
+            ao.buffer = Encoding.UTF8.GetBytes('\x01'+ msgCount.ToString()+'|'+ itemCount.ToString()+'|'+type + '|' + state + '|' + info + '|'+ '\x01');
 
             ao.workingSocket = clientSocket;
             if (isSendall)//전체전송

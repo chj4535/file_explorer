@@ -54,8 +54,6 @@
     <Compile Include="CommandClassification.cs" />
     <Compile Include="CurrentState.cs" />
     <Compile Include="ListViewHandler.cs" />
-    <Compile Include="LoadDirSubItemsInfo.cs" />
-    <Compile Include="LoadDriveInfo.cs" />
     <Compile Include="LoginCheck.cs" />
     <Compile Include="Main_form.cs">
       <SubType>Form</SubType>

@@ -22,13 +22,13 @@ namespace file_explorer
                     loginCheck.LoginResult(msgs[2]);
                     break;
                 case "file":
-                    makeStatedata.SetFile(msgCount,msgs[2], msgs[3]);
+                   // makeStatedata.SetFile(msgCount,msgs[2], msgs[3]);
                     break;
                 case "dir":
-                    makeStatedata.SetDir(msgCount,msgs[2], msgs[2]);
+                    //makeStatedata.SetDir(msgCount,msgs[2], msgs[2]);
                     break;
                 case "drive":
-                    makeStatedata.SetDrive(msgCount,msgs[1],msgs[2]);
+                    //makeStatedata.SetDrive(msgCount,msgs[1],msgs[2]);
                     break;
             }
         }

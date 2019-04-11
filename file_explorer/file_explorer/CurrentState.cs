@@ -9,6 +9,7 @@ using System.Windows.Forms;
 namespace file_explorer
 {
     public delegate void UpdateEventHandler();
+    /*
     public struct SubItemInfo
     {
         public bool isFile;
@@ -25,7 +26,7 @@ namespace file_explorer
         public string driveType;
         public string driveTotalsize;
         public string driveFreesize;
-    }
+    }*/
 
     class CurrentState
     {
@@ -39,13 +40,14 @@ namespace file_explorer
         public static Stack<string> prePathsave = new Stack<string>();
         public static Stack<string> nextPathsave = new Stack<string>();
         //
+        public static List<string[]> driveInfo = new List<string[]>();
         //static LoadDriveInfo loadDriveinfo = new LoadDriveInfo();
         //static LoadDirSubItemsInfo loadDirsubiteminfo = new LoadDirSubItemsInfo();
         static MakeStateData makeStatedata = new MakeStateData();
         public static string currentStaticpath { get; set; }//현재 경로 저장
         //public static string currentType { get; set; }//현재 받은 정보의 타입
         //public static string currentTypestate { get; set; }//현재 받은 타입의 상태 (exist/error/delete)
-        public static object[] currentTypedata { get; set; }//현재 받은 타입의 데이타
+        public static object[] currentData { get; set; }//현재 받은 타입의 데이타
         public static bool isClick { get; set; }//버튼이 아닌 클릭이벤트 확인
         public SendServerEventHandler sendServerEventHandler = new SendServerEventHandler();
         static CurrentState()
@@ -58,7 +60,7 @@ namespace file_explorer
         }
         static void SetStateData(object[] data)
         {
-            currentTypedata = data;
+            currentData = data;
             updateEvent();
         }
     }
