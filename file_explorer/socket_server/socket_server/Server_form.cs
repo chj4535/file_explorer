@@ -117,21 +117,31 @@ namespace socket_server
             if (received > 0)
             {
                 obj.sb.Append(Encoding.UTF8.GetString(obj.buffer, 0, received));
+
                 obj.ClearBuffer();//버퍼 비우기
                 if (client.Available == 0)//네트워크상에 받을 데이터가 없다.
                 {
-                    sendMsgcount++;
                     Console.WriteLine("수신 종료");
                     string msg = obj.sb.ToString();//전체 내용
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     Console.WriteLine(msg);//총 받은 메시지
+
                     string[] tokens = msg.Split('\x01');
-                    string ip = tokens[0];
-                    string clientData = tokens[1];
-                    AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
-                    bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
-                    cmdHandler.CmdClassification(obj.workingSocket, sendAll,clientData, sendMsgcount); //요청사항 결과
-                    AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
+                    for (int msgNum = 0; msgNum < tokens.Length; msgNum++)
+                    {
+                        if (!tokens[msgNum].Equals("") && tokens[msgNum][0] != '\0')
+                        {
+                            sendMsgcount++;
+                            string[] msgs = tokens[msgNum].Split('\x02');
+                            string ip = msgs[0];
+                            string clientData = msgs[1];
+                            AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
+                            bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
+                            cmdHandler.CmdClassification(obj.workingSocket, sendAll, clientData, sendMsgcount); //요청사항 결과
+                            AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
+                        }
+                    }
+                    
                     /*
 
 
@@ -190,13 +200,13 @@ namespace socket_server
             client.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
         }
 
-        public void OnSendData(bool isSendall,Socket clientSocket,int msgCount,int itemCount,string type,string state,string info)// 전체인가?/보낸사람/보낼내용
+        public void OnSendData(bool isSendall,Socket clientSocket,int msgCount,int itemCount,string target,string type,string state,string info)// 전체인가?/보낸사람/보낼내용
         {
             AsyncObject ao = new AsyncObject();
 
             // 문자열을 바이트 배열으로 변환
             //string message = 
-            ao.buffer = Encoding.UTF8.GetBytes('\x01'+ msgCount.ToString()+'|'+ itemCount.ToString()+'|'+type + '|' + state + '|' + info + '|'+ '\x01');
+            ao.buffer = Encoding.UTF8.GetBytes('\x01'+ msgCount.ToString()+'|'+ itemCount.ToString()+'|'+ target+ '|' +type + '|' + state + '|' + info + '|'+ '\x01');
 
             ao.workingSocket = clientSocket;
             if (isSendall)//전체전송

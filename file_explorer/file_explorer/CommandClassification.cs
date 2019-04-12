@@ -9,7 +9,7 @@ namespace file_explorer
     class CommandClassification
     {
         LoginCheck loginCheck = new LoginCheck();
-        MakeStateData makeStatedata = new MakeStateData();
+        MakeData makeStatedata = new MakeData();
         public void CmdClassification(string msg)
         {
             string[] msgs = msg.Split('|');

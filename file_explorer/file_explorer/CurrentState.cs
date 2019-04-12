@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace file_explorer
 {
-    public delegate void UpdateEventHandler();
+    public delegate void UpdateEventHandler(string target);
     class CurrentState
     {
         [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
@@ -37,13 +37,13 @@ namespace file_explorer
         public static List<string[]> driveInfo = new List<string[]>();
         //static LoadDriveInfo loadDriveinfo = new LoadDriveInfo();
         //static LoadDirSubItemsInfo loadDirsubiteminfo = new LoadDirSubItemsInfo();
-        static MakeStateData makeStatedata = new MakeStateData();
+        static MakeData makeStatedata = new MakeData();
         public static string currentStaticpath { get; set; }//현재 경로 저장
         //public static string currentType { get; set; }//현재 받은 정보의 타입
         //public static string currentTypestate { get; set; }//현재 받은 타입의 상태 (exist/error/delete)
         public static object[] currentData { get; set; }//현재 받은 타입의 데이타
         public static bool isClick { get; set; }//버튼이 아닌 클릭이벤트 확인
-        public SendServerEventHandler sendServerEventHandler = new SendServerEventHandler();
+        public static SendServerEventHandler sendServerEventHandler = new SendServerEventHandler();
         static CurrentState()
         {
             currentStaticpath = "";
@@ -56,7 +56,22 @@ namespace file_explorer
         static void SetStateData(object[] data)
         {
             currentData = data;
-            updateEvent();
+            string target = (string)data[2];//타겟확인
+            updateEvent(target);
+        }
+
+        public void SetFirstLoad()
+        {
+            currentStaticpath = "root";
+            //sendServerEventHandler.LoadSubDir("root", "firstload");
+            //MoveDir(false,"root", "form_load");
+        }
+
+        public void MoveDir(bool click,string path,string context)
+        {
+            isClick = click;
+            currentStaticpath = path;
+            sendServerEventHandler.MoveDir(path, context);
         }
     }
 }

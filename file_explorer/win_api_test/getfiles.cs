@@ -28,10 +28,14 @@ namespace win_api_test
 
         public static void Writefile(string path)
         {
-            string allFilesinfotoString="";
+            string allFilesinfotoString = "";
             FileInfo fileInfo = new FileInfo(path);
             //Console.WriteLine("Processed file '{0}'.", path);
-            Console.WriteLine("파일명 : {0} / 타입 :  {1} / 수정한 날짜 :  {2} / 크기 : {3}", fileInfo.Name, fileInfo.Extension,fileInfo.LastWriteTime, fileInfo.Length);
+            Console.WriteLine("파일명 : {0} / 타입 :  {1} / 수정한 날짜 :  {2} / 크기 : {3}", fileInfo.Name, fileInfo.Extension, fileInfo.LastWriteTime, fileInfo.Length);
+            if (fileInfo.IsReadOnly)
+            {
+                Console.WriteLine("읽기전용");
+            }
         }
 
         public static void Writedir(string path)
@@ -39,6 +43,14 @@ namespace win_api_test
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             //Console.WriteLine("Processed directory '{0}'.", path);
             Console.WriteLine("폴더명 : {0} / 속성 :  {1} / 수정한 날짜 :  {2}", dirInfo.Name, dirInfo.FullName, dirInfo.LastWriteTime);
+            Console.WriteLine("속성 : {0}", dirInfo.Attributes);
+            string attribute = "";
+            attribute += dirInfo.Attributes;
+            if (attribute.Contains("Hidden"))
+            {
+                string[] attributes = attribute.Split(',');
+            }
+            
         }
     }
 }

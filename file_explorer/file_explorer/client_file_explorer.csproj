@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="AsyncObject.cs" />
     <Compile Include="ButtonHandler.cs" />
-    <Compile Include="MakeStateData.cs" />
+    <Compile Include="MakeData.cs" />
     <Compile Include="ClientSocketHandler.cs" />
     <Compile Include="CommandClassification.cs" />
     <Compile Include="CurrentState.cs" />
@@ -87,6 +87,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

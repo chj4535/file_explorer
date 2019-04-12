@@ -130,14 +130,15 @@ namespace file_explorer
             this.mainFormtreeview.Name = "mainFormtreeview";
             this.mainFormtreeview.Size = new System.Drawing.Size(145, 368);
             this.mainFormtreeview.TabIndex = 0;
-            this.mainFormtreeview.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterCollapse);
+            this.mainFormtreeview.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.mainFormtreeview_BeforeCollapse);
             this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
-            this.mainFormtreeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterSelect);
+            //this.mainFormtreeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterSelect);
             // 
             // mainFormlistview
             // 
             this.mainFormlistview.AllowDrop = true;
             this.mainFormlistview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainFormlistview.Font = new System.Drawing.Font("굴림", 12F);
             this.mainFormlistview.FullRowSelect = true;
             this.mainFormlistview.Location = new System.Drawing.Point(0, 0);
             this.mainFormlistview.Name = "mainFormlistview";
@@ -265,6 +266,7 @@ namespace file_explorer
             this.Controls.Add(this.upperButton);
             this.Controls.Add(this.nextButton);
             this.Controls.Add(this.mainFormrecentcombobox);
+            this.Font = new System.Drawing.Font("굴림", 9F);
             this.Name = "Main_form";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);

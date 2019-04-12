@@ -17,7 +17,7 @@ namespace file_explorer
     {
         static Socket mainSock;
         //static CommandClassification cmdHandler = new CommandClassification();
-        static MakeStateData makeStatedata = new MakeStateData();
+        static MakeData makeStatedata = new MakeData();
         static ClientSocketHandler()
         {
             try
@@ -77,6 +77,7 @@ namespace file_explorer
 
 
 
+
                     string receiveData = obj.sb.ToString();
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     int counting = 0;
@@ -126,7 +127,7 @@ namespace file_explorer
             string addr = ip.Address.ToString();
             Console.WriteLine("송신 메시지 : "+addr+message);
             // 문자열을 utf8 형식의 바이트로 변환한다.
-            byte[] bDts = Encoding.UTF8.GetBytes(addr + '\x01' + message);
+            byte[] bDts = Encoding.UTF8.GetBytes('\x01'+ addr + '\x02' + message +'\x01');
             // 서버에 전송한다.
             //mainSock.Send(bDts);
             mainSock.BeginSend(bDts, 0, bDts.Length, 0,

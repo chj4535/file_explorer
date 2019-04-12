@@ -25,24 +25,22 @@ namespace socket_server
             //Console.WriteLine("msgs[2] : " + msgs[2]);
             switch (msgs[0]) {
                 case "login":
-                    //cmd = Encoding.UTF8.GetBytes("login"+'|');
                     makeData.GetloginInfo(clientSocket, msgCount,msgs[1]);
                     break;
                 case "rootload": //target listview
-                    //cmd = Encoding.UTF8.GetBytes("rootload" + '|');
-                    makeData.GetDriveInfo(clientSocket, msgCount);
+                    makeData.GetDriveInfo(clientSocket, msgCount,"listView");
                     break;
-                case "dirload": //target listview
-                    //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
-                    makeData.GetFilesDirs(clientSocket, msgCount,msgs[1]);
+                case "subitemload": //target listview
+                    makeData.GetFilesDirs(clientSocket, msgCount, "listView",msgs[1]);
                     break;
-                case "expanddir": //target treeview
-                    //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
-                    //makeData.GetFilesDirs(clientSocket, msgCount, msgs[1]);
+                case "subdriveload": //target treeview
+                    makeData.GetDriveInfo(clientSocket, msgCount, "treeView");
+                    break;
+                case "subdirload": //target treeview
+                    makeData.GetDirs(clientSocket, msgCount, "treeView", msgs[1]);
                     break;
                 case "MoveItemToDir":
-                    //cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');
-                    //cmdResult = moveFilesAndDirs.MvoeItems(msgs[1],msgs[2],msgs[3],msgs[4], msgCount);
+                    makeData.GetDirs(clientSocket, msgCount, "all", msgs[1]);
                     break;
             }
         }
@@ -54,15 +52,6 @@ namespace socket_server
             bool sendAll = false;
             switch (msgs[0])
             {
-                case "login":
-                    sendAll = false;
-                    break;
-                case "rootload":
-                    sendAll = false;
-                    break;
-                case "dirload":
-                    sendAll = false;
-                    break;
                 case "MoveItemToDir":
                     sendAll = true;
                     break;

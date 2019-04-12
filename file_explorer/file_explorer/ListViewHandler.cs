@@ -125,7 +125,7 @@ namespace file_explorer
         private void SetListView()
         {
             int dataLength = (int)currentData[0];
-            for (int dataNum = 2; dataNum < dataLength + 2; dataNum++)
+            for (int dataNum = 3; dataNum < dataLength + 3; dataNum++)
             {
                 string msg = (string)currentData[dataNum];
                 string[] msgs = msg.Split('|');
@@ -161,12 +161,14 @@ namespace file_explorer
                 });
                 return;
             }
+            if (state.Equals("disable")){
+                return;
+            }
             string path = infos[0];
             ListViewItem item;
             string itemName = infos[1];
             string itemExtenstion = infos[2];
             string itemLastwritetime = infos[3];
-            string itemSize = infos[4];
             switch (state)
             {
                 case "delete"://리스트에서 삭제
@@ -194,6 +196,7 @@ namespace file_explorer
                         if (type.Equals("file"))
                         {
                             //Icon iconDir = GetIcon(2);
+                            string itemSize = infos[4];
                             dataLength = Math.Round((Convert.ToDouble(itemSize) / Math.Pow(2, 10)), 2).ToString() + "KB";
                             item = new ListViewItem(new[] { itemName, itemLastwritetime, itemExtenstion, dataLength });
                             item.Name = "file|" + currentStaticpath + itemName;
@@ -441,12 +444,6 @@ namespace file_explorer
             */
         }
 
-        public void FirstLoad()
-        {
-            currentStaticpath = "root";
-            sendServerEventHandler.MoveDir("root", "form_load");
-        }
-
         public void ItemDoubleClick()
         {
             if (mainListview.InvokeRequired)
@@ -458,13 +455,19 @@ namespace file_explorer
             }
             string itemName = mainListview.SelectedItems[0].Name;
             string[] itemNames = itemName.Split('|');
-            if (itemNames[0].Equals("dir"))
+            if (itemNames[0].Equals("dir")) //파일이 아닌 폴더(드라이브) 선택일 시
             {
-                isClick = true;
-                ResetLiveView();
-                currentStaticpath = itemNames[1];
-                sendServerEventHandler.MoveDir(itemNames[1], "listviewdoubleclick");
+                MoveDir(true, itemNames[1],"listviewdoubleclick");
+                //isClick = true;
+                //ResetLieView();
+                //currentStaticpath = itemNames[1];
+                //sendServerEventHandler.MoveDir(itemNames[1], "listviewdoubleclick");
             }
+        }
+
+        public void MainListViewDragDrop(string targetPath, string dragStaticpath, string[] dragItems, string sendType)
+        {
+            sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, dragItems, "dnd_listviewtolistview");
         }
 
     }

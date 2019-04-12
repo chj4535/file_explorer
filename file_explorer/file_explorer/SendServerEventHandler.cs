@@ -21,7 +21,16 @@ namespace file_explorer
                 clientSocket.OnSendData("rootload" + "|", null);
             else
             {
-                clientSocket.OnSendData("dirload" + "|" + path, null);
+                clientSocket.OnSendData("subitemload" + "|" + path, null);
+            }
+        }
+        public void LoadSubDir(string path, string sendType) // 폴더 이동 부분 
+        {
+            if (path.Equals("root"))
+                clientSocket.OnSendData("subdriveload" + "|", null);
+            else
+            {
+                clientSocket.OnSendData("subdirload" + "|" + path, null);
             }
         }
         public void reload(string path)
@@ -32,7 +41,7 @@ namespace file_explorer
             }
             else
             {
-                clientSocket.OnSendData("dirload" + "|" + path, null);
+                clientSocket.OnSendData("subitemload" + "|" + path, null);
             }
         }
         public void MoveItemsToDir(string targetPath,string dragStaticpath,string[] dragItems,string sendType)

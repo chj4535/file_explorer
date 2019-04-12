@@ -30,21 +30,23 @@ namespace file_explorer
             this.mainFormrecentcombobox.DisplayMember = "Text";
             this.mainFormrecentcombobox.ValueMember = "Value";
             //this.mainFormcombobox.DroppedDown = false;
-            treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
-            listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist,mainFormitemscount,mainFormselectedinfo);
             mainFormgraphic = this.CreateGraphics();
-            pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox,mainFormrecentcombobox, mainFormgraphic);
+            pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox, mainFormrecentcombobox, mainFormgraphic);
             buttonHandler.ButtonHandlerSetting(backButton, nextButton, upperButton);
+            listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist, mainFormitemscount, mainFormselectedinfo);
+            treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
+            
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             user_name_label.Text = userId;
-            listViewhandler.FirstLoad();
+            //listViewhandler.SetFirstLoad(); //최소 정보 받기
 
         }
 
-        public void UpdateForm()
+        public void UpdateForm(string target)
         {
             /*
             if (listViewhandler.GetErrorstate()) // 에러상태!
@@ -53,11 +55,19 @@ namespace file_explorer
             }
             else
             */
+            switch(target)
             {
-                listViewhandler.Update();
-                treeViewhandler.Update();
-                pathListhandler.Update();
-                buttonHandler.Update();
+                case "error":
+                    break;
+                case "listView":
+                    listViewhandler.Update();
+                    treeViewhandler.setFocusTreeview();//리스트변경시 tree하이라이트 변경
+                    pathListhandler.Update();
+                    buttonHandler.Update();
+                    break;
+                case "treeView":
+                    treeViewhandler.Update();
+                    break;
             }
         }
 
@@ -112,18 +122,16 @@ namespace file_explorer
 
         private void mainFormtreeview_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            //TreeNode currentNode = mainTreeview.SelectedNode;
-            TreeNode expandedNode = e.Node;
-            if (expandedNode.ImageKey.Equals("dir"))
-            {
-                expandedNode.ImageKey = "dirOpen";
-            }
-            treeViewhandler.setFocusTreeview();//펼쳤을때 하이라이트 위치 변경
+            this.mainFormtreeview.AfterExpand -= (TreeViewEventHandler)this.mainFormtreeview_AfterExpand;
+            treeViewhandler.ExpandTreeView(e.Node);
+            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
         }
 
-        private void mainFormtreeview_AfterCollapse(object sender, TreeViewEventArgs e)
+        private void mainFormtreeview_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
-            treeViewhandler.setFocusTreeview();//접을때 하이라이트 위치 변경
+            this.mainFormtreeview.AfterExpand -= (TreeViewEventHandler)this.mainFormtreeview_AfterExpand;
+            treeViewhandler.CollapseTreeView(e.Node);
+            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
         }
 
         private void mainFormpathbutton_Click(object sender, EventArgs e)
@@ -286,6 +294,8 @@ namespace file_explorer
 
             return true;
         }
+
+        
     }
 
     public class ListViewSorter : System.Collections.IComparer//listview 정렬 하기 위한 클래스
