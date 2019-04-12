@@ -5,41 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Forms;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace file_explorer
 {
     public delegate void UpdateEventHandler();
-    /*
-    public struct SubItemInfo
-    {
-        public bool isFile;
-        public string subItemname;
-        public string subItemtype;
-        public string subItemlastwritetime;
-        public string subItemlength;
-    }
-
-    public struct DriveInfo
-    {
-        public string driveName;
-        public string driveLabel;
-        public string driveType;
-        public string driveTotalsize;
-        public string driveFreesize;
-    }*/
-
     class CurrentState
     {
+        [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
+        extern static IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
+        const string ShellIconsLib = @"C:\WINDOWS\System32\imageres.dll";
+        static public Icon GetIcon(int index)
+        {
+            IntPtr Hicon = ExtractIcon(
+               IntPtr.Zero, ShellIconsLib, index);
+            Icon icon = Icon.FromHandle(Hicon);
+            return icon;
+        }
+
         static event UpdateEventHandler updateEvent;
 
         public void SetUpdateEvent(UpdateEventHandler addEvent)
         {
             updateEvent += new UpdateEventHandler(addEvent);
         }
-        //임시
+        //public static List<string> currentIconIndex = new List<string>();
+        //public static List<Icon> currentIcon = new List<Icon>();
         public static Stack<string> prePathsave = new Stack<string>();
         public static Stack<string> nextPathsave = new Stack<string>();
-        //
         public static List<string[]> driveInfo = new List<string[]>();
         //static LoadDriveInfo loadDriveinfo = new LoadDriveInfo();
         //static LoadDirSubItemsInfo loadDirsubiteminfo = new LoadDirSubItemsInfo();
@@ -57,6 +51,7 @@ namespace file_explorer
             makeStatedata.SetDriveInfoToCurrentStateEventHandler(SetStateData);//상태 변경 데이터 받아옴
             //loadDriveinfo.SetDriveInfoToCurrentStateEventHandler(SetDriveInfo);
             //loadDirsubiteminfo.SetSubItemToCurrentStateEvent(SetSubItemInfo);
+            
         }
         static void SetStateData(object[] data)
         {

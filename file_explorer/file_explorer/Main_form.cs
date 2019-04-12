@@ -112,6 +112,12 @@ namespace file_explorer
 
         private void mainFormtreeview_AfterExpand(object sender, TreeViewEventArgs e)
         {
+            //TreeNode currentNode = mainTreeview.SelectedNode;
+            TreeNode expandedNode = e.Node;
+            if (expandedNode.ImageKey.Equals("dir"))
+            {
+                expandedNode.ImageKey = "dirOpen";
+            }
             treeViewhandler.setFocusTreeview();//펼쳤을때 하이라이트 위치 변경
         }
 

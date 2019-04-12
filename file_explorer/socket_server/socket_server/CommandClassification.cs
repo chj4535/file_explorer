@@ -28,13 +28,17 @@ namespace socket_server
                     //cmd = Encoding.UTF8.GetBytes("login"+'|');
                     makeData.GetloginInfo(clientSocket, msgCount,msgs[1]);
                     break;
-                case "rootload":
+                case "rootload": //target listview
                     //cmd = Encoding.UTF8.GetBytes("rootload" + '|');
                     makeData.GetDriveInfo(clientSocket, msgCount);
                     break;
-                case "dirload":
+                case "dirload": //target listview
                     //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
                     makeData.GetFilesDirs(clientSocket, msgCount,msgs[1]);
+                    break;
+                case "expanddir": //target treeview
+                    //cmd = Encoding.UTF8.GetBytes("dirload" + '|');
+                    //makeData.GetFilesDirs(clientSocket, msgCount, msgs[1]);
                     break;
                 case "MoveItemToDir":
                     //cmd = Encoding.UTF8.GetBytes("MoveItemToDir" + '|');

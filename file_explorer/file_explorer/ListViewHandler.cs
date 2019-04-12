@@ -12,18 +12,8 @@ namespace file_explorer
 {
     class ListViewHandler : CurrentState
     {
-
-        [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
-        extern static IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
-        const string ShellIconsLib = @"C:\WINDOWS\System32\imageres.dll";
-        static public Icon GetIcon(int index)
-        {
-            IntPtr Hicon = ExtractIcon(
-               IntPtr.Zero, ShellIconsLib, index);
-            Icon icon = Icon.FromHandle(Hicon);
-            return icon;
-        }
-        static List<ListViewItem> listitems = new List<ListViewItem>();//실제 저장된 리스트뷰
+        //static List<ListViewItem> listitems = new List<ListViewItem>();//실제 저장된 리스트뷰
+        //static ListViewItem[] listiems = new listviewitem
         static int listItemcount = 0;//현재 경로의 아이템 갯수 이와 같은 갯수여야만 출력한다.
         static ListView mainListview = new ListView();
         static ImageList mainImagelist = new ImageList();
@@ -31,6 +21,8 @@ namespace file_explorer
         static Label mainselectedinfo = new Label();
         static string listViewpath = "";//리스트뷰가 보여주는 경로
         static string listViewColum = null;//리스트뷰가 드라이브 column을 보여주는가
+        static List<ListViewItem> listViewitems = new List<ListViewItem>();
+        static bool isChange;
         public ListViewHandler()
         {
         }
@@ -42,10 +34,23 @@ namespace file_explorer
             mainitemscount = mainFormitemscount;
             mainselectedinfo = mainFormselectedinfo;
             mainFormlistview.SmallImageList = mainFormimagelist;
+            mainImagelist.Images.Add("dir", GetIcon(5));
+            mainImagelist.Images.Add("dirOpen", GetIcon(4));
+            mainImagelist.Images.Add("file", GetIcon(2));
+            mainImagelist.Images.Add("drive", GetIcon(30));
+            mainImagelist.Images.Add("computer", GetIcon(104));
         }
 
         public void Update()
         {
+            if (mainListview.InvokeRequired)
+            {
+                mainListview.Invoke((MethodInvoker)delegate {
+                    Update();
+                });
+                return;
+            }
+            //mainListview.Hide();
             if (!listViewpath.Equals(currentStaticpath))// 현재 표시된 경로와 currentstate의 경로가 다르면 리스트뷰 초기화
             {
                 ResetLiveView();//내용지우기
@@ -65,8 +70,18 @@ namespace file_explorer
                 }
                 listViewpath = currentStaticpath;//경로 최신화
             }
+            //MessageBox.Show(DateTime.Now.ToString("h:mm:ss tt"), "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            isChange = false;//변경사항 여부 확인
             SetListView();//내용 추가 삭제
-
+            if (isChange)
+            {
+                ListViewItem[] listViewitem = listViewitems.ToArray();
+                mainListview.BeginUpdate();
+                mainListview.Items.AddRange(listViewitem);
+                mainListview.EndUpdate();
+            }
+            //MessageBox.Show(DateTime.Now.ToString("h:mm:ss tt"), "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //mainListview.Show();
 
             /*
             if (!listViewpath.Equals(currentStaticpath))// 현재 표시된 경로와 currentstate의 경로가 다르면 리스트뷰 초기화
@@ -157,27 +172,57 @@ namespace file_explorer
                 case "delete"://리스트에서 삭제
                     if (mainListview.Items.ContainsKey(itemName)) //리스트뷰에 있으면
                     {
-                        mainListview.Items.RemoveAt(mainListview.Items.IndexOfKey(itemName));
+                        isChange = true;
+                        listViewitems.RemoveAt(mainListview.Items.IndexOfKey(itemName));
+                        //mainListview.Items.RemoveAt(mainListview.Items.IndexOfKey(itemName));
                     }
                     break;
                 case "exist"://리스트에 추가
-                    if (!mainListview.Items.ContainsKey(itemName)) //리스트뷰에 없으면
+                    string checkKey ="";
+                    if (type.Equals("file"))
                     {
+                        checkKey = "file|" + currentStaticpath + itemName;
+                    }
+                    else
+                    {
+                        checkKey = "dir|" + currentStaticpath + itemName + '\\';
+                    }
+                    if (!mainListview.Items.ContainsKey(checkKey)) //리스트뷰에 없으면
+                    {
+                        isChange = true;
                         string dataLength = null;
                         if (type.Equals("file"))
                         {
+                            //Icon iconDir = GetIcon(2);
                             dataLength = Math.Round((Convert.ToDouble(itemSize) / Math.Pow(2, 10)), 2).ToString() + "KB";
                             item = new ListViewItem(new[] { itemName, itemLastwritetime, itemExtenstion, dataLength });
                             item.Name = "file|" + currentStaticpath + itemName;
-                            item.ImageKey = currentStaticpath + itemName;
+                            //item.ImageKey = currentStaticpath + itemName;
+                            item.ImageKey = "file";
+                            /*if (!mainImagelist.Images.ContainsKey(item.ImageKey))//이미지리스트에 없으면 추가
+                            {
+                                // If not, add the image to the image list.
+                                mainImagelist.Images.Add(item.ImageKey, iconDir);
+                            }*/
                         }
                         else
                         {
+                            //Icon iconDir = GetIcon(5);
+                            //Icon iconDiropen = GetIcon(4);
+                            //iconSubitem = GetIcon(3);
                             item = new ListViewItem(new[] { itemName, itemLastwritetime, itemExtenstion, dataLength });
                             item.Name = "dir|" + currentStaticpath + itemName + '\\';
-                            item.ImageKey = currentStaticpath + itemName + '\\';
+                            //item.ImageKey = currentStaticpath + itemName + '\\';
+                            item.ImageKey = "dir";
+                            /*if (!mainImagelist.Images.ContainsKey(item.ImageKey))//이미지리스트에 없으면 추가
+                            {
+                                // If not, add the image to the image list.
+                                mainImagelist.Images.Add(item.ImageKey, iconDir);
+                                mainImagelist.Images.Add('\\'+item.ImageKey, iconDiropen);
+                            }*/
                         }
-                        mainListview.Items.Add(item);
+                        listViewitems.Add(item);
+                        //mainListview.Items.Add(item);
                     }
                     break;
             }
@@ -214,15 +259,23 @@ namespace file_explorer
             {
                 driveInfo.Add(diskNameset);
             }
-
             if (!mainListview.Items.ContainsKey("dir|" + itemName)) //리스트뷰에 없으면
             {
+                isChange = true;
+                //Icon iconFordriver = GetIcon(30);
                 string dataTotalsize = Math.Round((Convert.ToDouble(itemTotalsize) / Math.Pow(2, 30)), 2).ToString() + "GB";
                 string dataFreesize = Math.Round((Convert.ToDouble(itemTotalfreespace) / Math.Pow(2, 30)), 2).ToString() + "GB";
                 item = new ListViewItem(new[] { itemVolumeLabel + '(' + itemName + ')', itemType, dataTotalsize, dataFreesize });
                 item.Name = "dir|" + itemName;
-                item.ImageKey = itemName;
-                mainListview.Items.Add(item);
+                //item.ImageKey = itemName;
+                item.ImageKey = "drive";
+                listViewitems.Add(item);
+                /*if (!mainImagelist.Images.ContainsKey(itemName))//이미지리스트에 없으면 추가
+                {
+                    // If not, add the image to the image list.
+                    mainImagelist.Images.Add(itemName, iconFordriver);
+                }*/
+                //mainListview.Items.Add(item);
             }
         }
         /*
@@ -306,6 +359,7 @@ namespace file_explorer
                 return;
             }
             mainListview.Items.Clear();
+            listViewitems.Clear();
         }
 
         private void SetColumns(bool isDrive)
@@ -434,7 +488,6 @@ private void SetDriveListView()
     mainListview.Columns.Add("종류");
     mainListview.Columns.Add("전체 크기");
     mainListview.Columns.Add("사용 가능 공간");
-    Icon iconFordriver = GetIcon(30);
     foreach (ColumnHeader header in mainListview.Columns)
     {
         header.Width = columWidth;
