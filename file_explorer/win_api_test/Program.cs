@@ -17,11 +17,11 @@ namespace win_api_test
             DriveInfo[] allDrives = driveInfo.get_drive_info();
             */
 
-            
+            /*
             string dirPath = @"C:\";
             Getfiles getFiles = new Getfiles();
             string[] dirSublist = getFiles.Getfiles_directory(dirPath);
-            
+            */
 
             /*
             string sourceDirectory = @"Z:\study\test";
@@ -37,9 +37,9 @@ namespace win_api_test
             }
             */
 
-            /*
-            string sourceFile = @"Z:\study\test";
-            string destinationFile = @"C:\";
+            
+            string sourceFile = @"D:\조롱이\갈매기";
+            string destinationFile = @"D:\조롱이\갈매기 - 복사본";
             Movefiledir moveFileDir = new Movefiledir();
             if (moveFileDir.Movefile(sourceFile, destinationFile))
             {
@@ -49,7 +49,7 @@ namespace win_api_test
             {
                 Console.WriteLine("이동 실패");
             }
-            */
+            
 
             /*
             Parent check = new Parent();

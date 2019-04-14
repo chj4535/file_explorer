@@ -44,18 +44,26 @@ namespace file_explorer
                 clientSocket.OnSendData("subitemload" + "|" + path, null);
             }
         }
-        public void MoveItemsToDir(string targetPath,string dragStaticpath,string[] dragItems,string sendType)
+        public void MoveItemsToDir(string targetPath,string dragStaticpath,string dragItems,string sendType)
         {
             string sendData = "MoveItemToDir" + "|";
-            sendData += targetPath + "|";
-            sendData += dragStaticpath + "|";
-            sendData += dragItems.Length + "|";
-            foreach (string dragitem in dragItems)
-            {
-                sendData += dragitem + "/";
-            }
-            sendData += "|";
+            sendData += targetPath + "/";
+            sendData += dragStaticpath + "/";
+            sendData += dragItems + "/";
             clientSocket.OnSendData(sendData, null);
+        }
+        public void RenameFileDir(string type,string staticPath, string preName,string nowName)
+        {
+            string sendData = "RenameFileDir" + "|";
+            sendData += type + "/";
+            sendData += staticPath + "/";
+            sendData += preName + "/";
+            sendData += nowName + "/";
+            clientSocket.OnSendData(sendData, null);
+        }
+        public void DeleteFileDir(string itemName)
+        {
+            clientSocket.OnSendData("DeleteFileDir" + '|' + itemName,null);
         }
     }
 }

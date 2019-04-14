@@ -4,3 +4,10 @@ Z:\study\file_explorer\file_explorer\win_api_test\bin\Debug\win_api_test.pdb
 Z:\study\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.csprojResolveAssemblyReference.cache
 Z:\study\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.exe
 Z:\study\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.pdb
+D:\study\git\file_explorer\file_explorer\win_api_test\bin\Debug\win_api_test.exe.config
+D:\study\git\file_explorer\file_explorer\win_api_test\bin\Debug\win_api_test.exe
+D:\study\git\file_explorer\file_explorer\win_api_test\bin\Debug\win_api_test.pdb
+D:\study\git\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.csprojAssemblyReference.cache
+D:\study\git\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.csproj.CoreCompileInputs.cache
+D:\study\git\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.exe
+D:\study\git\file_explorer\file_explorer\win_api_test\obj\Debug\win_api_test.pdb

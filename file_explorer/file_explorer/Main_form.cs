@@ -24,19 +24,18 @@ namespace file_explorer
         //int listViewcount;
         public Main_form(string loginformUserId)
         {
-            listViewhandler.SetUpdateEvent(UpdateForm);
+            listViewhandler.SetUpdateEvent(UpdateForm);  //메인폼을 업데이트 이벤트에 추가
             InitializeComponent();
             userId = loginformUserId;
             this.mainFormrecentcombobox.DisplayMember = "Text";
             this.mainFormrecentcombobox.ValueMember = "Value";
-            //this.mainFormcombobox.DroppedDown = false;
             mainFormgraphic = this.CreateGraphics();
+            listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist, mainFormlistitemcount, mainFormselectedinfo);
             pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox, mainFormrecentcombobox, mainFormgraphic);
             buttonHandler.ButtonHandlerSetting(backButton, nextButton, upperButton);
-            listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist, mainFormitemscount, mainFormselectedinfo);
-            treeViewhandler.TreeViewHandlerSetting(mainFormtreeview, mainFormimagelist);
-            
-            
+            treeViewhandler.TreeViewHandlerSetting(mainFormtreeview);
+
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -48,24 +47,34 @@ namespace file_explorer
 
         public void UpdateForm(string target)
         {
-            /*
-            if (listViewhandler.GetErrorstate()) // 에러상태!
+            if (mainFormlistitemcount.InvokeRequired)
             {
-                MainFormErrorEvent(listViewhandler.GetErrormessage());
+                mainFormlistitemcount.Invoke((MethodInvoker)delegate
+                {
+                    UpdateForm(target);
+                });
+                return;
             }
-            else
-            */
-            switch(target)
+            switch (target)
             {
                 case "error":
+                    listViewhandler.ShowError();
                     break;
-                case "listView":
+                case "all":
+                    listViewhandler.Update();
+                    treeViewhandler.Update();
+                    pathListhandler.Update();
+                    buttonHandler.Update();
+                    mainFormlistitemcount.Text = mainFormlistview.Items.Count.ToString() + "개의 항목";
+                    break;
+                case "listView": //리스트뷰 변화
                     listViewhandler.Update();
                     treeViewhandler.setFocusTreeview();//리스트변경시 tree하이라이트 변경
                     pathListhandler.Update();
                     buttonHandler.Update();
+                    mainFormlistitemcount.Text = mainFormlistview.Items.Count.ToString() + "개의 항목";
                     break;
-                case "treeView":
+                case "treeView": //트리뷰 변화
                     treeViewhandler.Update();
                     break;
             }
@@ -75,24 +84,12 @@ namespace file_explorer
         {
             if (this.InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate {
+                this.Invoke((MethodInvoker)delegate
+                {
                     MainFormErrorEvent(errorMessage);
                 });
                 return;
             }
-            /*
-            Stack<string> prePathsave = sendServerEventHandler.attributePrepathsave;
-            string errPath = prePathsave.Pop();
-            //comboBoxhandler.SetErrorPath(errPath);
-            if (prePathsave.Count == 1)
-            {
-                backButton.Enabled = false;
-                backButton.BackColor = System.Drawing.SystemColors.ScrollBar;
-                backButton.ForeColor = System.Drawing.Color.Gray;
-            }
-            sendServerEventHandler.attributePrepathsave = prePathsave;
-            sendServerEventHandler.MoveDir(prePathsave.Peek(), false, "error");
-            */
             MessageBox.Show(Form.ActiveForm, errorMessage, "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
@@ -113,25 +110,6 @@ namespace file_explorer
         private void upperButton_Click(object sender, EventArgs e) // 상위폴더로 이동
         {
             buttonHandler.upperButtonclick();
-        }
-
-        private void mainFormtreeview_AfterSelect(object sender, TreeViewEventArgs e) //트리상의 폴더 클릭시 이동
-        {
-            treeViewhandler.SelectNode();
-        }
-
-        private void mainFormtreeview_AfterExpand(object sender, TreeViewEventArgs e)
-        {
-            this.mainFormtreeview.AfterExpand -= (TreeViewEventHandler)this.mainFormtreeview_AfterExpand;
-            treeViewhandler.ExpandTreeView(e.Node);
-            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
-        }
-
-        private void mainFormtreeview_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
-        {
-            this.mainFormtreeview.AfterExpand -= (TreeViewEventHandler)this.mainFormtreeview_AfterExpand;
-            treeViewhandler.CollapseTreeView(e.Node);
-            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
         }
 
         private void mainFormpathbutton_Click(object sender, EventArgs e)
@@ -169,6 +147,63 @@ namespace file_explorer
             }
         }
 
+        private void mainFormlistview_ItemDrag(object sender, ItemDragEventArgs e) //드래그한내용 저장
+        {
+            listViewhandler.MainListViewItemDrag((ListViewItem)e.Item);
+        }
+
+        private void mainFormlistview_DragOver(object sender, DragEventArgs e)
+        {
+            listViewhandler.MainListViewDragOver(e);
+        }
+
+        private void mainFormlistview_DragDrop(object sender, DragEventArgs e)
+        {
+            listViewhandler.MainListViewDragDrop(e);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DateTime refreshTime = DateTime.Now;
+            buttonHandler.resetbutton(refreshTime);
+        }
+
+        private void mainFormlistview_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                if (backButton.Enabled.Equals(true))
+                {
+                    this.backButton_Click(this, null);
+                }
+            }
+            if (e.KeyCode == Keys.F5)
+            {
+                DateTime refreshTime = DateTime.Now;
+                buttonHandler.resetbutton(refreshTime);
+            }
+            if (e.KeyCode == Keys.Delete)
+            {
+                listViewhandler.DeleteItem();
+            }
+        }
+
+        private void mainFormtreeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            var hitTest = e.Node.TreeView.HitTest(e.Location);
+            if (hitTest.Location == TreeViewHitTestLocations.PlusMinus)//+ -를 눌렀음
+            {
+                if (e.Node.IsExpanded)//열려있으면
+                    treeViewhandler.ExpandTreeView(e.Node);
+                else
+                    treeViewhandler.CollapseTreeView(e.Node);
+            }
+            else
+            {
+                treeViewhandler.SelectNode(e.Node);
+            }
+        }
+
         private void mainFormlistview_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             mainFormlistview.ListViewItemSorter = Sorter;
@@ -192,110 +227,87 @@ namespace file_explorer
             mainFormlistview.Sort();
         }
 
-        
-        private void mainFormlistview_ItemDrag(object sender, ItemDragEventArgs e)
+        private void Main_form_Resize(object sender, EventArgs e)
         {
-            var items = new List<ListViewItem>();
-            items.Add((ListViewItem)e.Item);
-            foreach (ListViewItem mainFormitem in mainFormlistview.SelectedItems)
+            //this.splitContainer1.Size = new System.Drawing.Size(864, 368);
+            splitContainer1.Size = new Size(this.Width - 24, this.Height - 132);
+            mainFormlistitemcount.Location = new System.Drawing.Point(14, this.Height - 57);
+            button1.Location = new System.Drawing.Point(this.Width - 248, 45);
+            textBox2.Location = new System.Drawing.Point(this.Width - 210, 45);
+            mainFormpathbutton.Size = new Size(this.Width - 358, 23);
+            mainFormcombobox.Size = new Size(this.Width - 342, 23);
+        }
+
+        private void mainFormlistview_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
             {
-                if (!items.Contains(mainFormitem))
+                if (mainFormlistview.FocusedItem.Bounds.Contains(e.Location))
                 {
-                    items.Add(mainFormitem);
-                }
-            }
-            mainFormlistview.DoDragDrop(items, DragDropEffects.Move);
-            
-        }
-
-
-        private void mainFormlistview_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = e.AllowedEffect;
-        }
-
-        private void mainFormlistview_DragOver(object sender, DragEventArgs e)
-        {
-            var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
-            var pos = mainFormlistview.PointToClient(new Point(e.X, e.Y));
-            var hit = mainFormlistview.HitTest(pos);
-            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))
-            {
-                e.Effect = DragDropEffects.Move;
-            }
-            else
-            {
-                e.Effect = DragDropEffects.None;
-            }
-        }
-
-        private void mainFormlistview_DragDrop(object sender, DragEventArgs e)
-        {
-            var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
-            var pos = mainFormlistview.PointToClient(new Point(e.X, e.Y));
-            var hit = mainFormlistview.HitTest(pos);
-            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))
-            {
-                string targetPath = hit.Item.Name.Split('|').Last();
-                string firstItempath = items[0].Name.Split('|').Last();
-                string dragStaticpath = firstItempath.Substring(0, firstItempath.LastIndexOf('\\'));
-                string[] itemNames = new string[items.Count()];
-                int count = 0;
-                foreach(ListViewItem item in items)
-                {
-                    string itemType = item.Name.Split('|').First();
-                    string itemPath = item.Name.Split('|').Last();
-                    string itemName = itemPath.Split('\\').Last();
-                    itemNames[count++] = itemType+"/"+itemName;
-                }
-                //listViewhandler.MainListViewDragDrop(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            buttonHandler.resetbutton();
-        }
-
-        private void mainFormlistview_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Back)
-            {
-                if (backButton.Enabled.Equals(true))
-                {
-                    this.backButton_Click(this, null);
+                    //열기 case
+                    if (mainFormlistview.SelectedItems.Count > 1)
+                    {
+                        mainFormlistviewcontextmenu.Items[0].Enabled = false;
+                    }
+                    else
+                    {
+                        string itemName = mainFormlistview.SelectedItems[0].Name;
+                        string[] itemNames = itemName.Split('|');
+                        if (itemNames[0].Equals("dir")) //파일이 아닌 폴더(드라이브) 선택일 시
+                        {
+                            mainFormlistviewcontextmenu.Items[0].Enabled = true;
+                        }
+                        else
+                        {
+                            mainFormlistviewcontextmenu.Items[0].Enabled = false;
+                        }
+                    }
+                    listViewhandler.ContextMeueItemSelect(Cursor.Position);
+                    mainFormlistviewcontextmenu.Show(Cursor.Position);
                 }
             }
         }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // 전체 단축키
+
+        private void mainFormlistviewcontextmenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (keyData == (Keys.F5))
+            switch (e.ClickedItem.Text)
             {
-                buttonHandler.resetbutton();
+                case "열기":
+                    listViewhandler.ContextMeueItemOpen();
+                    break;
+                case "삭제":
+                    listViewhandler.DeleteItem();
+                    break;
+                case "복사":
+                    listViewhandler.copyItem();
+                    break;
+                case "이름 바꾸기":
+                    int addXpoint = mainFormtreeview.Width;
+                    listViewhandler.ContextMeueItemRename(addXpoint);
+                    break;
             }
-
-            if (keyData == (Keys.Alt | Keys.Left))
-            {
-                if (backButton.Enabled.Equals(true))
-                {
-                    this.backButton_Click(this, null);
-                }
-                return true;
-            }
-
-            if (keyData == (Keys.Alt | Keys.Right))
-            {
-                if (nextButton.Enabled.Equals(true))
-                {
-                    this.nextButton_Click(this, null);
-                }
-                return true;
-            }
-
-            return true;
         }
 
-        
+        private void mainFormlistview_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var mousePoint = mainFormlistview.PointToClient(Cursor.Position);
+                var hit = mainFormlistview.HitTest(mousePoint);
+                if (hit.Item == null) //공백 클릭
+                {
+                    if (listViewhandler.IsCopyItems()) // 복사한게 존재한다
+                    {
+                        mainFormlistviewcopycontextmenu.Show(Cursor.Position);
+                    }
+                }
+            }
+        }
+
+        private void 복사ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class ListViewSorter : System.Collections.IComparer//listview 정렬 하기 위한 클래스

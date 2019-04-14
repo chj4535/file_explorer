@@ -14,6 +14,7 @@ namespace file_explorer
         static Button backButton;
         static Button nextButton;
         static Button upperButton;
+        static DateTime preRefreshtime=DateTime.Now;
         public void ButtonHandlerSetting(Button mainFormbackbutton, Button mainFormnextbutton, Button mainFormupperbutton)
         {
             backButton = mainFormbackbutton;
@@ -146,9 +147,14 @@ namespace file_explorer
             sendServerEventHandler.MoveDir(currentPath, "upperbutton");
         }
 
-        public void resetbutton()
+        public void resetbutton(DateTime refreshTime)
         {
-            sendServerEventHandler.reload(currentStaticpath);
+            TimeSpan time = new TimeSpan(0, 0, 5);
+            if (refreshTime > preRefreshtime.Add(time))
+            {
+                preRefreshtime = refreshTime;
+                sendServerEventHandler.reload(currentStaticpath);
+            }
         }
     }
 }

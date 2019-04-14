@@ -23,15 +23,17 @@ namespace socket_server
             //Console.WriteLine("msgs[0] : " + msgs[0]);
             //Console.WriteLine("msgs[1] : " + msgs[1]);
             //Console.WriteLine("msgs[2] : " + msgs[2]);
-            switch (msgs[0]) {
+
+            switch (msgs[0])
+            {
                 case "login":
-                    makeData.GetloginInfo(clientSocket, msgCount,msgs[1]);
+                    makeData.GetloginInfo(clientSocket, msgCount, msgs[1]);
                     break;
                 case "rootload": //target listview
-                    makeData.GetDriveInfo(clientSocket, msgCount,"listView");
+                    makeData.GetDriveInfo(clientSocket, msgCount, "listView");
                     break;
                 case "subitemload": //target listview
-                    makeData.GetFilesDirs(clientSocket, msgCount, "listView",msgs[1]);
+                    makeData.GetFilesDirs(clientSocket, msgCount, "listView", msgs[1]);
                     break;
                 case "subdriveload": //target treeview
                     makeData.GetDriveInfo(clientSocket, msgCount, "treeView");
@@ -40,7 +42,13 @@ namespace socket_server
                     makeData.GetDirs(clientSocket, msgCount, "treeView", msgs[1]);
                     break;
                 case "MoveItemToDir":
-                    makeData.GetDirs(clientSocket, msgCount, "all", msgs[1]);
+                    makeData.MvoeItems(clientSocket, msgCount, "all", msgs[1]);
+                    break;
+                case "DeleteFileDir":
+                    makeData.DeleteFileDir(clientSocket, msgCount, "all", msgs[1]);
+                    break;
+                case "RenameFileDir":
+                    makeData.RenameFileDir(clientSocket, msgCount, "all", msgs[1]);
                     break;
             }
         }

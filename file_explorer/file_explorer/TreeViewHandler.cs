@@ -27,7 +27,7 @@ namespace file_explorer
         static TreeNode collapseTreenode = new TreeNode();
         static TreeView mainTreeview = new TreeView();
         static TreeNode focusTreenode = new TreeNode();
-        static ImageList mainImagelist = new ImageList();
+        //static ImageList mainImagelist = new ImageList();
         static List<TreeNode> treeNodeitems = new List<TreeNode>();
         static TreeNode setTreenode;
         public TreeViewHandler()
@@ -54,9 +54,8 @@ namespace file_explorer
             mainTreeview.EndUpdate();
         }
 
-        public void TreeViewHandlerSetting(TreeView mainFormtreeview, ImageList mainFormimagelist)
+        public void TreeViewHandlerSetting(TreeView mainFormtreeview)
         {
-            mainImagelist = mainFormimagelist;
             mainTreeview = mainFormtreeview;
             currentStaticpath = "root";
             mainTreeview.Nodes.Add(new TreeNode("내 PC") { Name = "내 PC", ImageKey = "computer", SelectedImageKey = "computer" });
@@ -70,8 +69,8 @@ namespace file_explorer
             mainTreeview.Nodes[0].BackColor = System.Drawing.SystemColors.Highlight;
             mainTreeview.Nodes[0].ForeColor = System.Drawing.Color.White;
             mainTreeview.SelectedNode = mainTreeview.Nodes[0];//root선택
-            SelectNode();
             mainTreeview.ImageList = mainImagelist;
+            SelectNode(mainTreeview.Nodes[0]);
         }
         public void SetTreeView()
         {
@@ -83,15 +82,19 @@ namespace file_explorer
                 string msg = (string)currentData[dataNum];
                 string[] msgs = msg.Split('|');
                 string[] infos = msgs[2].Split('/');
-                    switch (msgs[0])
-                    {
-                        case "dir":
-                            SetTreeViewItemInfo(false, msgs[0], msgs[1], infos);
-                            break;
-                        case "drive":
-                            SetTreeViewItemInfo(true,msgs[0], msgs[1], infos);
-                            break;
-                    }
+                if (msgs[1].Equals("exist") && setTreenode.Nodes.Count > 0)
+                {
+                    setTreenode.Nodes.Clear();
+                }
+                switch (msgs[0])
+                {
+                    case "dir":
+                        SetTreeViewItemInfo(false, msgs[0], msgs[1], infos);
+                        break;
+                    case "drive":
+                        SetTreeViewItemInfo(true, msgs[0], msgs[1], infos);
+                        break;
+                }
             }
         }
         public void SetTreenodelist(string path)
@@ -128,12 +131,12 @@ namespace file_explorer
             }
             */
         }
-        public void SetTreeViewItemInfo(bool isDrive,string type, string state, string[] infos)
+        public void SetTreeViewItemInfo(bool isDrive, string type, string state, string[] infos)
         {
             if (mainTreeview.InvokeRequired)
             {
                 mainTreeview.Invoke((MethodInvoker)delegate {
-                    SetTreeViewItemInfo(isDrive,type,state,infos);
+                    SetTreeViewItemInfo(isDrive, type, state, infos);
                 });
                 return;
             }
@@ -156,40 +159,26 @@ namespace file_explorer
                         {
                             //isChange = true;
                             //treeNodeitems.RemoveAt(mainTreeview.Nodes.IndexOfKey(itemName));
-                            setTreenode.Nodes.RemoveAt(mainTreeview.Nodes.IndexOfKey(itemName));
+                            setTreenode.Nodes.RemoveAt(setTreenode.Nodes.IndexOfKey(itemName));
                         }
                         break;
                     case "exist"://트리에 추가
+                    case "add"://트리에 추가
                         if (!setTreenode.Nodes.ContainsKey(itemName)) //트리에 있으면
                         {
                             isAdd = true;
                             //currentdirpath += itemName + '\\';
                             TreeNode items = new TreeNode(itemName) { Name = itemName, ImageKey = "dir", SelectedImageKey = "dir" };
-                            if (infos[2].Equals("have"))
+                            /*if (infos[2].Equals("have"))
                             {
                                 items.Nodes.Add("");
-                            }
+                            }*/
+                            items.Nodes.Add("");
                             treeNodeitems.Add(items);
                             //setTreenode.Nodes.Add(new TreeNode(itemName) { Name = itemName, ImageKey = "dir", SelectedImageKey = "dir" });
                         }
                         break;
                 }
-                /*
-                foreach (TreeNode dirNode in currentNode.Nodes)//새로 불러왔을때 삭제된 폴더가 있으면 트리에서 삭제
-                {
-                    int pos = Array.IndexOf(currentStateitemsname, dirNode.Name);
-                    if (pos < 0)
-                    {
-                        dirNode.Remove();
-                    }
-                }
-                foreach (string dirName in currentStateitemsname)//새로 불러왔을때 없는 폴더가 있으면 추가
-                {
-                    if (!currentNode.Nodes.ContainsKey(dirName))
-                    {
-                        currentNode.Nodes.Add(new TreeNode(dirName) { Name = dirName, ImageKey = currentStaticpath + dirName+'\\', SelectedImageKey = currentStaticpath + dirName + '\\' });
-                    }
-                }*/
             }
             else //드라이브
             {
@@ -221,8 +210,8 @@ namespace file_explorer
             TreeNode currentNode = new TreeNode();
             currentNode = mainTreeview.Nodes[0];
 
-            //색칠한곳 지움
-            focusTreenode.BackColor = System.Drawing.Color.White; 
+            //focusTreenode였던곳 색칠 지움
+            focusTreenode.BackColor = System.Drawing.Color.White;
             focusTreenode.ForeColor = System.Drawing.Color.Black;
 
             if (!dirPath.Equals("root"))
@@ -262,12 +251,13 @@ namespace file_explorer
                 collapseNode.ImageKey = "dir";
                 collapseNode.SelectedImageKey = "dir";
             }
+            //Node.Collapse();
             setFocusTreeview();//접을때 하이라이트 위치 변경
         }
         public void ExpandTreeView(TreeNode Node)
         {
             TreeNode expandedNode = Node;
-            if (expandedNode.Nodes[0].Name=="")
+            if (expandedNode.Nodes[0].Name == "")
             {
                 expandedNode.Nodes.RemoveAt(0);
             }
@@ -296,40 +286,38 @@ namespace file_explorer
                 }
             }
             sendServerEventHandler.LoadSubDir(dirpath, "treeviewafterselect");//확장할때 하위 폴더 불러옴
-            //MoveDir(true, dirpath, "treeviewafterselect");
+            //Node.Expand();
             setFocusTreeview();
         }
-        public void SelectNode()
+        public void SelectNode(TreeNode Node)
         {
+            TreeNode currentNode = Node;
+            focusTreenode.BackColor = System.Drawing.Color.White;
+            focusTreenode.ForeColor = System.Drawing.Color.Black;
+            currentNode.BackColor = System.Drawing.SystemColors.Highlight;
+            currentNode.ForeColor = System.Drawing.Color.White;
+            focusTreenode = currentNode;
+            string dirpath = "";
+            while (true)
             {
-                TreeNode currentNode = mainTreeview.SelectedNode;
-                focusTreenode.BackColor = System.Drawing.Color.White;
-                focusTreenode.ForeColor = System.Drawing.Color.Black;
-                currentNode.BackColor = System.Drawing.SystemColors.Highlight;
-                currentNode.ForeColor = System.Drawing.Color.White;
-                focusTreenode = currentNode;
-                string dirpath = "";
-                while (true)
+                if (currentNode.Text.Equals("내 PC"))
                 {
-                    if (currentNode.Text.Equals("내 PC"))
-                    {
-                        dirpath = "root";
-                        break;
-                    }
-                    if (!currentNode.Parent.Text.Equals("내 PC"))
-                    {
-                        dirpath = currentNode.Name + "\\" + dirpath;
-                        currentNode = currentNode.Parent;
-                    }
-                    else
-                    {
-                        dirpath = currentNode.Name + "\\" + dirpath;
-                        break;
-                    }
+                    dirpath = "root";
+                    break;
                 }
-                MoveDir(true, dirpath, "treeviewafterselect");
-                setFocusTreeview();
+                if (!currentNode.Parent.Text.Equals("내 PC"))
+                {
+                    dirpath = currentNode.Name + "\\" + dirpath;
+                    currentNode = currentNode.Parent;
+                }
+                else
+                {
+                    dirpath = currentNode.Name + "\\" + dirpath;
+                    break;
+                }
             }
+            MoveDir(true, dirpath, "treeviewafterselect");
+            setFocusTreeview();
         }
     }
 }

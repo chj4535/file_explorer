@@ -14,7 +14,6 @@ namespace file_explorer
         static ComboBox mainPathcombobox = new ComboBox();
         static ComboBox mainRecentcombobox = new ComboBox();
         static Button mainpathButton = new Button();
-        static Graphics graphic;
         static string[] selectedRecentpahtitem;
         static bool recentPathClick = false;
         static List<string[]> recentPathitem = new List<string[]>(); // 최근 항목 리스트 현재 선택된것 위로9개 아래로9개의 항목을 보여주는 특징 때문에 특정 인덱스를 받으면 그 위, 아래 짤라서 넣는 방식
@@ -119,6 +118,13 @@ namespace file_explorer
             currentIndex = recentPathitem.IndexOf(selectedRecentpahtitem);
             mainRecentcombobox.SelectedIndex = recentPathitem.Count-currentIndex-1;
         }
+
+        public void SetSelectItem()
+        {
+            int currentIndex = recentPathitem.IndexOf(selectedRecentpahtitem);
+            mainRecentcombobox.SelectedIndex = recentPathitem.Count - currentIndex - 1;
+        }
+
         private void AddPathComboBox()
         {
             if (mainPathcombobox.InvokeRequired)

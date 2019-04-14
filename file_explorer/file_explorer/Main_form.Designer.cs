@@ -45,12 +45,21 @@ namespace file_explorer
             this.backButton = new System.Windows.Forms.Button();
             this.mainFormpathbutton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.mainFormitemscount = new System.Windows.Forms.Label();
+            this.mainFormlistitemcount = new System.Windows.Forms.Label();
             this.mainFormselectedinfo = new System.Windows.Forms.Label();
+            this.mainFormlistviewcontextmenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.열기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.복사ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.삭제ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.이름바꾸기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainFormlistviewcopycontextmenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.복사ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.mainFormlistviewcontextmenu.SuspendLayout();
+            this.mainFormlistviewcopycontextmenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // nextButton
@@ -130,9 +139,7 @@ namespace file_explorer
             this.mainFormtreeview.Name = "mainFormtreeview";
             this.mainFormtreeview.Size = new System.Drawing.Size(145, 368);
             this.mainFormtreeview.TabIndex = 0;
-            this.mainFormtreeview.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.mainFormtreeview_BeforeCollapse);
-            this.mainFormtreeview.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterExpand);
-            //this.mainFormtreeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.mainFormtreeview_AfterSelect);
+            this.mainFormtreeview.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.mainFormtreeview_NodeMouseClick);
             // 
             // mainFormlistview
             // 
@@ -148,10 +155,11 @@ namespace file_explorer
             this.mainFormlistview.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.mainFormlistview_ColumnClick);
             this.mainFormlistview.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.mainFormlistview_ItemDrag);
             this.mainFormlistview.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragDrop);
-            this.mainFormlistview.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragEnter);
             this.mainFormlistview.DragOver += new System.Windows.Forms.DragEventHandler(this.mainFormlistview_DragOver);
             this.mainFormlistview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mainFormlistview_KeyDown);
+            this.mainFormlistview.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mainFormlistview_MouseClick);
             this.mainFormlistview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewDoubleClick);
+            this.mainFormlistview.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mainFormlistview_MouseDown);
             // 
             // mainFormcombobox
             // 
@@ -230,14 +238,14 @@ namespace file_explorer
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // mainFormitemscount
+            // mainFormlistitemcount
             // 
-            this.mainFormitemscount.AutoSize = true;
-            this.mainFormitemscount.Font = new System.Drawing.Font("굴림", 10F);
-            this.mainFormitemscount.Location = new System.Drawing.Point(21, 445);
-            this.mainFormitemscount.Name = "mainFormitemscount";
-            this.mainFormitemscount.Size = new System.Drawing.Size(0, 14);
-            this.mainFormitemscount.TabIndex = 18;
+            this.mainFormlistitemcount.AutoSize = true;
+            this.mainFormlistitemcount.Font = new System.Drawing.Font("굴림", 10F);
+            this.mainFormlistitemcount.Location = new System.Drawing.Point(14, 443);
+            this.mainFormlistitemcount.Name = "mainFormlistitemcount";
+            this.mainFormlistitemcount.Size = new System.Drawing.Size(0, 14);
+            this.mainFormlistitemcount.TabIndex = 18;
             // 
             // mainFormselectedinfo
             // 
@@ -248,14 +256,63 @@ namespace file_explorer
             this.mainFormselectedinfo.Size = new System.Drawing.Size(0, 14);
             this.mainFormselectedinfo.TabIndex = 19;
             // 
+            // mainFormlistviewcontextmenu
+            // 
+            this.mainFormlistviewcontextmenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.열기ToolStripMenuItem,
+            this.복사ToolStripMenuItem,
+            this.삭제ToolStripMenuItem,
+            this.이름바꾸기ToolStripMenuItem});
+            this.mainFormlistviewcontextmenu.Name = "contextMenuStrip1";
+            this.mainFormlistviewcontextmenu.Size = new System.Drawing.Size(139, 92);
+            this.mainFormlistviewcontextmenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mainFormlistviewcontextmenu_ItemClicked);
+            // 
+            // 열기ToolStripMenuItem
+            // 
+            this.열기ToolStripMenuItem.Name = "열기ToolStripMenuItem";
+            this.열기ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.열기ToolStripMenuItem.Text = "열기";
+            // 
+            // 복사ToolStripMenuItem
+            // 
+            this.복사ToolStripMenuItem.Name = "복사ToolStripMenuItem";
+            this.복사ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.복사ToolStripMenuItem.Text = "복사";
+            // 
+            // 삭제ToolStripMenuItem
+            // 
+            this.삭제ToolStripMenuItem.Name = "삭제ToolStripMenuItem";
+            this.삭제ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.삭제ToolStripMenuItem.Text = "삭제";
+            // 
+            // 이름바꾸기ToolStripMenuItem
+            // 
+            this.이름바꾸기ToolStripMenuItem.Name = "이름바꾸기ToolStripMenuItem";
+            this.이름바꾸기ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.이름바꾸기ToolStripMenuItem.Text = "이름 바꾸기";
+            // 
+            // mainFormlistviewcopycontextmenu
+            // 
+            this.mainFormlistviewcopycontextmenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.복사ToolStripMenuItem1});
+            this.mainFormlistviewcopycontextmenu.Name = "mainFormlistviewcopycontextmenu";
+            this.mainFormlistviewcopycontextmenu.Size = new System.Drawing.Size(181, 48);
+            // 
+            // 복사ToolStripMenuItem1
+            // 
+            this.복사ToolStripMenuItem1.Name = "복사ToolStripMenuItem1";
+            this.복사ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.복사ToolStripMenuItem1.Text = "붙여넣기";
+            this.복사ToolStripMenuItem1.Click += new System.EventHandler(this.복사ToolStripMenuItem1_Click);
+            // 
             // Main_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(872, 467);
+            this.ClientSize = new System.Drawing.Size(872, 461);
             this.Controls.Add(this.mainFormselectedinfo);
-            this.Controls.Add(this.mainFormitemscount);
+            this.Controls.Add(this.mainFormlistitemcount);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.mainFormpathbutton);
             this.Controls.Add(this.backButton);
@@ -270,10 +327,13 @@ namespace file_explorer
             this.Name = "Main_form";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.Main_form_Resize);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.mainFormlistviewcontextmenu.ResumeLayout(false);
+            this.mainFormlistviewcopycontextmenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -293,8 +353,15 @@ namespace file_explorer
         private Button backButton;
         private Button mainFormpathbutton;
         private Button button1;
-        private Label mainFormitemscount;
+        private Label mainFormlistitemcount;
         private Label mainFormselectedinfo;
+        private ContextMenuStrip mainFormlistviewcontextmenu;
+        private ToolStripMenuItem 열기ToolStripMenuItem;
+        private ToolStripMenuItem 복사ToolStripMenuItem;
+        private ToolStripMenuItem 삭제ToolStripMenuItem;
+        private ToolStripMenuItem 이름바꾸기ToolStripMenuItem;
+        private ContextMenuStrip mainFormlistviewcopycontextmenu;
+        private ToolStripMenuItem 복사ToolStripMenuItem1;
     }
 }
 

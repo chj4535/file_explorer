@@ -85,21 +85,26 @@ namespace socket_server
         public void GetFilesDirs(Socket clientSocket, int msgCount, string target, string targetDirectory)
         {
             string[] result;
-            string[] files = Directory.GetFiles(targetDirectory);
-            string[] dirs = Directory.GetDirectories(targetDirectory);
-            int itemCount = files.Length + dirs.Length;
-            GetFeilsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, files);
-            GetDirsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, dirs);
-            //sendDataevent(false, clientSocket, "file", "check", targetDirectory+'/'+ files.Length.ToString()+'/'+ files.Length.ToString()+'/');
-            /*
-            if (result[0].Equals("fail"))
+            try
             {
-                sendDataevent(false, clientSocket, msgCount, 1, target, "file", "err", result[1]);
+                string[] files = Directory.GetFiles(targetDirectory);
+                string[] dirs = Directory.GetDirectories(targetDirectory);
+                int itemCount = files.Length + dirs.Length;
+                if (itemCount == 0)//빈폴더 요청
+                {
+                    sendDataevent(false, clientSocket, msgCount, 1, target, "file", "disable", targetDirectory + "/");
+                }
+                else
+                {
+                    GetFeilsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, files);
+                    GetDirsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, dirs);
+                }
             }
-            else
+            catch (Exception e)
             {
-                GetDirsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, dirs);
-            }*/
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                Console.WriteLine(e.Message);
+            }
         }
         public void GetDirs(Socket clientSocket, int msgCount, string target, string targetDirectory)
         {
@@ -107,11 +112,6 @@ namespace socket_server
             string[] dirs = Directory.GetDirectories(targetDirectory);
             int itemCount = dirs.Length;
             GetDirsInfo(clientSocket, msgCount, itemCount, target, targetDirectory, dirs);
-            /*//sendDataevent(false, clientSocket, "file", "check", targetDirectory+'/'+ files.Length.ToString()+'/'+ files.Length.ToString()+'/');
-            if (result[0].Equals("fail"))
-            {
-                sendDataevent(false, clientSocket, msgCount, 1, target, "file", "err", result[1]);
-            }*/
         }
         public static void GetFeilsInfo(Socket clientSocket, int msgCount, int itemCount, string target, string targetDirectory, string[] files)//에러처리해야됨
         {
@@ -124,7 +124,7 @@ namespace socket_server
                 fileInfo = targetDirectory + "/";
                 fileInfo += file.Name + "/";
                 fileInfo += file.Extension + "/";
-                if (file.Name.Contains("bootmgr") || file.Name.Contains("BOOTNXT") || file.Extension.Contains("sys") || file.Extension.Contains("MARKER") || file.Extension.Contains("BAK"))
+                if (file.Name.Contains("bootmgr") || file.Name.Contains("BOOTNXT") || file.Extension.Contains("sys") || file.Extension.Contains("dat") || file.Extension.Contains("MARKER") || file.Extension.Contains("BAK"))
                 {
                     sendDataevent(false, clientSocket, msgCount, itemCount, target, "file", "disable", fileInfo);
                 }
@@ -153,7 +153,8 @@ namespace socket_server
                 {
                     sendDataevent(false, clientSocket, msgCount, itemCount, target, "dir", "disable", dirInfo);
                 }
-                else {
+                else
+                {
                     if (target.Equals("listView")) //리스트뷰용
                     {
                         dirInfo += dir.Attributes + "/";
@@ -162,7 +163,10 @@ namespace socket_server
                     }
                     else //트리뷰용
                     {
-                        try {
+                        sendDataevent(false, clientSocket, msgCount, itemCount, target, "dir", "exist", dirInfo);
+                        /*
+                        try
+                        {
                             string[] subdirs = Directory.GetDirectories(targetDirectory + dir.Name);//접근 가능한지
                             if (subdirs.Length > 0) //하위 폴더가 존재함 => 펼치기 가능해야됨
                             {
@@ -174,94 +178,215 @@ namespace socket_server
                                 dirInfo += "none" + "/";
                                 sendDataevent(false, clientSocket, msgCount, itemCount, target, "dir", "exist", dirInfo);
                             }
+                            sendDataevent(false, clientSocket, msgCount, itemCount, target, "dir", "exist", dirInfo);
                         }
                         catch
                         {
                             sendDataevent(false, clientSocket, msgCount, itemCount, target, "dir", "disable", dirInfo);
                         }//접근불가능한 폴더
+                        */
                     }
                 }
             }
         }
 
-        public byte[] MvoeItems(string targetPath, string dragStaticpath, string itemsLength, string item)
+        public void MvoeItems(Socket clientSocket, int msgCount, string target, string msg)
         {
+            /*
             string[] items = item.Split('/');
             int count = 0;
             int successCount = 0;
             int failCount = 0;
             string succesResult = "";
             string failResult = "";
-            try
+            */
+            string[] msgs = msg.Split('/');
+            string targetPath = msgs[0];
+            string dragStaticpath = msgs[1];
+            string itemType = msgs[2];
+            string itemName = msgs[3];
+
+            if (itemType.Equals("file"))
             {
-                for (int i = 0; i < Int32.Parse(itemsLength); i++)
-                {
-                    string itemType = items[count++];
-                    string itemName = items[count++];
-                    string movetargetPath = targetPath + '\\' + itemName;
-                    string moveSourcePath = dragStaticpath + '\\' + itemName;
-                    if (itemType.Equals("file"))
-                    {
-                        if (!Movefile(moveSourcePath, movetargetPath))
-                        {
-                            failCount++;
-                            failResult += itemType + "/" + itemName + "/";
-                        }
-                        else
-                        {
-                            successCount++;
-                            succesResult += itemType + "/" + itemName + "/";
-                        }
-                    }
-                    else
-                    {
-                        if (!Movedir(moveSourcePath, movetargetPath))
-                        {
-                            failCount++;
-                            failResult += itemType + "/" + itemName + "/";
-                        }
-                        else
-                        {
-                            successCount++;
-                            succesResult += itemType + "/" + itemName + "/";
-                        }
-                    }
-                }
-                return Encoding.UTF8.GetBytes(successCount + "|" + succesResult + "|" + failCount + "|" + failResult + "|");
+                Movefile(clientSocket, msgCount, target, targetPath, dragStaticpath, itemName);
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
-                return Encoding.UTF8.GetBytes("error|" + e.Message + "|");
+                Movedir(clientSocket, msgCount, target, targetPath, dragStaticpath, itemName);
             }
         }
-        public bool Movedir(string sourceDir, string destinationDir)
+
+        public void DeleteFileDir(Socket clientSocket, int msgCount, string target, string msg)
         {
+            string[] msgs = msg.Split('/');
+            string itemType = msgs[0];
+            string itemFullpath = msgs[1];
+            string itemPath = itemFullpath.Substring(0, itemFullpath.LastIndexOf('\\'));
+            string itemName = itemFullpath.Split('\\').Last();
+            if (itemType.Equals("file"))
+            {
+                try
+                {
+                    File.Delete(itemFullpath);
+                    sendDataevent(true, clientSocket, msgCount, 1, target, "file", "delete", itemPath + '\\' + '/' + itemName + '/');
+                }
+                catch (Exception e)
+                {
+                    sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                    Console.WriteLine(e.Message);
+                }
+            }
+            else
+            {
+                try
+                {
+                    Directory.Delete(itemFullpath,true);
+                    sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "delete", itemPath + '\\' + '/' + itemName + '/');
+                }
+                catch (Exception e)
+                {
+                    sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                    Console.WriteLine(e.Message);
+                }
+            }
+            
+            //sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
+        }
+
+        public void Movedir(Socket clientSocket, int msgCount, string target, string targetPath, string dragStaticpath, string itemName)
+        {
+            string destinationDir = targetPath + '\\' + itemName; 
+            string sourceDir = dragStaticpath + '\\' + itemName;
             try
             {
                 Directory.Move(sourceDir, destinationDir);
-                return true;
+
+                sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
+                string dirInfo = "";
+                DirectoryInfo dir = new DirectoryInfo(sourceDir);
+                //dirInfo = itemCount.ToString() + "/";
+                dirInfo = targetPath + '\\' + "/";
+                dirInfo += dir.Name + "/";
+                string attribute = "";
+                attribute += dir.Attributes;
+                dirInfo += dir.Attributes + "/";
+                dirInfo += dir.LastWriteTime.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "add", dirInfo);
+
             }
             catch (Exception e)
             {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
                 Console.WriteLine(e.Message);
-                return false;
             }
         }
 
-        public bool Movefile(string sourceFile, string destinationFile)
+        public void Movefile(Socket clientSocket, int msgCount, string target, string targetPath, string dragStaticpath, string itemName)
         {
+            string destinationFile = targetPath + '\\' + itemName;
+            string sourceFile = dragStaticpath + '\\' + itemName;
             try
             {
                 File.Move(sourceFile, destinationFile);
-                return true;
+
+                //dragStaticpath 데이터 삭제
+                sendDataevent(true, clientSocket, msgCount, 1, target, "file", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
+                string fileInfo = "";
+                //targetPath 데이터 추가
+                FileInfo file = new FileInfo(destinationFile);
+                fileInfo = targetPath + '\\' + "/";
+                fileInfo += file.Name + "/";
+                fileInfo += file.Extension + "/";
+
+                fileInfo += file.LastWriteTime.ToString() + "/";
+                fileInfo += file.Length.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "file", "add", fileInfo);
             }
             catch (Exception e)
             {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
                 Console.WriteLine(e.Message);
-                return false;
             }
+        }
 
+        public void RenameFileDir(Socket clientSocket, int msgCount, string target, string msg)
+        {
+            /*
+             * sendData += type + "/";
+            sendData += staticPath + "/";
+            sendData += preName + "/";
+            sendData += nowName + "/";
+             */
+            string[] msgs = msg.Split('/');
+            string type = msgs[0];
+            string path = msgs[1]; // 마지막 \\ 포함
+            string preName = msgs[2];
+            string nowName = msgs[3];
+
+            if (type.Equals("file"))
+            {
+                RenameFile(clientSocket, msgCount, target, path, preName, nowName);
+            }
+            else
+            {
+                RenameDir(clientSocket, msgCount, target, path, preName, nowName);
+            }
+        }
+
+        public void RenameDir(Socket clientSocket, int msgCount, string target, string staticPath, string preName, string nowName)
+        {
+            string destinationDir = staticPath + nowName;
+            string sourceDir = staticPath + preName;
+            try
+            {
+                Directory.Move(sourceDir, destinationDir);
+
+                sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "delete", staticPath + '/' + preName + '/');
+                string dirInfo = "";
+                DirectoryInfo dir = new DirectoryInfo(destinationDir);
+                //dirInfo = itemCount.ToString() + "/";
+                dirInfo = staticPath + "/";
+                dirInfo += dir.Name + "/";
+                string attribute = "";
+                attribute += dir.Attributes;
+                dirInfo += dir.Attributes + "/";
+                dirInfo += dir.LastWriteTime.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "add", dirInfo);
+
+            }
+            catch (Exception e)
+            {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void RenameFile(Socket clientSocket, int msgCount, string target, string staticPath, string preName, string nowName)
+        {
+            string destinationFile = staticPath + nowName;
+            string sourceFile = staticPath + preName;
+            try
+            {
+                File.Move(sourceFile, destinationFile);
+
+                //dragStaticpath 데이터 삭제
+                sendDataevent(true, clientSocket, msgCount, 1, target, "file", "delete", staticPath + '/' + preName + '/');
+                string fileInfo = "";
+                //targetPath 데이터 추가
+                FileInfo file = new FileInfo(destinationFile);
+                fileInfo = staticPath + "/";
+                fileInfo += file.Name + "/";
+                fileInfo += file.Extension + "/";
+
+                fileInfo += file.LastWriteTime.ToString() + "/";
+                fileInfo += file.Length.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "file", "add", fileInfo);
+            }
+            catch (Exception e)
+            {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
