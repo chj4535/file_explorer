@@ -40,7 +40,7 @@ namespace file_explorer
             return false;
         }
 
-        public void ListViewHandlerSetting(ListView mainFormlistview, ImageList mainFormimagelist, Label mainFormitemscount, Label mainFormselectedinfo)
+        public void ListViewHandlerSetting(ListView mainFormlistview, ImageList mainFormimagelist, Label mainFormitemscount, Label mainFormselectedinfo)//icon설정 (서버에서 받아오는거 미구현)
         {
             mainListview = mainFormlistview;
             mainImagelist = mainFormimagelist;
@@ -64,7 +64,6 @@ namespace file_explorer
                 });
                 return;
             }
-            //mainListview.Hide();
             if (!listViewpath.Equals(currentStaticpath))// 현재 표시된 경로와 currentstate의 경로가 다르면 리스트뷰 초기화
             {
                 ResetLiveView();//내용지우기
@@ -84,9 +83,7 @@ namespace file_explorer
                 }
                 listViewpath = currentStaticpath;//경로 최신화
             }
-            //MessageBox.Show(DateTime.Now.ToString("h:mm:ss tt"), "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             isChange = false;//변경사항 여부 확인
-            //mainListview.Items.Clear();
             listViewitems.Clear();
             SetListView();//내용 추가 삭제
             if (isChange)
@@ -96,8 +93,6 @@ namespace file_explorer
                 mainListview.Items.AddRange(listViewitem);
                 mainListview.EndUpdate();
             }
-
-            //MessageBox.Show(DateTime.Now.ToString("h:mm:ss tt"), "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void SetListView()
@@ -127,13 +122,7 @@ namespace file_explorer
                 }
             }
         }
-        /*
-             * info[0] : path
-             * info[1] : name
-             * info[2] : extenstion / arrtibute
-             * info[3] : lastwritetime
-             * info[4] : length(size)
-             */
+
         static void SetSubItemInfo(string type, string state, string[] infos)
         {
             if (mainListview.InvokeRequired)
@@ -231,7 +220,7 @@ namespace file_explorer
             }
         }
 
-        private void ResetLiveView()
+        private void ResetLiveView() //리스트 뷰 내용 삭제
         {
             if (mainListview.InvokeRequired)
             {
@@ -333,7 +322,7 @@ namespace file_explorer
                     items.Add(mainFormitem);
                 }
             }
-            mainListview.DoDragDrop(items, DragDropEffects.Move);
+            mainListview.DoDragDrop(items, DragDropEffects.Move);//드래그한거 내용 저장
         }
 
         public void MainListViewDragOver(DragEventArgs e)
@@ -341,7 +330,7 @@ namespace file_explorer
             var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
             var mousePoint = mainListview.PointToClient(new Point(e.X, e.Y));
             var hit = mainListview.HitTest(mousePoint);
-            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))
+            if (hit.Item != null && hit.Item.Name.Split('|').First().Equals("dir") && !items.Contains(hit.Item))//현재 위치가 폴더이며, 드래그한부분이 아니면 move표시
             {
                 e.Effect = DragDropEffects.Move;
             }
@@ -351,7 +340,7 @@ namespace file_explorer
             }
         }
 
-        public void MainListViewDragDrop(DragEventArgs e)
+        public void MainListViewDragDrop(DragEventArgs e)//드래그한 내용 넣기
         {
             var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
             var mousePoint = mainListview.PointToClient(new Point(e.X, e.Y));
@@ -366,7 +355,6 @@ namespace file_explorer
                     dragStaticpath = dragStaticpath.Substring(0, dragStaticpath.LastIndexOf('\\'));
                 }
                 dragStaticpath = dragStaticpath.Substring(0, dragStaticpath.LastIndexOf('\\'));
-                //string dragStaticpath = firstItempath.Substring(0, firstItempath.LastIndexOf('\\'));
                 int count = 0;
                 foreach (ListViewItem item in items)
                 {
@@ -387,10 +375,7 @@ namespace file_explorer
                     }
                     sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, itemName, "dnd_listviewtolistview");
                 }
-                //sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, dragItems, "dnd_listviewtolistview");
-                //listViewhandler.MainListViewDragDrop(targetPath, dragStaticpath, itemNames, "dnd_listviewtolistview");
             }
-            //sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, dragItems, "dnd_listviewtolistview");
         }
 
         public void ShowError()
@@ -400,7 +385,7 @@ namespace file_explorer
             MessageBox.Show(Form.ActiveForm, msgs[0], "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        public void ContextMeueItemRename(int addXpoint)
+        public void ContextMeueItemRename(int addXpoint) //이름 바꾸기 addXpoint == 트리뷰판넬 길이
         {
             int selectIndex = mainListview.Items.IndexOfKey(contextMenuitem.Item.Name);
             ListViewItem saveItem = mainListview.Items[selectIndex];
@@ -421,9 +406,8 @@ namespace file_explorer
             test.Name = contextMenuitem.Item.Name;
             test.Leave += new System.EventHandler(this.ReNameTextBoxDelete);
             test.KeyDown += new System.Windows.Forms.KeyEventHandler(ReNameTextBoxKeyDown);
-            //test.Enter += new System.EventHandler(this.ReNameTextBoxDelete);
         }
-        public void ReNameTextBoxKeyDown(object sender, KeyEventArgs e)
+        public void ReNameTextBoxKeyDown(object sender, KeyEventArgs e) // 이름 입력 후 엔터 입력
         {
             TextBox renameTextbox = sender as TextBox;
             if (e.KeyData == Keys.Enter)
@@ -432,7 +416,7 @@ namespace file_explorer
                 mainForm.Controls.Remove(renameTextbox);
             }
         }
-        public void ReNameTextBoxDelete(object sender, EventArgs e)
+        public void ReNameTextBoxDelete(object sender, EventArgs e) //textbox 사라질때, 이름 재 설정
         {
             //이름 바꾸는 명령
             TextBox renameTextbox = sender as TextBox;
@@ -463,15 +447,12 @@ namespace file_explorer
             {
                 sendServerEventHandler.RenameFileDir(type, itemPath, itemName, renameName);
             }
-            
-            //sendServerEventHandler.MoveItemsToDir(itemPath, itemPath, itemName, "dnd_listviewtolistview");
-            
             //이후 삭제
             Form mainForm = mainListview.FindForm();
             mainForm.Controls.Remove(renameTextbox);
         }
 
-        public void DeleteItem()
+        public void DeleteItem() // 아이템 삭제
         {
             foreach (ListViewItem item in mainListview.SelectedItems)
             {
@@ -482,7 +463,6 @@ namespace file_explorer
                 if (itemType.Equals("dir"))
                 {
                     string[] itemPaths = itemPath.Split('\\');
-                    //dragStaticpath = dragStaticpath.Substring(0, dragStaticpath.LastIndexOf('\\'));
                     itemName = "dir" + '/' + itemPath.Substring(0,itemPath.LastIndexOf('\\'));
                 }
                 else
@@ -492,12 +472,39 @@ namespace file_explorer
                 sendServerEventHandler.DeleteFileDir(itemName);
             }
         }
+
+        public void PasteItem() // 붙여넣기
+        {
+            foreach(ListViewItem copyItem in copyItems)
+            {
+                string[] itemNames = copyItem.Name.Split('|');
+                string itemType = itemNames[0];
+                string itemFullpath = itemNames[1];
+                string itemPath;
+                string itemName;
+                if (itemType.Equals("dir"))
+                {
+                    string[] itemPaths = itemFullpath.Split('\\');
+                    itemName = itemPaths[itemPaths.Length - 2];
+
+                    itemPath = itemFullpath.Substring(0, itemFullpath.LastIndexOf('\\'));
+                    itemPath = itemPath.Substring(0, itemPath.LastIndexOf('\\'));
+                    
+                }
+                else
+                {
+                    itemPath = itemFullpath.Substring(0, itemFullpath.LastIndexOf('\\'));
+                    itemName = itemFullpath.Split('\\').Last();
+                }
+                if (currentStaticpath.Contains(itemFullpath)) // 현재 폴더가 하위 폴더라는 뜻
+                {
+                    MessageBox.Show(Form.ActiveForm, itemName+"를 하위 폴더인 " + currentStaticpath + "에 복사할 수 없습니다", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else //하위 폴더가 아니면 복사 시작
+                {
+                    sendServerEventHandler.CopyItem(itemType,itemPath,currentStaticpath,itemName);
+                }
+            }
+        }
     }
 }
-
-/*
-public void MainListViewDragDrop(string targetPath, string dragStaticpath, string[] dragItems, string sendType)
-{
-    sendServerEventHandler.MoveItemsToDir(targetPath, dragStaticpath, dragItems, "dnd_listviewtolistview");
-}
-*/

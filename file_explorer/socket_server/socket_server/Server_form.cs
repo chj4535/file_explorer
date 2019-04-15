@@ -51,7 +51,6 @@ namespace socket_server
 
         private void Start_server_Click(object sender, EventArgs e)
         {
-            Start_server.Enabled = false;
             int port;
             if (!int.TryParse(port_textbox.Text, out port))
             {
@@ -60,10 +59,11 @@ namespace socket_server
                 port_textbox.SelectAll();
                 return;
             }
-
+            port_textbox.Enabled = false;
+            Start_server.Enabled = false;
             // 서버에서 클라이언트의 연결 요청을 대기하기 위해
             // 소켓을 열어둔다.
-            IPEndPoint serverEP = new IPEndPoint(thisAddress, port);
+            IPEndPoint serverEP = new IPEndPoint(IPAddress.Any, port);
             mainSock.Bind(serverEP);
             mainSock.Listen(10);
             AppendText(server_log_richtextbox, string.Format("서버 동작"));
@@ -141,50 +141,6 @@ namespace socket_server
                             AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
                         }
                     }
-                    
-                    /*
-
-
-                    AppendText(server_log_richtextbox, string.Format("수신 내용 {0} : {1}", ip, clientData));
-                    bool sendAll = cmdHandler.IdentifySendAll(clientData);//전체 송신인지 판별
-                    //string sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
-                    byte[] sendDatacontent = cmdHandler.CmdClassification(clientData); //요청사항 결과
-
-                    sendMsgcount += 1;
-
-                    byte[] sendDataHeader = Encoding.UTF8.GetBytes(sendMsgcount.ToString() + '\x01');
-                    byte[] sendData = new byte[sendDataHeader.Length + sendDatacontent.Length];
-                    sendDataHeader.CopyTo(sendData, 0);
-                    sendDatacontent.CopyTo(sendData, sendDataHeader.Length);
-                    //byte[] sendData = cmdHandler.CmdClassification(clientData); //요청사항 결과
-                    Console.WriteLine(sendData.ToString());
-                    
-
-                    if (sendAll)//전체전송
-                    {
-                        // for을 통해 "역순"으로 클라이언트에게 데이터를 보낸다.
-                        for (int i = connectedClients.Count - 1; i >= 0; i--)
-                        {
-                            Socket socket = connectedClients[i].clientSocket;
-                            try
-                            {
-                                socket.Send(sendData);
-                            }
-                            catch
-                            {
-                                // 오류 발생하면 전송 취소하고 리스트에서 삭제한다.
-                                try { socket.Dispose(); } catch { }
-                                connectedClients.RemoveAt(i);
-                            }
-                        }
-                    }
-                    else // 1:1전송
-                    {
-                        AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(sendData,0,sendData.Length)));
-                        client.Send(sendData);
-                    }
-                    AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
-                    */
                 }
             }
             
@@ -245,14 +201,22 @@ namespace socket_server
                 Socket client = (Socket)ar.AsyncState;
 
                 // Complete sending the data to the remote device.  
+
                 int bytesSent = client.EndSend(ar);
-                //Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+                Console.WriteLine("{0} : Sent {1} bytes to client.", client.RemoteEndPoint.ToString(), bytesSent);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        private void server_log_richtextbox_TextChanged(object sender, EventArgs e)
+        {
+            server_log_richtextbox.SelectionStart = server_log_richtextbox.Text.Length;
+            // scroll it automatically
+            server_log_richtextbox.ScrollToCaret();
         }
     }
 }

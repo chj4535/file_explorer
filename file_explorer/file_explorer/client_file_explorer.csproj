@@ -51,7 +51,6 @@
     <Compile Include="ButtonHandler.cs" />
     <Compile Include="MakeData.cs" />
     <Compile Include="ClientSocketHandler.cs" />
-    <Compile Include="CommandClassification.cs" />
     <Compile Include="CurrentState.cs" />
     <Compile Include="ListViewHandler.cs" />
     <Compile Include="LoginCheck.cs" />
@@ -87,7 +86,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram4.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

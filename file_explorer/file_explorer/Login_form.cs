@@ -89,5 +89,13 @@ namespace file_explorer
             }
             waitHandle.Set();//로그인 결과 대기 해제
         }
+
+        private void user_pw_textbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                check_button_Click(sender, null);
+            }
+        }
     }
 }

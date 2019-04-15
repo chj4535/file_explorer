@@ -12,9 +12,6 @@ namespace socket_server
     {
         MakeData makeData = new MakeData();
         Logincheck loginCheck = new Logincheck();
-        Driveinfo drinInfo = new Driveinfo();
-        GetDirSubItems getDrisubitems = new GetDirSubItems();
-        MoveFilesAndDirs moveFilesAndDirs = new MoveFilesAndDirs();
         public void CmdClassification(Socket clientSocket,bool isSendall,string msg,int msgCount)
         {
             string[] msgs = msg.Split('|');
@@ -49,6 +46,9 @@ namespace socket_server
                     break;
                 case "RenameFileDir":
                     makeData.RenameFileDir(clientSocket, msgCount, "all", msgs[1]);
+                    break;
+                case "CopyFileDir":
+                    makeData.CopyFileDir(clientSocket, msgCount, "all", msgs[1]);
                     break;
             }
         }

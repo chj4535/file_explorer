@@ -26,10 +26,10 @@ namespace file_explorer
         {
             listViewhandler.SetUpdateEvent(UpdateForm);  //메인폼을 업데이트 이벤트에 추가
             InitializeComponent();
-            userId = loginformUserId;
+            userId = loginformUserId;//로그인 성공시 유저id
             this.mainFormrecentcombobox.DisplayMember = "Text";
             this.mainFormrecentcombobox.ValueMember = "Value";
-            mainFormgraphic = this.CreateGraphics();
+            mainFormgraphic = this.CreateGraphics(); // text크기에 맞는 길이 확인 용도
             listViewhandler.ListViewHandlerSetting(mainFormlistview, mainFormimagelist, mainFormlistitemcount, mainFormselectedinfo);
             pathListhandler.PathHandlerSetting(mainFormpathbutton, mainFormcombobox, mainFormrecentcombobox, mainFormgraphic);
             buttonHandler.ButtonHandlerSetting(backButton, nextButton, upperButton);
@@ -41,8 +41,6 @@ namespace file_explorer
         private void Form1_Load(object sender, EventArgs e)
         {
             user_name_label.Text = userId;
-            //listViewhandler.SetFirstLoad(); //최소 정보 받기
-
         }
 
         public void UpdateForm(string target)
@@ -57,24 +55,25 @@ namespace file_explorer
             }
             switch (target)
             {
-                case "error":
+                case "error": // 에러 발생시 에러 출력 및 currentStaticpath조정
                     listViewhandler.ShowError();
+                    pathListhandler.ErrorState();
                     break;
-                case "all":
+                case "all": // 리스트뷰, 트리뷰 모두 업데이트
                     listViewhandler.Update();
                     treeViewhandler.Update();
                     pathListhandler.Update();
                     buttonHandler.Update();
                     mainFormlistitemcount.Text = mainFormlistview.Items.Count.ToString() + "개의 항목";
                     break;
-                case "listView": //리스트뷰 변화
+                case "listView": //리스트뷰 업데이트
                     listViewhandler.Update();
                     treeViewhandler.setFocusTreeview();//리스트변경시 tree하이라이트 변경
                     pathListhandler.Update();
                     buttonHandler.Update();
                     mainFormlistitemcount.Text = mainFormlistview.Items.Count.ToString() + "개의 항목";
                     break;
-                case "treeView": //트리뷰 변화
+                case "treeView": //트리뷰 업데이트
                     treeViewhandler.Update();
                     break;
             }
@@ -112,34 +111,34 @@ namespace file_explorer
             buttonHandler.upperButtonclick();
         }
 
-        private void mainFormpathbutton_Click(object sender, EventArgs e)
+        private void mainFormpathbutton_Click(object sender, EventArgs e) //경로가 아닌 부분 클릭할때 경로 콤보박스 보여주기
         {
             this.mainFormpathbutton.Hide();
             this.mainFormcombobox.Focus();
         }
 
-        private void mainFormcombobox_Leave(object sender, EventArgs e)
+        private void mainFormcombobox_Leave(object sender, EventArgs e)//경로 콤보박스 나가면 다시 경로 버튼 보여주기
         {
             this.mainFormpathbutton.Show();
         }
 
-        private void mainFormcombobox_DropDown(object sender, EventArgs e)
+        private void mainFormcombobox_DropDown(object sender, EventArgs e)//경로 리스트보여줄때 경로 콤보박스 보여주기
         {
             this.mainFormpathbutton.Hide();
             this.mainFormcombobox.Focus();
         }
 
-        private void mainFormcombobox_SelectedIndexChanged(object sender, EventArgs e)
+        private void mainFormcombobox_SelectedIndexChanged(object sender, EventArgs e)//다른 경로 선택 변경
         {
             pathListhandler.MainPathSelectedChange();
         }
 
-        private void mainFormrecentcombobox_SelectedIndexChanged(object sender, EventArgs e)
+        private void mainFormrecentcombobox_SelectedIndexChanged(object sender, EventArgs e)//최근 경로 선택 변경
         {
             pathListhandler.MainRecentPathSelectedIndexChanged();
         }
 
-        private void mainFormcombobox_KeyPress(object sender, KeyPressEventArgs e)
+        private void mainFormcombobox_KeyPress(object sender, KeyPressEventArgs e)//콤보박스에서 경로 입력 후 엔터입력 이벤트
         {
             if (e.KeyChar == 13)
             {
@@ -152,37 +151,37 @@ namespace file_explorer
             listViewhandler.MainListViewItemDrag((ListViewItem)e.Item);
         }
 
-        private void mainFormlistview_DragOver(object sender, DragEventArgs e)
+        private void mainFormlistview_DragOver(object sender, DragEventArgs e)//드래그한 내용 이동
         {
             listViewhandler.MainListViewDragOver(e);
         }
 
-        private void mainFormlistview_DragDrop(object sender, DragEventArgs e)
+        private void mainFormlistview_DragDrop(object sender, DragEventArgs e)//드래그한 내용 넣기
         {
             listViewhandler.MainListViewDragDrop(e);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)//리로드 제한(현재 5초 설정)
         {
             DateTime refreshTime = DateTime.Now;
             buttonHandler.resetbutton(refreshTime);
         }
 
-        private void mainFormlistview_KeyDown(object sender, KeyEventArgs e)
+        private void mainFormlistview_KeyDown(object sender, KeyEventArgs e)//리스트뷰 단축키
         {
-            if (e.KeyCode == Keys.Back)
+            if (e.KeyCode == Keys.Back)//뒤로가기
             {
                 if (backButton.Enabled.Equals(true))
                 {
                     this.backButton_Click(this, null);
                 }
             }
-            if (e.KeyCode == Keys.F5)
+            if (e.KeyCode == Keys.F5)//리로드
             {
                 DateTime refreshTime = DateTime.Now;
                 buttonHandler.resetbutton(refreshTime);
             }
-            if (e.KeyCode == Keys.Delete)
+            if (e.KeyCode == Keys.Delete)//아이템 삭제
             {
                 listViewhandler.DeleteItem();
             }
@@ -194,7 +193,7 @@ namespace file_explorer
             if (hitTest.Location == TreeViewHitTestLocations.PlusMinus)//+ -를 눌렀음
             {
                 if (e.Node.IsExpanded)//열려있으면
-                    treeViewhandler.ExpandTreeView(e.Node);
+                    treeViewhandler.ExpandTreeView(e.Node); //이거 열리기전에 안에 공백 내용 지워야함 수정 필요
                 else
                     treeViewhandler.CollapseTreeView(e.Node);
             }
@@ -204,7 +203,7 @@ namespace file_explorer
             }
         }
 
-        private void mainFormlistview_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void mainFormlistview_ColumnClick(object sender, ColumnClickEventArgs e)//컬럼으로 정렬 이부분도 크기 비교가 안됨 string compare해서 수정 필요
         {
             mainFormlistview.ListViewItemSorter = Sorter;
             if (!(mainFormlistview.ListViewItemSorter is ListViewSorter))
@@ -227,7 +226,7 @@ namespace file_explorer
             mainFormlistview.Sort();
         }
 
-        private void Main_form_Resize(object sender, EventArgs e)
+        private void Main_form_Resize(object sender, EventArgs e) // 사이즈 변경 시, 위치 변경 사항
         {
             //this.splitContainer1.Size = new System.Drawing.Size(864, 368);
             splitContainer1.Size = new Size(this.Width - 24, this.Height - 132);
@@ -238,14 +237,14 @@ namespace file_explorer
             mainFormcombobox.Size = new Size(this.Width - 342, 23);
         }
 
-        private void mainFormlistview_MouseClick(object sender, MouseEventArgs e)
+        private void mainFormlistview_MouseClick(object sender, MouseEventArgs e) //우클릭시  메뉴창 나오게
         {
             if (e.Button == MouseButtons.Right)
             {
                 if (mainFormlistview.FocusedItem.Bounds.Contains(e.Location))
                 {
                     //열기 case
-                    if (mainFormlistview.SelectedItems.Count > 1)
+                    if (mainFormlistview.SelectedItems.Count > 1) //다중 선택 시, 열기 막음
                     {
                         mainFormlistviewcontextmenu.Items[0].Enabled = false;
                     }
@@ -268,7 +267,7 @@ namespace file_explorer
             }
         }
 
-        private void mainFormlistviewcontextmenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void mainFormlistviewcontextmenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e) // 메뉴창
         {
             switch (e.ClickedItem.Text)
             {
@@ -288,7 +287,7 @@ namespace file_explorer
             }
         }
 
-        private void mainFormlistview_MouseDown(object sender, MouseEventArgs e)
+        private void mainFormlistview_MouseDown(object sender, MouseEventArgs e) //공백부분 클릭 시 + 복사 한 내용이 있으면 붙여넣기 메뉴 생성
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -306,7 +305,7 @@ namespace file_explorer
 
         private void 복사ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-
+            listViewhandler.PasteItem();
         }
     }
 
@@ -334,7 +333,7 @@ namespace file_explorer
                 str2 = changeItem2.SubItems[ByColumn].Text;
             }
             int result;
-            if (changeItem1.ListView.Sorting == SortOrder.Ascending)
+            if (changeItem1.ListView.Sorting == SortOrder.Ascending) //여기 수정필요( 크기 비교 안됨)
                 result = String.Compare(str1, str2);
             else
                 result = String.Compare(str2, str1);

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="socket_server.AsyncObject" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAIAAACAAAAAAAAAAAEAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AsyncObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="socket_server.CommandClassification" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAEAAAAQAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CommandClassification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="socket_server.Logincheck" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAABAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Logincheck.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="socket_server.MakeData">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>ACAEGgIAEAAAAAAAQADBAAEACAAAAEQEIAAAYAAAAEA=</HashCode>
+      <FileName>MakeData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="socket_server.Program" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="socket_server.Server_form">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="socket_server.Server_form.ClientSocket" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Server_form.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Delegate Name="socket_server.Server_form.AppendTextDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Server_form.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAACAAAgiAEABEgAADAQACCQwAJAAAAgAAAAAgAAAQ=</HashCode>
+      <FileName>Server_form.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Delegate Name="socket_server.SendDataEventHandler" Collapsed="true">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAhgAABAAAIAAAAAAAAAAgAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>MakeData.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

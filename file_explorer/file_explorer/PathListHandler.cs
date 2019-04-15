@@ -44,13 +44,7 @@ namespace file_explorer
             }
             AddPathComboBox();
         }
-        
-        /*public void SetComboxPath(string path)
-        {
-            SetRecentComboBox(path);
-            SetPathComboBox(path);
-        }*/
-        private void AddRecentComboBox()
+        private void AddRecentComboBox()//최근 접속위치 저장
         {
             if (mainRecentcombobox.InvokeRequired)
             {
@@ -92,7 +86,7 @@ namespace file_explorer
             recentPathitemcount++;
             SetRecentComboBox();
         }
-        private void SetRecentComboBox()
+        private void SetRecentComboBox()//현재 위치 +9~-9개의 데이터 출력 ( 현재 문제 있음)
         {
             if (mainRecentcombobox.InvokeRequired)
             {
@@ -119,13 +113,7 @@ namespace file_explorer
             mainRecentcombobox.SelectedIndex = recentPathitem.Count-currentIndex-1;
         }
 
-        public void SetSelectItem()
-        {
-            int currentIndex = recentPathitem.IndexOf(selectedRecentpahtitem);
-            mainRecentcombobox.SelectedIndex = recentPathitem.Count - currentIndex - 1;
-        }
-
-        private void AddPathComboBox()
+        private void AddPathComboBox() //최신 경로를 경로 콤보박스에 넣음
         {
             if (mainPathcombobox.InvokeRequired)
             {
@@ -140,14 +128,14 @@ namespace file_explorer
             {
                 mainPathitem.Add(currentStaticpath);
             }
-            mainPathitem.Reverse();
+            mainPathitem.Reverse();//역순 출력
             foreach (string item in mainPathitem)
             {
                 mainPathcombobox.Items.Add(item);
             }
             mainPathitem.Reverse();
         }
-        public void MainComboBoxEnter()
+        public void MainComboBoxEnter()//적은 내용으로 이동
         {
             string writePath = mainPathcombobox.Text;
             isClick = true;
@@ -202,31 +190,7 @@ namespace file_explorer
             }
 
         }
-        private void SetErrorRecentComboBox(string path)
-        {
-            if (mainRecentcombobox.InvokeRequired)
-            {
-                mainRecentcombobox.Invoke((MethodInvoker)delegate {
-                    SetErrorRecentComboBox(path);
-                });
-                return;
-            }
-            string recentPath;
-            if (path.Split('\\').Last().Equals(""))
-            {
-                recentPath = path.Split('\\').First();
-            }
-            else
-            {
-                recentPath = path.Split('\\').Last();
-            }
-            int resultindex = mainRecentcombobox.FindStringExact(recentPath);
-            if (resultindex != -1)
-            {
-                mainRecentcombobox.Items.RemoveAt(resultindex);
-            }
-        }
-        public void MainPathSelectedChange()
+        public void MainPathSelectedChange()//경로 바뀜
         {
             if (mainPathcombobox.InvokeRequired)
             {
@@ -243,8 +207,24 @@ namespace file_explorer
                 sendServerEventHandler.MoveDir(selectedPath,  "comboindexchange");
             }
         }
-
-        public void MainRecentPathSelectedIndexChanged()
+        public void ErrorState()//잘못된 경로 정하면 뒤로 가기
+        {
+            while (true)
+            {
+                if (!prePathsave.Peek().Equals(currentStaticpath)) // 현재 경로가 오류이므로 이전 경로를 가져옴 다르면 그 경로로 이동
+                {
+                    currentStaticpath = prePathsave.Peek();
+                    mainPathcombobox.Text = currentStaticpath;
+                    MoveDir(true,currentStaticpath,"errorPathState");
+                    break;
+                }
+                else //경로가 같으면 오류 경로 이므로 이전 경로 호출
+                {
+                    prePathsave.Pop();
+                }
+            }
+        }
+        public void MainRecentPathSelectedIndexChanged()//최근 경로 바꿈
         {
             if (mainRecentcombobox.InvokeRequired)
             {
@@ -261,26 +241,6 @@ namespace file_explorer
                 currentStaticpath = selectedItem[1];
                 sendServerEventHandler.MoveDir(selectedItem[1],  "recentcomboindexchange");
             }
-        }
-        private void SetErrorPathComboBox()
-        {
-            /*
-            if (mainPathcombobox.InvokeRequired)
-            {
-                mainPathcombobox.Invoke((MethodInvoker)delegate {
-                    SetPathComboBox();
-                });
-                return;
-            }
-            int resultindex = mainPathcombobox.FindStringExact(path);
-            if (resultindex != -1)
-            {
-                mainPathcombobox.Items.RemoveAt(resultindex);
-            }
-            mainPathitem.Remove(path);
-            */
-        }
-
-        
+        } 
     }
 }

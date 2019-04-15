@@ -216,6 +216,82 @@ namespace socket_server
             }
         }
 
+        public void CopyFileDir(Socket clientSocket, int msgCount, string target, string msg)
+        {
+            string[] msgs = msg.Split('/');
+            string itemType = msgs[0];
+            string sourcePath = msgs[1];
+            string targetPath = msgs[2];
+            string itemName = msgs[3];
+            if (itemType.Equals("file"))
+            {
+                CopyFile(clientSocket, msgCount, target, sourcePath, targetPath, itemName);
+            }
+            else
+            {
+                CopyDir(clientSocket, msgCount, target, sourcePath, targetPath, itemName);
+            }
+        }
+
+        public void CopyDir(Socket clientSocket, int msgCount, string target, string sourcePath, string targetPath, string itemName)
+        {
+            try
+            {
+                string sourceFileName = sourcePath + '\\' + itemName;
+                string destFileName = targetPath + itemName;
+                //Now Create all of the directories
+                foreach (string dirPath in Directory.GetDirectories(sourceFileName, "*",
+                    SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(sourceFileName, destFileName));
+
+                //Copy all the files & Replaces any files with the same name
+                foreach (string newPath in Directory.GetFiles(sourceFileName, "*.*",
+                    SearchOption.AllDirectories))
+                    File.Copy(newPath, newPath.Replace(sourceFileName, destFileName), true);
+                string dirInfo = "";
+                DirectoryInfo dir = new DirectoryInfo(destFileName);
+                //dirInfo = itemCount.ToString() + "/";
+                dirInfo = targetPath + "/";
+                dirInfo += dir.Name + "/";
+                string attribute = "";
+                attribute += dir.Attributes;
+                dirInfo += dir.Attributes + "/";
+                dirInfo += dir.LastWriteTime.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "dir", "add", dirInfo);
+            }
+            catch (Exception e)
+            {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                Console.WriteLine(e.Message);
+            }
+
+        }
+
+        public void CopyFile(Socket clientSocket, int msgCount, string target, string sourcePath, string targetPath,string itemName)
+        {
+            string sourceFileName = sourcePath + '\\' + itemName;
+            string destFileName = targetPath + itemName;
+            try
+            {
+                File.Copy(sourceFileName, destFileName, true);
+                string fileInfo = "";
+                //targetPath 데이터 추가
+                FileInfo file = new FileInfo(destFileName);
+                fileInfo = targetPath  + "/";
+                fileInfo += file.Name + "/";
+                fileInfo += file.Extension + "/";
+
+                fileInfo += file.LastWriteTime.ToString() + "/";
+                fileInfo += file.Length.ToString() + "/";
+                sendDataevent(true, clientSocket, msgCount, 1, target, "file", "add", fileInfo);
+            }
+            catch (Exception e)
+            {
+                sendDataevent(false, clientSocket, msgCount, 1, "error", e.Message, "", "");
+                Console.WriteLine(e.Message);
+            }
+        }
+
         public void DeleteFileDir(Socket clientSocket, int msgCount, string target, string msg)
         {
             string[] msgs = msg.Split('/');

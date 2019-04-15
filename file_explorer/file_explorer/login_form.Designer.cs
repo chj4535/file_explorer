@@ -51,6 +51,7 @@
             this.user_pw_textbox.Name = "user_pw_textbox";
             this.user_pw_textbox.Size = new System.Drawing.Size(268, 26);
             this.user_pw_textbox.TabIndex = 1;
+            this.user_pw_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.user_pw_textbox_KeyDown);
             // 
             // user_id_label
             // 

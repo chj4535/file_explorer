@@ -15,19 +15,10 @@ namespace file_explorer
         [DllImport("shell32.dll", EntryPoint = "ExtractIcon")]
         extern static IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
         const string ShellIconsLib = @"C:\WINDOWS\System32\imageres.dll";
-        static public Icon GetIcon(int index)
-        {
-            IntPtr Hicon = ExtractIcon(
-               IntPtr.Zero, ShellIconsLib, index);
-            Icon icon = Icon.FromHandle(Hicon);
-            return icon;
-        }
         static bool isAdd;
-        static bool isSelect;
         static TreeNode collapseTreenode = new TreeNode();
         static TreeView mainTreeview = new TreeView();
         static TreeNode focusTreenode = new TreeNode();
-        //static ImageList mainImagelist = new ImageList();
         static List<TreeNode> treeNodeitems = new List<TreeNode>();
         static TreeNode setTreenode;
         public TreeViewHandler()
@@ -72,7 +63,7 @@ namespace file_explorer
             mainTreeview.ImageList = mainImagelist;
             SelectNode(mainTreeview.Nodes[0]);
         }
-        public void SetTreeView()
+        public void SetTreeView() //들어온 데이터 분리
         {
             int dataLength = (int)currentData[0];
             string path = ((string)currentData[3]).Split('|')[2].Split('/')[0];
@@ -97,7 +88,7 @@ namespace file_explorer
                 }
             }
         }
-        public void SetTreenodelist(string path)
+        public void SetTreenodelist(string path) // 들어온 데이터 위치까지 이동
         {
             if (mainTreeview.InvokeRequired)
             {
@@ -124,14 +115,8 @@ namespace file_explorer
                     setTreenode = setTreenode.Nodes[dirName];
                 }
             }
-            /*
-            foreach(TreeNode node in setTreenode.Nodes)
-            {
-                treeNodeitems.Add(node);
-            }
-            */
         }
-        public void SetTreeViewItemInfo(bool isDrive, string type, string state, string[] infos)
+        public void SetTreeViewItemInfo(bool isDrive, string type, string state, string[] infos) //각 item내용 처리
         {
             if (mainTreeview.InvokeRequired)
             {
@@ -140,8 +125,6 @@ namespace file_explorer
                 });
                 return;
             }
-            //TreeNode currentNode = new TreeNode();
-            //currentNode = mainTreeview.Nodes[0];
             if (state.Equals("disable"))
             {
                 return;
@@ -157,8 +140,6 @@ namespace file_explorer
                     case "delete"://트리에서 삭제
                         if (setTreenode.Nodes.ContainsKey(itemName)) //트리에 있으면
                         {
-                            //isChange = true;
-                            //treeNodeitems.RemoveAt(mainTreeview.Nodes.IndexOfKey(itemName));
                             setTreenode.Nodes.RemoveAt(setTreenode.Nodes.IndexOfKey(itemName));
                         }
                         break;
@@ -167,15 +148,9 @@ namespace file_explorer
                         if (!setTreenode.Nodes.ContainsKey(itemName)) //트리에 있으면
                         {
                             isAdd = true;
-                            //currentdirpath += itemName + '\\';
                             TreeNode items = new TreeNode(itemName) { Name = itemName, ImageKey = "dir", SelectedImageKey = "dir" };
-                            /*if (infos[2].Equals("have"))
-                            {
-                                items.Nodes.Add("");
-                            }*/
                             items.Nodes.Add("");
                             treeNodeitems.Add(items);
-                            //setTreenode.Nodes.Add(new TreeNode(itemName) { Name = itemName, ImageKey = "dir", SelectedImageKey = "dir" });
                         }
                         break;
                 }
@@ -191,7 +166,6 @@ namespace file_explorer
                         items.Nodes.Add("");
                     }
                     treeNodeitems.Add(items);
-                    //setTreenode.Nodes.Add(new TreeNode(itemName.Split('\\').First()) { Name = itemName.Split('\\').First(), ImageKey = "drive", SelectedImageKey = "drive" });
                 }
             }
         }
@@ -209,8 +183,6 @@ namespace file_explorer
             string[] dirPaths = dirPath.Split('\\');
             TreeNode currentNode = new TreeNode();
             currentNode = mainTreeview.Nodes[0];
-
-            //focusTreenode였던곳 색칠 지움
             focusTreenode.BackColor = System.Drawing.Color.White;
             focusTreenode.ForeColor = System.Drawing.Color.Black;
 
@@ -232,7 +204,6 @@ namespace file_explorer
                 currentNode.BackColor = System.Drawing.SystemColors.Highlight;
                 currentNode.ForeColor = System.Drawing.Color.White;
                 focusTreenode = currentNode;
-                //focusTreenode = currentNode;
             }
             else
             {
@@ -242,7 +213,7 @@ namespace file_explorer
                 focusTreenode = mainTreeview.Nodes[0];
             }
         }
-        public void CollapseTreeView(TreeNode Node)
+        public void CollapseTreeView(TreeNode Node)//접기하면 icon변경
         {
             TreeNode collapseNode = Node;
             collapseTreenode = Node;
@@ -251,10 +222,9 @@ namespace file_explorer
                 collapseNode.ImageKey = "dir";
                 collapseNode.SelectedImageKey = "dir";
             }
-            //Node.Collapse();
             setFocusTreeview();//접을때 하이라이트 위치 변경
         }
-        public void ExpandTreeView(TreeNode Node)
+        public void ExpandTreeView(TreeNode Node)//펼치기하면 icon변경
         {
             TreeNode expandedNode = Node;
             if (expandedNode.Nodes[0].Name == "")
@@ -286,10 +256,9 @@ namespace file_explorer
                 }
             }
             sendServerEventHandler.LoadSubDir(dirpath, "treeviewafterselect");//확장할때 하위 폴더 불러옴
-            //Node.Expand();
             setFocusTreeview();
         }
-        public void SelectNode(TreeNode Node)
+        public void SelectNode(TreeNode Node)//아이템 선택하면 그 위치로 이동
         {
             TreeNode currentNode = Node;
             focusTreenode.BackColor = System.Drawing.Color.White;

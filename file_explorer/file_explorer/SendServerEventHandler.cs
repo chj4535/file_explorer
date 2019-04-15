@@ -17,6 +17,7 @@ namespace file_explorer
         }
         public void MoveDir(string path,string sendType) // 폴더 이동 부분 
         {
+            Console.WriteLine("hi");
             if (path.Equals("root"))
                 clientSocket.OnSendData("rootload" + "|", null);
             else
@@ -64,6 +65,16 @@ namespace file_explorer
         public void DeleteFileDir(string itemName)
         {
             clientSocket.OnSendData("DeleteFileDir" + '|' + itemName,null);
+        }
+
+        public void CopyItem(string itemType,string sourcePath, string targetPath,string copyItem)
+        {
+            string sendData = "";
+            sendData += itemType + '/';
+            sendData += sourcePath + '/';
+            sendData += targetPath + '/';
+            sendData += copyItem + '/';
+            clientSocket.OnSendData("CopyFileDir" + '|' + sendData, null);
         }
     }
 }

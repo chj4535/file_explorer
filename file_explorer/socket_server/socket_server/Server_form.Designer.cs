@@ -65,9 +65,11 @@
             // 
             this.server_log_richtextbox.Location = new System.Drawing.Point(37, 44);
             this.server_log_richtextbox.Name = "server_log_richtextbox";
+            this.server_log_richtextbox.ReadOnly = true;
             this.server_log_richtextbox.Size = new System.Drawing.Size(758, 386);
             this.server_log_richtextbox.TabIndex = 3;
             this.server_log_richtextbox.Text = "";
+            this.server_log_richtextbox.TextChanged += new System.EventHandler(this.server_log_richtextbox_TextChanged);
             // 
             // Server_form
             // 

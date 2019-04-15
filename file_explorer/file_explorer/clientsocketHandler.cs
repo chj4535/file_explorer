@@ -16,20 +16,19 @@ namespace file_explorer
     class ClientSocketHandler
     {
         static Socket mainSock;
-        //static CommandClassification cmdHandler = new CommandClassification();
-        static MakeData makeStatedata = new MakeData();
-        static ClientSocketHandler()
+        MakeData makeStatedata = new MakeData();
+        public ClientSocketHandler()
         {
             try
             {
-                string address = "localhost"; // "127.0.0.1" 도 가능
+                string address = "192.168.190.234"; // "127.0.0.1" 도 가능
                 int port = 2233;
                 mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); // 소켓 초기화
                 mainSock.Connect(address, port);
             }
-            catch
+            catch (Exception e)
             {
-                MessageBox.Show("서버가 실행되지 않고 있습니다!", "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(e.Message, "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Environment.Exit(1);
             }
             Console.WriteLine("소켓연결 성공");
@@ -38,13 +37,12 @@ namespace file_explorer
             mainSock.BeginReceive(ao.buffer, 0, 2048, 0, DataReceived, ao);
         }
 
-        static void DataReceived(IAsyncResult ar)
+        private void DataReceived(IAsyncResult ar)
         {
             // BeginReceive에서 추가적으로 넘어온 데이터를 AsyncObject 형식으로 변환한다.
 
             AsyncObject obj = (AsyncObject)ar.AsyncState;
             Socket server = obj.workingSocket;
-            // 데이터 수신을 끝낸다.
             int received;
             
             try
@@ -73,11 +71,6 @@ namespace file_explorer
                 if (server.Available == 0)//네트워크상에 받을 데이터가 없다.
                 {
                     Console.WriteLine("수신 종료");
-                    // All data received, process it as you wish
-
-
-
-
                     string receiveData = obj.sb.ToString();
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     int counting = 0;
@@ -91,12 +84,6 @@ namespace file_explorer
                         }
                     }
                     Console.Write(counting);
-                    //int msgCount = Int32.Parse(tokens[0]); // 비동기 메세지이므로 늦게 온게 먼저 적용된 상태에서 먼저 온게 적용되려는 현상 방지
-
-                    //string msg = tokens[1];
-
-                    
-                    
                 }
                 obj.ClearBuffer();//버퍼 비우기
             }
@@ -123,15 +110,23 @@ namespace file_explorer
             }
 
             // 서버 ip 주소와 메세지를 담도록 만든다.
-            IPEndPoint ip = (IPEndPoint)mainSock.LocalEndPoint;
-            string addr = ip.Address.ToString();
-            Console.WriteLine("송신 메시지 : "+addr+message);
-            // 문자열을 utf8 형식의 바이트로 변환한다.
-            byte[] bDts = Encoding.UTF8.GetBytes('\x01'+ addr + '\x02' + message +'\x01');
-            // 서버에 전송한다.
-            //mainSock.Send(bDts);
-            mainSock.BeginSend(bDts, 0, bDts.Length, 0,
-                new AsyncCallback(SendCallback), mainSock);
+            try
+            {
+                IPEndPoint ip = (IPEndPoint)mainSock.LocalEndPoint;
+                string addr = ip.Address.ToString();
+                Console.WriteLine("송신 메시지 : " + addr + message);
+                // 문자열을 utf8 형식의 바이트로 변환한다.
+                byte[] bDts = Encoding.UTF8.GetBytes('\x01' + addr + '\x02' + message + '\x01');
+                // 서버에 전송한다.
+                //mainSock.Send(bDts);
+                mainSock.BeginSend(bDts, 0, bDts.Length, 0,
+                    new AsyncCallback(SendCallback), mainSock);
+            }
+            catch
+            {
+                MessageBox.Show("서버가 실행되지 않고 있습니다!", "에러", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Environment.Exit(1);
+            }
         }
 
         private static void SendCallback(IAsyncResult ar)

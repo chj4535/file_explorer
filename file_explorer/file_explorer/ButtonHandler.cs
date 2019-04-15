@@ -132,7 +132,6 @@ namespace file_explorer
             string currentPath;
             if (dirPaths.Length == 2 && dirPaths[1].Equals(""))//드라이브
             {
-                //currentPath = dirPaths[0] + "\\";
                 currentPath = "root";
             }
             else//폴더
