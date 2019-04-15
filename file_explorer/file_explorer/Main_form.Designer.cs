@@ -296,12 +296,12 @@ namespace file_explorer
             this.mainFormlistviewcopycontextmenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.복사ToolStripMenuItem1});
             this.mainFormlistviewcopycontextmenu.Name = "mainFormlistviewcopycontextmenu";
-            this.mainFormlistviewcopycontextmenu.Size = new System.Drawing.Size(181, 48);
+            this.mainFormlistviewcopycontextmenu.Size = new System.Drawing.Size(123, 26);
             // 
             // 복사ToolStripMenuItem1
             // 
             this.복사ToolStripMenuItem1.Name = "복사ToolStripMenuItem1";
-            this.복사ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.복사ToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
             this.복사ToolStripMenuItem1.Text = "붙여넣기";
             this.복사ToolStripMenuItem1.Click += new System.EventHandler(this.복사ToolStripMenuItem1_Click);
             // 

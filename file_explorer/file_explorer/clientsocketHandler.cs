@@ -49,7 +49,7 @@ namespace file_explorer
             {
                 // 데이터 수신을 끝낸다.
                 received = server.EndReceive(ar);
-                Console.WriteLine("received : "+received);
+                //Console.WriteLine("received : "+received);
             }
             catch
             {
@@ -70,7 +70,7 @@ namespace file_explorer
                 //Console.WriteLine("sb 내용" + obj.sb.ToString());
                 if (server.Available == 0)//네트워크상에 받을 데이터가 없다.
                 {
-                    Console.WriteLine("수신 종료");
+                    //Console.WriteLine("수신 종료");
                     string receiveData = obj.sb.ToString();
                     obj.sb.Clear();//이어가던 내용 초기화(메시지 끝이므로)
                     int counting = 0;
@@ -83,7 +83,7 @@ namespace file_explorer
                             makeStatedata.MakeDataSet(tokens[msgNum]);
                         }
                     }
-                    Console.Write(counting);
+                    //Console.Write(counting);
                 }
                 obj.ClearBuffer();//버퍼 비우기
             }

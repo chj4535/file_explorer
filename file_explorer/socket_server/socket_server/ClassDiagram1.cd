@@ -28,7 +28,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ACAEGgIAEAAAAAAAQADBAAEACAAAAEQEIAAAYAAAAEA=</HashCode>
+      <HashCode>ACAECgIAEAAEAAAAQADBAAEACAAAAEQEIAAAQAAAAEA=</HashCode>
       <FileName>MakeData.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -47,11 +47,6 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Struct Name="socket_server.Server_form.ClientSocket" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Server_form.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
       <Delegate Name="socket_server.Server_form.AppendTextDelegate" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server_form.cs</NewMemberFileName>
@@ -59,7 +54,7 @@
       </Delegate>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAACAAAgiAEABEgAADAQACCQwAJAAAAgAAAAAgAAAQ=</HashCode>
+      <HashCode>AAAAAAAAgCAAABEgAADAQACCQwAJAAAAgAAAAAgAAAQ=</HashCode>
       <FileName>Server_form.cs</FileName>
     </TypeIdentifier>
   </Class>

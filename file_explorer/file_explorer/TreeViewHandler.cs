@@ -191,9 +191,16 @@ namespace file_explorer
                 foreach (string dirName in dirPaths)
                 {
                     if (dirName.Equals("")) break;
+                    //지금 발생하는 문제 expand했을때 내용이 없는 경우(아직 불러오지 못해서) null값 반환해서 오류남
+                    
                     if (currentNode.Nodes.Count != 0 && currentNode.IsExpanded)
                     {
+                        if (currentNode.Nodes[dirName] == null)
+                        {
+                            break;
+                        }
                         currentNode = currentNode.Nodes[dirName];
+
                     }
                     else
                     {

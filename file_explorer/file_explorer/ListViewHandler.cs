@@ -98,26 +98,31 @@ namespace file_explorer
         private void SetListView()
         {
             int dataLength = (int)currentData[0];
-            for (int dataNum = 3; dataNum < dataLength + 3; dataNum++)
-            {
-                string msg = (string)currentData[dataNum];
-                string[] msgs = msg.Split('|');
-                string[] infos = msgs[2].Split('/');
-                if (msgs[1].Equals("exist") && mainListview.Items.Count > 0)
+            string testMsg = (string)currentData[3];
+            string[] testMsgs = testMsg.Split('|');
+            string[] testInfos = testMsgs[2].Split('/');
+            if (testInfos[0].Equals(currentStaticpath)){
+                for (int dataNum = 3; dataNum < dataLength + 3; dataNum++)
                 {
-                    mainListview.Items.Clear();
-                }
-                if (currentStaticpath.Equals(infos[0]))
-                {
-                    switch (msgs[0])
+                    string msg = (string)currentData[dataNum];
+                    string[] msgs = msg.Split('|');
+                    string[] infos = msgs[2].Split('/');
+                    if (msgs[1].Equals("exist") && mainListview.Items.Count > 0)
                     {
-                        case "file":
-                        case "dir":
-                            SetSubItemInfo(msgs[0], msgs[1], infos);
-                            break;
-                        case "drive":
-                            SetDriveInfo(msgs[0], msgs[1], infos);
-                            break;
+                        mainListview.Items.Clear();
+                    }
+                    if (currentStaticpath.Equals(infos[0]))
+                    {
+                        switch (msgs[0])
+                        {
+                            case "file":
+                            case "dir":
+                                SetSubItemInfo(msgs[0], msgs[1], infos);
+                                break;
+                            case "drive":
+                                SetDriveInfo(msgs[0], msgs[1], infos);
+                                break;
+                        }
                     }
                 }
             }

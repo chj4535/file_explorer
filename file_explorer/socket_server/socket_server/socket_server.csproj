@@ -57,6 +57,7 @@
     <Compile Include="Server_form.Designer.cs">
       <DependentUpon>Server_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="SocketList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
