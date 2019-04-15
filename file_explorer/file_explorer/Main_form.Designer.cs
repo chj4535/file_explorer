@@ -44,7 +44,6 @@ namespace file_explorer
             this.mainFormimagelist = new System.Windows.Forms.ImageList(this.components);
             this.backButton = new System.Windows.Forms.Button();
             this.mainFormpathbutton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.mainFormlistitemcount = new System.Windows.Forms.Label();
             this.mainFormselectedinfo = new System.Windows.Forms.Label();
             this.mainFormlistviewcontextmenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -54,6 +53,7 @@ namespace file_explorer
             this.이름바꾸기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainFormlistviewcopycontextmenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.복사ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -228,16 +228,6 @@ namespace file_explorer
             this.mainFormpathbutton.UseVisualStyleBackColor = false;
             this.mainFormpathbutton.Click += new System.EventHandler(this.mainFormpathbutton_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(640, 45);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(20, 23);
-            this.button1.TabIndex = 17;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // mainFormlistitemcount
             // 
             this.mainFormlistitemcount.AutoSize = true;
@@ -304,6 +294,17 @@ namespace file_explorer
             this.복사ToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
             this.복사ToolStripMenuItem1.Text = "붙여넣기";
             this.복사ToolStripMenuItem1.Click += new System.EventHandler(this.복사ToolStripMenuItem1_Click);
+            // 
+            // button1
+            // 
+            this.button1.Image = global::file_explorer.Properties.Resources.refresh4;
+            this.button1.Location = new System.Drawing.Point(640, 45);
+            this.button1.Margin = new System.Windows.Forms.Padding(0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(20, 23);
+            this.button1.TabIndex = 17;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Main_form
             // 

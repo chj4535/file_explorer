@@ -235,6 +235,7 @@ namespace file_explorer
             textBox2.Location = new System.Drawing.Point(this.Width - 210, 45);
             mainFormpathbutton.Size = new Size(this.Width - 358, 23);
             mainFormcombobox.Size = new Size(this.Width - 342, 23);
+            user_name_label.Location = new Point(this.Width - 233, 10);
         }
 
         private void mainFormlistview_MouseClick(object sender, MouseEventArgs e) //우클릭시  메뉴창 나오게

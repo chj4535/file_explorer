@@ -21,7 +21,7 @@ namespace file_explorer
         {
             try
             {
-                string address = "192.168.190.234"; // "127.0.0.1" 도 가능
+                string address = "192.168.0.3"; // "127.0.0.1" 도 가능
                 int port = 2233;
                 mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); // 소켓 초기화
                 mainSock.Connect(address, port);
