@@ -251,7 +251,7 @@ namespace socket_server
                 attribute += dir.Attributes;
                 dirInfo += dir.Attributes + "/";
                 dirInfo += dir.LastWriteTime.ToString() + "/";
-                OnSendData(true, clientSocket, msgCount, 1, target, "dir", "add", dirInfo);
+                OnSendData(true, clientSocket, msgCount + 20000, 1, target, "dir", "add", dirInfo);
             }
             catch (Exception e)
             {
@@ -277,7 +277,7 @@ namespace socket_server
 
                 fileInfo += file.LastWriteTime.ToString() + "/";
                 fileInfo += file.Length.ToString() + "/";
-                OnSendData(true, clientSocket, msgCount, 1, target, "file", "add", fileInfo);
+                OnSendData(true, clientSocket, msgCount + 20000, 1, target, "file", "add", fileInfo);
             }
             catch (Exception e)
             {
@@ -298,7 +298,7 @@ namespace socket_server
                 try
                 {
                     File.Delete(itemFullpath);
-                    OnSendData(true, clientSocket, msgCount, 1, target, "file", "delete", itemPath + '\\' + '/' + itemName + '/');
+                    OnSendData(true, clientSocket, msgCount+10000, 1, target, "file", "delete", itemPath + '\\' + '/' + itemName + '/');
                 }
                 catch (Exception e)
                 {
@@ -311,7 +311,7 @@ namespace socket_server
                 try
                 {
                     Directory.Delete(itemFullpath,true);
-                    OnSendData(true, clientSocket, msgCount, 1, target, "dir", "delete", itemPath + '\\' + '/' + itemName + '/');
+                    OnSendData(true, clientSocket, msgCount + 10000, 1, target, "dir", "delete", itemPath + '\\' + '/' + itemName + '/');
                 }
                 catch (Exception e)
                 {
@@ -331,7 +331,7 @@ namespace socket_server
             {
                 Directory.Move(sourceDir, destinationDir);
 
-                OnSendData(true, clientSocket, msgCount, 1, target, "dir", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
+                OnSendData(true, clientSocket, msgCount+10000, 1, target, "dir", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
                 string dirInfo = "";
                 DirectoryInfo dir = new DirectoryInfo(sourceDir);
                 //dirInfo = itemCount.ToString() + "/";
@@ -341,7 +341,7 @@ namespace socket_server
                 attribute += dir.Attributes;
                 dirInfo += dir.Attributes + "/";
                 dirInfo += dir.LastWriteTime.ToString() + "/";
-                OnSendData(true, clientSocket, msgCount, 1, target, "dir", "add", dirInfo);
+                OnSendData(true, clientSocket, msgCount+20000, 1, target, "dir", "add", dirInfo);
 
             }
             catch (Exception e)
@@ -360,7 +360,7 @@ namespace socket_server
                 File.Move(sourceFile, destinationFile);
 
                 //dragStaticpath 데이터 삭제
-                OnSendData(true, clientSocket, msgCount, 1, target, "file", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
+                OnSendData(true, clientSocket, msgCount+ 10000, 1, target, "file", "delete", dragStaticpath + '\\' + '/' + itemName + '/');
                 string fileInfo = "";
                 //targetPath 데이터 추가
                 FileInfo file = new FileInfo(destinationFile);
@@ -370,7 +370,7 @@ namespace socket_server
 
                 fileInfo += file.LastWriteTime.ToString() + "/";
                 fileInfo += file.Length.ToString() + "/";
-                OnSendData(true, clientSocket, msgCount, 1, target, "file", "add", fileInfo);
+                OnSendData(true, clientSocket, msgCount+20000, 1, target, "file", "add", fileInfo);
             }
             catch (Exception e)
             {
@@ -411,7 +411,7 @@ namespace socket_server
             {
                 Directory.Move(sourceDir, destinationDir);
 
-                OnSendData(true, clientSocket, msgCount, 1, target, "dir", "delete", staticPath + '/' + preName + '/');
+                OnSendData(true, clientSocket, msgCount+ 10000, 1, target, "dir", "delete", staticPath + '/' + preName + '/');
                 string dirInfo = "";
                 DirectoryInfo dir = new DirectoryInfo(destinationDir);
                 //dirInfo = itemCount.ToString() + "/";
@@ -440,7 +440,7 @@ namespace socket_server
                 File.Move(sourceFile, destinationFile);
 
                 //dragStaticpath 데이터 삭제
-                OnSendData(true, clientSocket, msgCount, 1, target, "file", "delete", staticPath + '/' + preName + '/');
+                OnSendData(true, clientSocket, msgCount + 10000, 1, target, "file", "delete", staticPath + '/' + preName + '/');
                 string fileInfo = "";
                 //targetPath 데이터 추가
                 FileInfo file = new FileInfo(destinationFile);
@@ -468,12 +468,13 @@ namespace socket_server
             ao.buffer = Encoding.UTF8.GetBytes('\x01' + msgCount.ToString() + '|' + itemCount.ToString() + '|' + target + '|' + type + '|' + state + '|' + info + '|' + '\x01');
 
             ao.workingSocket = clientSocket;
-            if (isSendall)//전체전송
+
+
+            for (int i = connectedClients.Count - 1; i >= 0; i--)
             {
-                // for을 통해 "역순"으로 클라이언트에게 데이터를 보낸다.
-                for (int i = connectedClients.Count - 1; i >= 0; i--)
+                Socket socket = connectedClients[i].clientSocket;
+                if (isSendall)
                 {
-                    Socket socket = connectedClients[i].clientSocket;
                     try
                     {
                         socket.BeginSend(ao.buffer, 0, ao.buffer.Length, 0, new AsyncCallback(SendCallback), socket);
@@ -485,13 +486,23 @@ namespace socket_server
                         connectedClients.RemoveAt(i);
                     }
                 }
-                //AppendText(server_log_richtextbox, string.Format("1:n 전송 내용 : {0}", Encoding.UTF8.GetString(ao.buffer, 0, ao.buffer.Length)));
-            }
-            else // 1:1전송
-            {
-                ao.workingSocket.BeginSend(ao.buffer, 0, ao.buffer.Length, 0, new AsyncCallback(SendCallback), ao.workingSocket);
-                //AppendText(server_log_richtextbox, string.Format("1:1 전송 내용 : {0}", Encoding.UTF8.GetString(ao.buffer, 0, ao.buffer.Length)));
-                //client.Send(sendData);
+                else
+                {
+                    if (socket == ao.workingSocket)
+                    {
+                        try
+                        {
+                            socket.BeginSend(ao.buffer, 0, ao.buffer.Length, 0, new AsyncCallback(SendCallback), socket);
+                        }
+                        catch // 오류 발생하면 전송 취소하고 리스트에서 삭제한다.
+                        {
+
+                            try { socket.Dispose(); } catch { }
+                            connectedClients.RemoveAt(i);
+                        }
+                    }
+                }
+                
             }
             //AppendText(server_log_richtextbox, string.Format("연결된 클라이언트 갯수 : {0}", connectedClients.Count));
         }

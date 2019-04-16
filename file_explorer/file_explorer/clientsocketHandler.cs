@@ -21,7 +21,7 @@ namespace file_explorer
         {
             try
             {
-                string address = "192.168.0.3"; // "127.0.0.1" 도 가능
+                string address = "192.168.190.234"; // "127.0.0.1" 도 가능
                 int port = 2233;
                 mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); // 소켓 초기화
                 mainSock.Connect(address, port);
@@ -88,10 +88,8 @@ namespace file_explorer
                 obj.ClearBuffer();//버퍼 비우기
             }
             // 받은 데이터가 없으면(연결끊어짐) 끝낸다.
-
             server.BeginReceive(obj.buffer, 0, 2048, 0, DataReceived, obj);
-
-
+            
         }
         public void OnSendData(string message, EventArgs e)
         {
@@ -145,6 +143,11 @@ namespace file_explorer
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public void Disconnect()
+        {
+            mainSock.Disconnect(true);
         }
     }
 }
